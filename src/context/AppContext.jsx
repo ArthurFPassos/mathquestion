@@ -3,20 +3,25 @@ import { createContext, useContext, useReducer } from "react";
 // ─── Initial State ────────────────────────────────────────────────────────────
 
 const initialState = {
-  // Auth
+  // ── Auth ──────────────────────────────────────────────────────────────────
   user: null,            // { name, email, grade } | null
   isAuthenticated: false,
 
-  // Quiz flow
-  screen: "dashboard",  // dashboard | demo | quiz  (usado após login)
-  currentModule: null,
-  moduleResults: {},
-  totalXP: 0,
-  hintsUsedInBattery: 0,
-  scratchpadOpen: false,
-  demoWatched: {},
-  diagnosticDone: false,
-  diagnosticScore: 0,
+  // ── Diagnostic flow ───────────────────────────────────────────────────────
+  firstDiagnosticDone:  false,
+  firstDiagnosticScore: 0,      // 0–1
+  wentToReview:         false,  // true if score < 60% on first diagnostic
+  secondDiagnosticDone: false,
+  secondDiagnosticScore:0,
+
+  // ── Quiz flow ─────────────────────────────────────────────────────────────
+  screen:              "dashboard", // dashboard | demo | quiz
+  currentModule:       null,
+  moduleResults:       {},   // { [moduleId]: { score, xp, timeMs, completed, correct, total } }
+  totalXP:             0,
+  hintsUsedInBattery:  0,
+  scratchpadOpen:      false,
+  demoWatched:         {},   // { [moduleId]: true }
 };
 
 // ─── Reducer ──────────────────────────────────────────────────────────────────
@@ -35,31 +40,59 @@ function reducer(state, action) {
     case "LOGOUT":
       return { ...initialState };
 
-    // ── Legacy (quiz flow) ────────────────────────────────────────────────────
+    // ── Diagnostic (RF16 / RF20) ──────────────────────────────────────────────
+
+    /**
+     * FIRST_DIAGNOSTIC_DONE
+     * Saves score. The routing decision (< 60% → /revisao, else → /modulo-1)
+     * is made inside DiagnosticScreen.jsx using react-router navigate().
+     */
+    case "FIRST_DIAGNOSTIC_DONE":
+      return {
+        ...state,
+        firstDiagnosticDone:  true,
+        firstDiagnosticScore: action.payload,
+        wentToReview:         action.payload < 0.6,
+      };
+
+    /**
+     * SECOND_DIAGNOSTIC_DONE
+     * RF20: after second diagnostic, user always goes to /modulo-1.
+     * Routing is handled in SecondDiagnosticScreen.jsx.
+     */
+    case "SECOND_DIAGNOSTIC_DONE":
+      return {
+        ...state,
+        secondDiagnosticDone:  true,
+        secondDiagnosticScore: action.payload,
+      };
+
+    // ── Quiz flow ─────────────────────────────────────────────────────────────
 
     case "SET_SCREEN":
       return { ...state, screen: action.payload };
-
-    case "DIAGNOSTIC_DONE":
-      return { ...state, diagnosticDone: true, diagnosticScore: action.payload, screen: "dashboard" };
 
     case "START_MODULE":
       return { ...state, screen: "demo", currentModule: action.payload, hintsUsedInBattery: 0 };
 
     case "DEMO_WATCHED":
-      return { ...state, screen: "quiz", demoWatched: { ...state.demoWatched, [action.payload]: true } };
+      return {
+        ...state,
+        screen: "quiz",
+        demoWatched: { ...state.demoWatched, [action.payload]: true },
+      };
 
     case "COMPLETE_MODULE": {
-      const prev = state.moduleResults[action.payload.moduleId];
-      const isBetter = !prev || action.payload.score > prev.score;
+      const prev      = state.moduleResults[action.payload.moduleId];
+      const isBetter  = !prev || action.payload.score > prev.score;
       const newResult = isBetter ? action.payload : prev;
-      const xpDiff = isBetter ? Math.max(0, (newResult.xp || 0) - (prev?.xp || 0)) : 0;
+      const xpDiff    = isBetter ? Math.max(0, (newResult.xp || 0) - (prev?.xp || 0)) : 0;
       return {
         ...state,
         moduleResults: { ...state.moduleResults, [action.payload.moduleId]: newResult },
-        totalXP: state.totalXP + xpDiff,
-        screen: "dashboard",
-        currentModule: null,
+        totalXP:        state.totalXP + xpDiff,
+        screen:         "dashboard",
+        currentModule:  null,
       };
     }
 
