@@ -3,10 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 
 const GRADES = [
-  "1º ano — Ensino Fundamental",
-  "2º ano — Ensino Fundamental",
-  "3º ano — Ensino Fundamental",
-  "4º ano — Ensino Fundamental",
   "5º ano — Ensino Fundamental",
   "6º ano — Ensino Fundamental",
   "7º ano — Ensino Fundamental",
@@ -49,7 +45,7 @@ export default function Register() {
 
     setLoading(true);
     setTimeout(() => {
-      
+      // Persist to localStorage (simulated backend)
       localStorage.setItem("mq_user", JSON.stringify({ ...form }));
 
       dispatch({
@@ -63,10 +59,10 @@ export default function Register() {
   return (
     <div className="auth-layout">
 
-      {}
+      {/* ── Left: form ── */}
       <div className="auth-panel">
         <div className="form-box">
-          {}
+          {/* Logo */}
           <div className="form-logo">
             <div className="form-logo-icon">🧮</div>
             <span className="form-logo-text">MathQuestion</span>
@@ -80,7 +76,7 @@ export default function Register() {
           <form onSubmit={handleSubmit} noValidate>
             <div className="field-group">
 
-              {}
+              {/* Nome */}
               <div className="field">
                 <label htmlFor="name">Nome completo</label>
                 <input
@@ -96,7 +92,7 @@ export default function Register() {
                 {errors.name && <span style={s.fieldError}>{errors.name}</span>}
               </div>
 
-              {}
+              {/* Email */}
               <div className="field">
                 <label htmlFor="email">E-mail</label>
                 <input
@@ -112,7 +108,7 @@ export default function Register() {
                 {errors.email && <span style={s.fieldError}>{errors.email}</span>}
               </div>
 
-              {}
+              {/* Senha */}
               <div className="field">
                 <label htmlFor="password">Senha</label>
                 <input
@@ -128,7 +124,7 @@ export default function Register() {
                 {errors.password && <span style={s.fieldError}>{errors.password}</span>}
               </div>
 
-              {}
+              {/* Ano escolar */}
               <div className="field">
                 <label htmlFor="grade">Ano escolar</label>
                 <select
@@ -172,7 +168,7 @@ export default function Register() {
         </div>
       </div>
 
-      {}
+      {/* ── Right: visual ── */}
       <div className="auth-visual">
         <div style={s.visualContent}>
           <div style={s.visualIcon}>🚀</div>
@@ -201,14 +197,14 @@ export default function Register() {
   );
 }
 
-
+// ─── Shared error border ─────────────────────────────────────────────────────
 
 const fieldErrorStyle = {
   borderColor: "#EF4444",
   boxShadow: "0 0 0 3px rgba(239,68,68,0.1)",
 };
 
-
+// ─── Styles ───────────────────────────────────────────────────────────────────
 
 const s = {
   fieldError: {
@@ -235,7 +231,7 @@ const s = {
     lineHeight: 1.5,
   },
 
-  
+  // Visual panel
   visualContent: {
     position: "relative",
     zIndex: 1,
@@ -267,8 +263,3 @@ const s = {
   },
   stepLabel: { fontSize: 14, fontWeight: 600, color: "#fff", textAlign: "left" },
 };
-
-
-
-
-
