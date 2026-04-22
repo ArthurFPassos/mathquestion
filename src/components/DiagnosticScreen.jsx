@@ -32,7 +32,12 @@ export default function DiagnosticScreen() {
       const score = finalCorrect / DIAGNOSTIC.length;
       dispatch({ type: "FIRST_DIAGNOSTIC_DONE", payload: score });
       // RF16 — route by performance
-      navigate(score < PASS_THRESHOLD ? "/revisao" : "/modulo-1");
+      // RF16 — pass origin context so ReviewScreen renders conditionally
+      if (score < PASS_THRESHOLD) {
+        navigate("/revisao", { state: { fromDiagnostic: true, score } });
+      } else {
+        navigate("/modulo-1");
+      }
     } else {
       setQIndex((i) => i + 1);
       setSelected(null);

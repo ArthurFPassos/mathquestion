@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // ─── Review content data ──────────────────────────────────────────────────────
 
@@ -236,45 +236,77 @@ function TopicCard({ topic, isOpen, onToggle }) {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function ReviewScreen() {
-  const navigate = useNavigate();
-  const [openId, setOpenId] = useState("soma"); // first card open by default
+  const navigate             = useNavigate();
+  const location             = useLocation();
+  const [openId, setOpenId]  = useState("soma");
+
+  // ── Origin detection ────────────────────────────────────────────────────────
+  // fromDiagnostic === true  → came from DiagnosticScreen (score < 60%)
+  // fromDiagnostic === false → free access from Dashboard
+  const fromDiagnostic = location.state?.fromDiagnostic === true;
+  const diagScore      = location.state?.score;           // 0–1, may be undefined
 
   const toggle = (id) => setOpenId((cur) => (cur === id ? null : id));
 
   return (
     <div style={s.page}>
-      {/* Header */}
+
+      {/* ── Page header ── */}
       <div style={s.pageHeader}>
         <div style={s.headerInner}>
+
+          {/* Back button — always visible on free-access mode, optional on diagnostic */}
+          {!fromDiagnostic && (
+            <button
+              onClick={() => navigate(-1)}
+              style={s.backBtn}
+              aria-label="Voltar"
+            >
+              ← Voltar
+            </button>
+          )}
+
           <div style={s.headerLeft}>
             <div style={s.headerIcon}>📖</div>
             <div>
               <h1 style={s.pageTitle}>Material de Revisão</h1>
               <p style={s.pageSubtitle}>
-                Revise os conteúdos antes de tentar o segundo diagnóstico.
+                {fromDiagnostic
+                  ? "Revise os conteúdos antes de tentar o segundo diagnóstico."
+                  : "Consulte as explicações de cada operação a qualquer momento."}
               </p>
             </div>
           </div>
-          <div style={s.scoreBadge}>
-            <span style={s.scoreBadgeIcon}>📊</span>
-            <div>
-              <p style={s.scoreBadgeLabel}>Sua nota foi</p>
-              <p style={s.scoreBadgeValue}>abaixo de 60%</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Progress hint */}
+          {/* Score badge — only when coming from diagnostic */}
+          {fromDiagnostic && (
+            <div style={s.scoreBadge}>
+              <span style={s.scoreBadgeIcon}>📊</span>
+              <div>
+                <p style={s.scoreBadgeLabel}>Sua nota foi</p>
+                <p style={s.scoreBadgeValue}>
+                  {diagScore !== undefined
+                    ? `${Math.round(diagScore * 100)}% — abaixo de 60%`
+                    : "abaixo de 60%"}
+                </p>
+              </div>
+            </div>
+          )}
+
+        </div>{/* /headerInner */}
+      </div>{/* /pageHeader */}
+
+      {/* ── Context-aware hint banner ── */}
       <div style={s.hintBanner}>
         <span style={s.hintIcon}>💡</span>
         <p style={s.hintText}>
-          Leia cada seção com calma. Clique nos títulos para expandir.
-          Quando se sentir pronto, clique no botão ao final da página.
+          {fromDiagnostic
+            ? "Não se preocupe! Leia cada seção com calma, clique nos títulos para expandir e, quando estiver pronto, tente o segundo diagnóstico."
+            : "Clique nos títulos para expandir cada tópico. Use este material sempre que precisar revisar um conteúdo."}
         </p>
       </div>
 
-      {/* Topic accordion */}
+      {/* ── Topic accordion ── */}
       <div style={s.topicsContainer}>
         {TOPICS.map((topic) => (
           <TopicCard
@@ -286,23 +318,48 @@ export default function ReviewScreen() {
         ))}
       </div>
 
-      {/* CTA */}
-      <div style={s.ctaSection}>
-        <div style={s.ctaCard}>
-          <div style={s.ctaIcon}>🚀</div>
-          <h2 style={s.ctaTitle}>Revisão concluída?</h2>
-          <p style={s.ctaBody}>
-            Quando se sentir confiante, faça o segundo diagnóstico.
-            Desta vez você vai melhor!
-          </p>
-          <button
-            onClick={() => navigate("/segundo-diagnostico")}
-            style={s.ctaBtn}
-          >
-            Estou pronto. Fazer o Segundo Diagnóstico →
-          </button>
+      {/* ══════════════════════════════════════════════════════════════════════
+          CONDITIONAL FOOTER
+          ══════════════════════════════════════════════════════════════════════ */}
+
+      {fromDiagnostic ? (
+        /* ── A) Post-diagnostic: CTA to second diagnostic ── */
+        <div style={s.ctaSection}>
+          <div style={s.ctaCard}>
+            <div style={s.ctaIcon}>🚀</div>
+            <h2 style={s.ctaTitle}>Revisão concluída?</h2>
+            <p style={s.ctaBody}>
+              Quando se sentir confiante, faça o segundo diagnóstico.
+              Desta vez você vai melhor!
+            </p>
+            <button
+              onClick={() => navigate("/segundo-diagnostico")}
+              style={s.ctaBtn}
+            >
+              Estou pronto. Fazer o Segundo Diagnóstico →
+            </button>
+          </div>
         </div>
-      </div>
+      ) : (
+        /* ── B) Free access: back to modules ── */
+        <div style={s.ctaSection}>
+          <div style={{ ...s.ctaCard, background: "linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%)", border: "1.5px solid #BFDBFE" }}>
+            <div style={s.ctaIcon}>📚</div>
+            <h2 style={{ ...s.ctaTitle, color: "#1e293b" }}>Revisão concluída!</h2>
+            <p style={s.ctaBody}>
+              Continue praticando nos módulos. Você pode voltar a esta página
+              sempre que precisar relembrar algum conteúdo.
+            </p>
+            <button
+              onClick={() => navigate(-1)}
+              style={{ ...s.ctaBtn, background: "#2563EB" }}
+            >
+              ← Voltar para os Módulos
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
@@ -312,7 +369,24 @@ export default function ReviewScreen() {
 const s = {
   page: { maxWidth: 780, margin: "0 auto", padding: "0 16px 64px" },
 
-  // Page header
+  // Back button (free-access mode only)
+  backBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 16,
+    padding: "8px 16px",
+    borderRadius: 10,
+    border: "none",
+    background: "rgba(255,255,255,0.18)",
+    color: "#fff",
+    fontWeight: 700,
+    fontSize: 14,
+    cursor: "pointer",
+    fontFamily: "inherit",
+    backdropFilter: "blur(4px)",
+    transition: "background 0.15s",
+  },
   pageHeader: {
     background: "linear-gradient(135deg, #1E40AF 0%, #2563EB 100%)",
     borderRadius: "0 0 24px 24px",
@@ -325,12 +399,21 @@ const s = {
     maxWidth: 780,
     margin: "0 auto",
     display: "flex",
+    flexDirection: "column",
+  },
+  headerLeft: {
+    display: "flex",
+    alignItems: "center",
+    gap: 16,
+    flex: 1,
+  },
+  headerRow: {
+    display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     flexWrap: "wrap",
     gap: 16,
   },
-  headerLeft: { display: "flex", alignItems: "center", gap: 16 },
   headerIcon: {
     width: 52, height: 52, borderRadius: 14,
     background: "rgba(255,255,255,0.2)",
