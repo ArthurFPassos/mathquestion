@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useApp } from "../context/AppContext";
 import { UNITS } from "../data/units";
 
-// ─── Demo slides content ──────────────────────────────────────────────────────
+
 
 function getDemoSlides(module, unit) {
   return [
@@ -29,7 +29,7 @@ function getDemoSlides(module, unit) {
   ];
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
+
 
 export default function DemoScreen() {
   const { state, dispatch } = useApp();
@@ -56,12 +56,12 @@ export default function DemoScreen() {
   return (
     <div style={styles.wrapper}>
       <div style={styles.card}>
-        {/* Icon */}
+        {}
         <div style={styles.iconWrap}>
           <span style={styles.icon}>{slides[step].icon}</span>
         </div>
 
-        {/* Unit badge */}
+        {}
         <div
           style={{
             ...styles.badge,
@@ -72,13 +72,13 @@ export default function DemoScreen() {
           {unit?.emoji} {unit?.title}
         </div>
 
-        {/* Slide content */}
+        {}
         <h2 style={{ ...styles.title, color: unit?.color }}>
           {slides[step].title}
         </h2>
         <p style={styles.body}>{slides[step].body}</p>
 
-        {/* Dot indicators */}
+        {}
         <div style={styles.dots}>
           {slides.map((_, i) => (
             <button
@@ -94,7 +94,7 @@ export default function DemoScreen() {
           ))}
         </div>
 
-        {/* Navigation buttons */}
+        {}
         <div style={styles.btnRow}>
           {step > 0 && (
             <button
@@ -130,7 +130,7 @@ export default function DemoScreen() {
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+
 
 const styles = {
   wrapper: {
@@ -236,3 +236,8 @@ const styles = {
     fontFamily: "inherit",
   },
 };
+
+
+
+
+

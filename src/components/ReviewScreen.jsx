@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-// ─── Review content data ──────────────────────────────────────────────────────
+
 
 const TOPICS = [
   {
@@ -157,12 +157,12 @@ const TOPICS = [
   },
 ];
 
-// ─── Topic card component ─────────────────────────────────────────────────────
+
 
 function TopicCard({ topic, isOpen, onToggle }) {
   return (
     <div style={{ ...s.topicCard, borderColor: isOpen ? topic.color : "#E2E8F0" }}>
-      {/* Header (accordion trigger) */}
+      {}
       <button
         onClick={onToggle}
         style={{ ...s.topicHeader, background: isOpen ? topic.light : "#F8FAFC" }}
@@ -181,14 +181,14 @@ function TopicCard({ topic, isOpen, onToggle }) {
         </span>
       </button>
 
-      {/* Body */}
+      {}
       {isOpen && (
         <div style={s.topicBody}>
-          {/* Concept */}
+          {}
           <p style={s.conceptText}>{topic.concept}</p>
 
           <div style={s.twoCol}>
-            {/* Steps */}
+            {}
             <div>
               <p style={{ ...s.sectionLabel, color: topic.color }}>📋 Passo a passo</p>
               <ol style={s.stepsList}>
@@ -204,7 +204,7 @@ function TopicCard({ topic, isOpen, onToggle }) {
               </ol>
             </div>
 
-            {/* Example */}
+            {}
             <div>
               <p style={{ ...s.sectionLabel, color: topic.color }}>🔢 Exemplo resolvido</p>
               <div style={{ ...s.exampleBox, borderColor: topic.color + "44", background: topic.light }}>
@@ -233,29 +233,29 @@ function TopicCard({ topic, isOpen, onToggle }) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+
 
 export default function ReviewScreen() {
   const navigate             = useNavigate();
   const location             = useLocation();
   const [openId, setOpenId]  = useState("soma");
 
-  // ── Origin detection ────────────────────────────────────────────────────────
-  // fromDiagnostic === true  → came from DiagnosticScreen (score < 60%)
-  // fromDiagnostic === false → free access from Dashboard
+  
+  
+  
   const fromDiagnostic = location.state?.fromDiagnostic === true;
-  const diagScore      = location.state?.score;           // 0–1, may be undefined
+  const diagScore      = location.state?.score;           
 
   const toggle = (id) => setOpenId((cur) => (cur === id ? null : id));
 
   return (
     <div style={s.page}>
 
-      {/* ── Page header ── */}
+      {}
       <div style={s.pageHeader}>
         <div style={s.headerInner}>
 
-          {/* Back button — always visible on free-access mode, optional on diagnostic */}
+          {}
           {!fromDiagnostic && (
             <button
               onClick={() => navigate(-1)}
@@ -278,7 +278,7 @@ export default function ReviewScreen() {
             </div>
           </div>
 
-          {/* Score badge — only when coming from diagnostic */}
+          {}
           {fromDiagnostic && (
             <div style={s.scoreBadge}>
               <span style={s.scoreBadgeIcon}>📊</span>
@@ -293,10 +293,10 @@ export default function ReviewScreen() {
             </div>
           )}
 
-        </div>{/* /headerInner */}
-      </div>{/* /pageHeader */}
+        </div>{}
+      </div>{}
 
-      {/* ── Context-aware hint banner ── */}
+      {}
       <div style={s.hintBanner}>
         <span style={s.hintIcon}>💡</span>
         <p style={s.hintText}>
@@ -306,7 +306,7 @@ export default function ReviewScreen() {
         </p>
       </div>
 
-      {/* ── Topic accordion ── */}
+      {}
       <div style={s.topicsContainer}>
         {TOPICS.map((topic) => (
           <TopicCard
@@ -318,12 +318,10 @@ export default function ReviewScreen() {
         ))}
       </div>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          CONDITIONAL FOOTER
-          ══════════════════════════════════════════════════════════════════════ */}
+      {}
 
       {fromDiagnostic ? (
-        /* ── A) Post-diagnostic: CTA to second diagnostic ── */
+        
         <div style={s.ctaSection}>
           <div style={s.ctaCard}>
             <div style={s.ctaIcon}>🚀</div>
@@ -341,7 +339,7 @@ export default function ReviewScreen() {
           </div>
         </div>
       ) : (
-        /* ── B) Free access: back to modules ── */
+        
         <div style={s.ctaSection}>
           <div style={{ ...s.ctaCard, background: "linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%)", border: "1.5px solid #BFDBFE" }}>
             <div style={s.ctaIcon}>📚</div>
@@ -364,12 +362,12 @@ export default function ReviewScreen() {
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+
 
 const s = {
   page: { maxWidth: 780, margin: "0 auto", padding: "0 16px 64px" },
 
-  // Back button (free-access mode only)
+  
   backBtn: {
     display: "inline-flex",
     alignItems: "center",
@@ -432,7 +430,7 @@ const s = {
   scoreBadgeLabel: { fontSize: 11, color: "rgba(255,255,255,0.7)", margin: 0 },
   scoreBadgeValue: { fontSize: 15, fontWeight: 800, color: "#FCD34D", margin: 0 },
 
-  // Hint banner
+  
   hintBanner: {
     background: "#FFFBEB", border: "1px solid #FDE68A",
     borderRadius: 12, padding: "12px 16px",
@@ -441,7 +439,7 @@ const s = {
   hintIcon: { fontSize: 18, flexShrink: 0 },
   hintText: { fontSize: 14, color: "#78350F", lineHeight: 1.6, margin: 0 },
 
-  // Topics
+  
   topicsContainer: { display: "flex", flexDirection: "column", gap: 12 },
   topicCard: {
     border: "2px solid",
@@ -472,7 +470,7 @@ const s = {
   },
   sectionLabel: { fontSize: 12, fontWeight: 800, letterSpacing: 0.4, marginBottom: 10, textTransform: "uppercase" },
 
-  // Steps
+  
   stepsList: { listStyle: "none", display: "flex", flexDirection: "column", gap: 10 },
   stepItem:  { display: "flex", gap: 10, alignItems: "flex-start" },
   stepDot:   {
@@ -483,7 +481,7 @@ const s = {
   stepLabel:  { fontSize: 13, fontWeight: 600, color: "#1e293b", margin: "0 0 2px" },
   stepDetail: { fontSize: 12, color: "#64748b", margin: 0 },
 
-  // Example
+  
   exampleBox: {
     border: "1.5px solid", borderRadius: 12, padding: "14px 16px", marginBottom: 10,
   },
@@ -496,7 +494,7 @@ const s = {
   },
   tipText: { fontSize: 12, color: "#475569", lineHeight: 1.6 },
 
-  // CTA
+  
   ctaSection: { padding: "32px 0 0" },
   ctaCard: {
     background: "linear-gradient(135deg, #EFF6FF 0%, #F0FDF4 100%)",
@@ -516,3 +514,8 @@ const s = {
     boxShadow: "0 8px 24px rgba(37,99,235,0.3)",
   },
 };
+
+
+
+
+

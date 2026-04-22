@@ -4,7 +4,7 @@ import { useApp } from "../context/AppContext";
 import { DIAGNOSTIC } from "../data/units";
 import ExitModal from "./ExitModal";
 
-// RF16 — below 60% → /revisao, else → /modulo-1
+
 const PASS_THRESHOLD = 0.6;
 
 export default function DiagnosticScreen() {
@@ -14,7 +14,7 @@ export default function DiagnosticScreen() {
   const [selected, setSelected]   = useState(null);
   const [answered, setAnswered]   = useState(false);
   const [correctCount, setCorrect]= useState(0);
-  const [showExit, setShowExit]   = useState(false); // RF18/RF19
+  const [showExit, setShowExit]   = useState(false); 
 
   const q        = DIAGNOSTIC[qIndex];
   const isLast   = qIndex === DIAGNOSTIC.length - 1;
@@ -31,8 +31,8 @@ export default function DiagnosticScreen() {
     if (isLast) {
       const score = finalCorrect / DIAGNOSTIC.length;
       dispatch({ type: "FIRST_DIAGNOSTIC_DONE", payload: score });
-      // RF16 — route by performance
-      // RF16 — pass origin context so ReviewScreen renders conditionally
+      
+      
       if (score < PASS_THRESHOLD) {
         navigate("/revisao", { state: { fromDiagnostic: true, score } });
       } else {
@@ -55,7 +55,7 @@ export default function DiagnosticScreen() {
       )}
 
       <div style={st.card}>
-        {/* Top bar */}
+        {}
         <div style={st.topRow}>
           <span style={st.badge}>🩺 Diagnóstico inicial</span>
           <div style={st.topRight}>
@@ -66,7 +66,7 @@ export default function DiagnosticScreen() {
           </div>
         </div>
 
-        {/* Progress */}
+        {}
         <div style={st.progressTrack}>
           <div style={{ ...st.progressFill, width: `${progress}%` }} />
         </div>
@@ -77,7 +77,7 @@ export default function DiagnosticScreen() {
           <p style={st.statement}>{q.statement}</p>
         </div>
 
-        {/* Options */}
+        {}
         <div style={st.optionsGrid}>
           {q.options.map((opt, i) => {
             const isSel     = selected === opt;
@@ -103,7 +103,7 @@ export default function DiagnosticScreen() {
           })}
         </div>
 
-        {/* Feedback */}
+        {}
         {answered && (
           <div style={{
             ...st.feedbackBox,
@@ -151,3 +151,8 @@ const st = {
   btnPrimary:   { width:"100%", padding:"13px 24px", borderRadius:12, border:"none", background:"#2563EB", color:"#fff", fontWeight:700, fontSize:15, cursor:"pointer", fontFamily:"inherit", marginBottom:12, transition:"opacity 0.15s" },
   note:         { fontSize:12, color:"#94a3b8", textAlign:"center", margin:0 },
 };
+
+
+
+
+

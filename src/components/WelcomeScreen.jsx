@@ -23,7 +23,6 @@ export default function WelcomeScreen() {
   return (
     <div style={styles.wrapper}>
       <div style={styles.card}>
-        {/* Logo */}
         <div style={styles.logoWrap}>
           <span style={styles.logoIcon}>🧮</span>
         </div>
@@ -34,7 +33,6 @@ export default function WelcomeScreen() {
           Aprenda resolvendo problemas do cotidiano!
         </p>
 
-        {/* Name input */}
         <div style={styles.fieldGroup}>
           <label style={styles.label}>Qual é o seu nome?</label>
           <input
@@ -60,7 +58,6 @@ export default function WelcomeScreen() {
           Começar → Avaliação Diagnóstica
         </button>
 
-        {/* Feature grid */}
         <div style={styles.featureGrid}>
           {features.map((f, i) => (
             <div key={i} style={styles.featureItem}>
@@ -170,3 +167,8 @@ const styles = {
   featureIcon: { fontSize: 16, flexShrink: 0 },
   featureLabel: { fontSize: 13, color: "#64748b" },
 };
+
+
+
+
+

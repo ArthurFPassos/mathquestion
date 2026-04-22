@@ -11,7 +11,7 @@ import {
 } from "../utilis/helpers";
 import Scratchpad from "./Scratchpad";
 
-// ─── Stat card ────────────────────────────────────────────────────────────────
+
 
 function StatCard({ icon, label, value, accent }) {
   return (
@@ -23,7 +23,7 @@ function StatCard({ icon, label, value, accent }) {
   );
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
+
 
 export default function Dashboard() {
   const { state, dispatch } = useApp();
@@ -43,7 +43,7 @@ export default function Dashboard() {
     (m) => state.moduleResults[m.id]?.completed && state.moduleResults[m.id]?.score >= 0.8
   );
 
-  // Diagnostic info — cap at 100% to guard against legacy state issues
+  
   const diagScore     = Math.min(state.firstDiagnosticScore ?? state.diagnosticScore ?? 0, 1);
   const diagDone      = state.firstDiagnosticDone  ?? state.diagnosticDone  ?? false;
 
@@ -51,7 +51,7 @@ export default function Dashboard() {
     <div style={styles.page}>
       {state.scratchpadOpen && <Scratchpad />}
 
-      {/* ── Header ── */}
+      {}
       <div style={styles.header}>
         <div>
           <h1 style={styles.h1}>
@@ -65,7 +65,7 @@ export default function Dashboard() {
         </div>
 
         <div style={styles.headerActions}>
-          {/* Material de revisão — acesso rápido */}
+          {}
           <button
             onClick={() => navigate("/revisao", { state: { fromDiagnostic: false } })}
           >
@@ -92,7 +92,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ── Stats ── */}
+      {}
       <div style={styles.statsGrid}>
         <StatCard icon="⭐" label="Total XP"    value={`${state.totalXP} pts`}            accent="#2563EB" />
         <StatCard icon="📊" label="Média Geral" value={`${(avg * 100).toFixed(0)}%`} />
@@ -100,7 +100,7 @@ export default function Dashboard() {
         <StatCard icon="⏱" label="Tempo Médio" value={formatTime(avgTime)} />
       </div>
 
-      {/* ── Review material banner (always visible, prominent) ── */}
+      {}
       <div style={styles.reviewBanner}>
         <div style={styles.reviewBannerLeft}>
           <span style={styles.reviewBannerIcon}>📖</span>
@@ -119,7 +119,7 @@ export default function Dashboard() {
         </button>
       </div>
 
-      {/* ── Diagnostic banners ── */}
+      {}
       {diagDone && (
         <div style={{
           ...styles.infoBanner,
@@ -147,7 +147,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ── Completion banners (RF11) ── */}
+      {}
       {allCompleted && avg >= 0.9 && (
         <div style={styles.successBanner}>
           🏆 Parabéns! Você concluiu o curso com média de{" "}
@@ -162,7 +162,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ── Units ── */}
+      {}
       {UNITS.map((unit) => {
         const unlocked = isUnitUnlocked(unit.id, state.moduleResults);
         const unitPct  = getUnitProgress(unit.id, state.moduleResults);
@@ -173,7 +173,7 @@ export default function Dashboard() {
             key={unit.id}
             style={{ ...styles.unitCard, opacity: unlocked ? 1 : 0.55 }}
           >
-            {/* Unit header */}
+            {}
             <div style={styles.unitHeader}>
               <div style={{ ...styles.unitIconBox, background: unit.light }}>
                 <span style={{ fontSize: 22 }}>{unlocked ? unit.emoji : "🔒"}</span>
@@ -198,7 +198,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Review shortcut inside Unit 1 card */}
+            {}
             {isUnit1 && unlocked && (
               <button
                 onClick={() => navigate("/revisao", { state: { fromDiagnostic: false } })}
@@ -210,7 +210,7 @@ export default function Dashboard() {
               </button>
             )}
 
-            {/* Module list */}
+            {}
             {unlocked ? (
               <div style={styles.moduleList}>
                 {unit.modules.map((mod) => {
@@ -228,7 +228,7 @@ export default function Dashboard() {
                           </span>
                         )}
                       </div>
-                      {/* RF12 — redo allowed, saves only if score improves */}
+                      {}
                       <button
                         onClick={() => dispatch({ type: "START_MODULE", payload: mod.id })}
                         style={{
@@ -256,12 +256,12 @@ export default function Dashboard() {
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+
 
 const styles = {
   page: { maxWidth: 720, margin: "0 auto", padding: "28px 16px 48px" },
 
-  // Header
+  
   header: {
     display: "flex", justifyContent: "space-between", alignItems: "flex-start",
     flexWrap: "wrap", gap: 12, marginBottom: 20,
@@ -276,14 +276,14 @@ const styles = {
     cursor: "pointer", fontFamily: "inherit",
   },
 
-  // Stats
+  
   statsGrid: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 16 },
   statCard:  { background: "#f8fafc", borderRadius: 14, padding: "14px 12px", textAlign: "center", border: "1px solid #f1f5f9" },
   statIcon:  { fontSize: 20, marginBottom: 4 },
   statValue: { fontSize: 20, fontWeight: 700 },
   statLabel: { fontSize: 11, color: "#94a3b8", marginTop: 2 },
 
-  // Review banner
+  
   reviewBanner: {
     background: "linear-gradient(135deg, #EFF6FF 0%, #F0F9FF 100%)",
     border: "1.5px solid #BFDBFE",
@@ -303,7 +303,7 @@ const styles = {
     whiteSpace: "nowrap", flexShrink: 0,
   },
 
-  // Diagnostic info
+  
   infoBanner: {
     background: "#eff6ff", border: "1px solid #bfdbfe",
     borderRadius: 12, padding: "12px 16px",
@@ -326,7 +326,7 @@ const styles = {
     fontSize: 14, color: "#92400e", marginBottom: 16,
   },
 
-  // Unit cards
+  
   unitCard: {
     background: "#fff", borderRadius: 16, padding: 20,
     border: "1px solid #f1f5f9", marginBottom: 16,
@@ -344,7 +344,7 @@ const styles = {
   progressTrack:{ background: "#f1f5f9", borderRadius: 99, height: 5, overflow: "hidden" },
   progressFill: { height: 5, borderRadius: 99, transition: "width 0.4s ease" },
 
-  // Review shortcut inside Unit 1
+  
   reviewShortcut: {
     display: "flex", alignItems: "center", gap: 10,
     width: "100%", padding: "10px 14px",
@@ -354,7 +354,7 @@ const styles = {
     marginBottom: 10, transition: "background 0.15s",
   },
 
-  // Module rows
+  
   moduleList: { display: "flex", flexDirection: "column", gap: 8, paddingLeft: 60 },
   moduleRow: {
     display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -369,3 +369,8 @@ const styles = {
   },
   lockedMsg: { fontSize: 12, color: "#94a3b8", paddingLeft: 60, margin: "8px 0 0" },
 };
+
+
+
+
+

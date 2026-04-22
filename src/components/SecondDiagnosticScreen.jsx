@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import ExitModal from "./ExitModal";
 
-// ─── Questions (simpler, aligned to revision content) ────────────────────────
+
 
 const SECOND_DIAGNOSTIC = [
   {
@@ -44,7 +44,7 @@ const SECOND_DIAGNOSTIC = [
   },
 ];
 
-// ─── Result screen after finishing ───────────────────────────────────────────
+
 
 function ResultScreen({ score, onContinue }) {
   const pct     = Math.round(score * 100);
@@ -68,13 +68,13 @@ function ResultScreen({ score, onContinue }) {
             : "Não desanime! Com prática constante você vai melhorar muito."}
         </p>
 
-        {/* Score ring */}
+        {}
         <div style={{ ...st.scoreRing, background: bg, border: `3px solid ${border}` }}>
           <span style={{ fontSize: 36, fontWeight: 800, color }}>{pct}%</span>
           <span style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>de acertos</span>
         </div>
 
-        {/* Stats */}
+        {}
         <div style={st.statsRow}>
           <div style={st.statItem}>
             <span style={st.statVal}>{Math.round(score * SECOND_DIAGNOSTIC.length)}</span>
@@ -92,7 +92,7 @@ function ResultScreen({ score, onContinue }) {
           </div>
         </div>
 
-        {/* RF20 — always go to /modulo-1 */}
+        {}
         <button onClick={onContinue} style={st.btnContinue}>
           Ir para o Módulo 1 →
         </button>
@@ -104,7 +104,7 @@ function ResultScreen({ score, onContinue }) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+
 
 export default function SecondDiagnosticScreen() {
   const { dispatch }               = useApp();
@@ -113,7 +113,7 @@ export default function SecondDiagnosticScreen() {
   const [selected, setSelected]    = useState(null);
   const [answered, setAnswered]    = useState(false);
   const [correctCount, setCorrect] = useState(0);
-  const [showExit, setShowExit]    = useState(false); // RF18/RF19
+  const [showExit, setShowExit]    = useState(false); 
   const [finished, setFinished]    = useState(false);
   const [finalScore, setFinalScore]= useState(0);
 
@@ -141,7 +141,7 @@ export default function SecondDiagnosticScreen() {
     }
   };
 
-  // RF20 — always navigate to /modulo-1 after second diagnostic
+  
   const handleContinue = () => navigate("/modulo-1");
 
   if (finished) {
@@ -158,7 +158,7 @@ export default function SecondDiagnosticScreen() {
       )}
 
       <div style={st.card}>
-        {/* Top bar */}
+        {}
         <div style={st.topRow}>
           <div style={st.topLeft}>
             <span style={st.badge}>🔬 2º Diagnóstico</span>
@@ -169,23 +169,23 @@ export default function SecondDiagnosticScreen() {
           </button>
         </div>
 
-        {/* Progress bar */}
+        {}
         <div style={st.progressTrack}>
           <div style={{ ...st.progressFill, width: `${progress}%` }} />
         </div>
 
-        {/* Heading */}
+        {}
         <div style={st.headingRow}>
           <h2 style={st.heading}>Segundo Diagnóstico</h2>
           <p style={st.subheading}>Após a revisão, vamos ver sua evolução!</p>
         </div>
 
-        {/* Question */}
+        {}
         <div style={st.questionBox}>
           <p style={st.statement}>{q.statement}</p>
         </div>
 
-        {/* Options */}
+        {}
         <div style={st.optionsGrid}>
           {q.options.map((opt, i) => {
             const isSel     = selected === opt;
@@ -211,7 +211,7 @@ export default function SecondDiagnosticScreen() {
           })}
         </div>
 
-        {/* Feedback */}
+        {}
         {answered && (
           <div style={{
             ...st.feedbackBox,
@@ -242,7 +242,7 @@ export default function SecondDiagnosticScreen() {
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+
 
 const st = {
   wrapper:       { display:"flex", alignItems:"center", justifyContent:"center", minHeight:"100vh", padding:16, background:"#f8fafc" },
@@ -265,7 +265,7 @@ const st = {
   btnPrimary:    { width:"100%", padding:"13px 24px", borderRadius:12, border:"none", background:"#059669", color:"#fff", fontWeight:700, fontSize:15, cursor:"pointer", fontFamily:"inherit", marginBottom:10, transition:"opacity 0.15s" },
   note:          { fontSize:12, color:"#94a3b8", textAlign:"center", margin:0 },
 
-  // Result screen
+  
   scoreRing:     { width:110, height:110, borderRadius:"50%", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", margin:"0 auto 24px" },
   statsRow:      { display:"flex", alignItems:"center", justifyContent:"center", gap:20, marginBottom:28, padding:"16px 24px", background:"#f8fafc", borderRadius:14 },
   statItem:      { display:"flex", flexDirection:"column", alignItems:"center", gap:4 },
@@ -274,3 +274,8 @@ const st = {
   statDivider:   { width:1, height:36, background:"#E2E8F0" },
   btnContinue:   { display:"block", width:"100%", padding:"14px 24px", borderRadius:12, border:"none", background:"#2563EB", color:"#fff", fontWeight:800, fontSize:16, cursor:"pointer", fontFamily:"inherit", boxShadow:"0 8px 24px rgba(37,99,235,0.25)" },
 };
+
+
+
+
+

@@ -1,29 +1,22 @@
-/**
- * ExitModal — RF18 / RF19
- * Renders a confirmation modal when the user tries to exit a quiz.
- *
- * Props:
- *   onConfirm  — called when "Sim, sair" is clicked
- *   onCancel   — called when "Cancelar" is clicked
- */
+
 export default function ExitModal({ onConfirm, onCancel }) {
   return (
-    /* Backdrop — faux-viewport so fixed-like behavior works inside iframe */
+    
     <div style={s.backdrop} onClick={onCancel}>
       <div style={s.modal} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="exit-title">
 
-        {/* Icon */}
+        {}
         <div style={s.iconWrap}>
           <span style={s.icon}>⚠️</span>
         </div>
 
-        {/* Copy */}
+        {}
         <h2 id="exit-title" style={s.title}>Tem certeza que deseja sair?</h2>
         <p style={s.body}>
           Se você sair agora, <strong>todo o seu progresso neste exercício será perdido</strong>. Esta ação não pode ser desfeita.
         </p>
 
-        {/* Actions */}
+        {}
         <div style={s.actions}>
           <button onClick={onCancel} style={s.btnCancel}>
             Cancelar
@@ -112,3 +105,8 @@ const s = {
     transition: "background 0.15s",
   },
 };
+
+
+
+
+

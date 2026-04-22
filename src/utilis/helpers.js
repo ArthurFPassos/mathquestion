@@ -1,8 +1,5 @@
 import { UNITS } from "../data/units";
 
-/**
- * Returns the fraction (0–1) of a unit's modules completed with score >= 80%.
- */
 export function getUnitProgress(unitId, moduleResults) {
   const unit = UNITS.find((u) => u.id === unitId);
   if (!unit) return 0;
@@ -13,27 +10,17 @@ export function getUnitProgress(unitId, moduleResults) {
   return passed / unit.modules.length;
 }
 
-/**
- * A unit is unlocked when the previous unit has >= 80% progress.
- * Unit 1 is always unlocked.
- */
 export function isUnitUnlocked(unitId, moduleResults) {
   if (unitId === 1) return true;
   return getUnitProgress(unitId - 1, moduleResults) >= 0.8;
 }
 
-/**
- * Returns the average score (0–1) across all completed modules.
- */
 export function getOverallAvg(moduleResults) {
   const vals = Object.values(moduleResults).filter((r) => r.completed);
   if (!vals.length) return 0;
   return vals.reduce((sum, r) => sum + r.score, 0) / vals.length;
 }
 
-/**
- * Returns the average quiz time in milliseconds across completed modules.
- */
 export function getAvgTimeMs(moduleResults) {
   const times = Object.values(moduleResults)
     .filter((r) => r.timeMs)
@@ -42,9 +29,6 @@ export function getAvgTimeMs(moduleResults) {
   return times.reduce((a, b) => a + b, 0) / times.length;
 }
 
-/**
- * Formats milliseconds to a readable string, e.g. "2m 34s".
- */
 export function formatTime(ms) {
   if (!ms) return "—";
   const totalSeconds = Math.round(ms / 1000);
@@ -53,9 +37,6 @@ export function formatTime(ms) {
   return m > 0 ? `${m}m ${s}s` : `${s}s`;
 }
 
-/**
- * Triggers a JSON download of the student's performance report.
- */
 export function downloadReport(state) {
   const report = {
     student: state.studentName,
@@ -75,3 +56,8 @@ export function downloadReport(state) {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+
+
+
+

@@ -1,36 +1,24 @@
 import { createContext, useContext, useReducer } from "react";
 
-// ─── Initial State ────────────────────────────────────────────────────────────
-
 const initialState = {
-  // ── Auth ──────────────────────────────────────────────────────────────────
-  user: null,            // { name, email, grade } | null
+  user: null,
   isAuthenticated: false,
-
-  // ── Diagnostic flow ───────────────────────────────────────────────────────
   firstDiagnosticDone:  false,
-  firstDiagnosticScore: 0,      // 0–1
-  wentToReview:         false,  // true if score < 60% on first diagnostic
+  firstDiagnosticScore: 0,
+  wentToReview:         false,
   secondDiagnosticDone: false,
   secondDiagnosticScore:0,
-
-  // ── Quiz flow ─────────────────────────────────────────────────────────────
-  screen:              "dashboard", // dashboard | demo | quiz
+  screen:              "dashboard",
   currentModule:       null,
-  moduleResults:       {},   // { [moduleId]: { score, xp, timeMs, completed, correct, total } }
+  moduleResults:       {},
   totalXP:             0,
   hintsUsedInBattery:  0,
   scratchpadOpen:      false,
-  demoWatched:         {},   // { [moduleId]: true }
+  demoWatched:         {},
 };
-
-// ─── Reducer ──────────────────────────────────────────────────────────────────
 
 function reducer(state, action) {
   switch (action.type) {
-
-    // ── Auth ──────────────────────────────────────────────────────────────────
-
     case "LOGIN":
       return { ...state, user: action.payload, isAuthenticated: true };
 
@@ -40,13 +28,6 @@ function reducer(state, action) {
     case "LOGOUT":
       return { ...initialState };
 
-    // ── Diagnostic (RF16 / RF20) ──────────────────────────────────────────────
-
-    /**
-     * FIRST_DIAGNOSTIC_DONE
-     * Saves score. The routing decision (< 60% → /revisao, else → /modulo-1)
-     * is made inside DiagnosticScreen.jsx using react-router navigate().
-     */
     case "FIRST_DIAGNOSTIC_DONE":
       return {
         ...state,
@@ -55,19 +36,12 @@ function reducer(state, action) {
         wentToReview:         action.payload < 0.6,
       };
 
-    /**
-     * SECOND_DIAGNOSTIC_DONE
-     * RF20: after second diagnostic, user always goes to /modulo-1.
-     * Routing is handled in SecondDiagnosticScreen.jsx.
-     */
     case "SECOND_DIAGNOSTIC_DONE":
       return {
         ...state,
         secondDiagnosticDone:  true,
         secondDiagnosticScore: action.payload,
       };
-
-    // ── Quiz flow ─────────────────────────────────────────────────────────────
 
     case "SET_SCREEN":
       return { ...state, screen: action.payload };
@@ -107,8 +81,6 @@ function reducer(state, action) {
   }
 }
 
-// ─── Context & Provider ───────────────────────────────────────────────────────
-
 export const AppContext = createContext(null);
 
 export function AppProvider({ children }) {
@@ -125,3 +97,8 @@ export function useApp() {
   if (!ctx) throw new Error("useApp must be used inside <AppProvider>");
   return ctx;
 }
+
+
+
+
+

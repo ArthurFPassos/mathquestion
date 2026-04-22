@@ -9,7 +9,7 @@ export default function Scratchpad() {
   const [color, setColor] = useState("#1e293b");
   const [size, setSize] = useState(3);
 
-  // ─── Canvas helpers ────────────────────────────────────────────────────────
+  
 
   const getPos = (e, canvas) => {
     const rect = canvas.getBoundingClientRect();
@@ -48,12 +48,12 @@ export default function Scratchpad() {
     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
   };
 
-  // ─── Render ────────────────────────────────────────────────────────────────
+  
 
   return (
     <div style={styles.overlay}>
       <div style={styles.panel}>
-        {/* Header */}
+        {}
         <div style={styles.header}>
           <span style={styles.title}>✏️ Rascunho</span>
           <div style={styles.controls}>
@@ -91,7 +91,7 @@ export default function Scratchpad() {
           </div>
         </div>
 
-        {/* Canvas */}
+        {}
         <canvas
           ref={canvasRef}
           width={560}
@@ -111,7 +111,7 @@ export default function Scratchpad() {
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+
 
 const styles = {
   overlay: {
@@ -201,3 +201,8 @@ const styles = {
     marginTop: 6,
   },
 };
+
+
+
+
+

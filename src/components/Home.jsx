@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-// ─── Feature card data ────────────────────────────────────────────────────────
+
 
 const features = [
   {
@@ -32,13 +32,13 @@ const stats = [
   { value: "6º", label: "Ano EF" },
 ];
 
-// ─── Component ────────────────────────────────────────────────────────────────
+
 
 export default function Home() {
   return (
     <div style={s.page}>
 
-      {/* ── Navbar ── */}
+      {}
       <header style={s.navbar}>
         <div style={s.navInner}>
           <Link to="/" style={s.brand}>
@@ -66,7 +66,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ── Hero ── */}
+      {}
       <section style={s.hero}>
         <div style={s.heroInner}>
           <div style={s.heroContent}>
@@ -94,7 +94,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Hero visual */}
+          {}
           <div style={s.heroVisual}>
             <div style={s.heroCard}>
               <div style={s.heroCardTop}>
@@ -125,7 +125,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Floating badges */}
+            {}
             <div style={{ ...s.floatBadge, top: 0, right: -16 }}>
               📊 <strong>92%</strong> de aproveitamento
             </div>
@@ -135,7 +135,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Stats row */}
+        {}
         <div style={s.statsRow}>
           {stats.map((st, i) => (
             <div key={i} style={s.statItem}>
@@ -146,7 +146,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Features ── */}
+      {}
       <section id="recursos" style={s.features}>
         <div style={s.sectionInner}>
           <h2 style={s.sectionTitle}>Tudo que o aluno precisa para evoluir</h2>
@@ -166,7 +166,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── CTA band ── */}
+      {}
       <section style={s.ctaBand}>
         <div style={s.ctaInner}>
           <h2 style={s.ctaTitle}>Pronto para começar?</h2>
@@ -184,7 +184,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Footer ── */}
+      {}
       <footer style={s.footer}>
         <div style={s.footerInner}>
           <span style={s.footerBrand}>🧮 MathQuestion</span>
@@ -197,12 +197,12 @@ export default function Home() {
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+
 
 const s = {
   page: { minHeight: "100vh", background: "#fff" },
 
-  // Navbar
+  
   navbar: {
     position: "sticky",
     top: 0,
@@ -231,7 +231,7 @@ const s = {
   navLink: { fontSize: 14, fontWeight: 500, color: "#475569", transition: "color 0.15s" },
   navActions: { display: "flex", gap: 10 },
 
-  // Hero
+  
   hero: {
     background: "linear-gradient(180deg, #EFF6FF 0%, #fff 100%)",
     padding: "72px 24px 56px",
@@ -274,7 +274,7 @@ const s = {
   },
   heroCta: { display: "flex", gap: 14, flexWrap: "wrap" },
 
-  // Hero card (mockup)
+  
   heroVisual: { position: "relative", paddingRight: 24 },
   heroCard: {
     background: "#fff",
@@ -323,7 +323,7 @@ const s = {
     whiteSpace: "nowrap",
   },
 
-  // Stats
+  
   statsRow: {
     maxWidth: 1100,
     margin: "0 auto",
@@ -339,7 +339,7 @@ const s = {
   statValue: { fontSize: 28, fontWeight: 800, color: "#2563EB" },
   statLabel: { fontSize: 13, color: "#64748b", fontWeight: 500 },
 
-  // Features
+  
   features: { padding: "80px 24px", background: "#fff" },
   sectionInner: { maxWidth: 1100, margin: "0 auto" },
   sectionTitle: {
@@ -369,7 +369,7 @@ const s = {
   featureTitle: { fontSize: 15, fontWeight: 700, color: "#0F172A", marginBottom: 8 },
   featureDesc: { fontSize: 14, color: "#475569", lineHeight: 1.65 },
 
-  // CTA band
+  
   ctaBand: {
     background: "linear-gradient(135deg, #1E40AF 0%, #2563EB 100%)",
     padding: "72px 24px",
@@ -379,7 +379,7 @@ const s = {
   ctaTitle: { fontSize: 32, fontWeight: 800, color: "#fff", marginBottom: 12 },
   ctaSub: { fontSize: 16, color: "#BFDBFE", marginBottom: 32, lineHeight: 1.6 },
 
-  // Footer
+  
   footer: {
     background: "#0F172A",
     padding: "24px",
@@ -392,3 +392,8 @@ const s = {
   footerBrand: { fontSize: 15, fontWeight: 700, color: "#fff" },
   footerNote: { fontSize: 13, color: "#64748b" },
 };
+
+
+
+
+

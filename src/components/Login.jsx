@@ -22,7 +22,7 @@ export default function Login() {
       return;
     }
 
-    // Simulated auth — in production, replace with real API call
+    
     setLoading(true);
     setTimeout(() => {
       const storedRaw = localStorage.getItem("mq_user");
@@ -42,10 +42,10 @@ export default function Login() {
   return (
     <div className="auth-layout">
 
-      {/* ── Left: form ── */}
+      {}
       <div className="auth-panel">
         <div className="form-box">
-          {/* Logo */}
+          {}
           <div className="form-logo">
             <div className="form-logo-icon">🧮</div>
             <span className="form-logo-text">MathQuestion</span>
@@ -85,7 +85,7 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Error message */}
+            {}
             {error && (
               <div style={s.errorBox}>
                 ⚠️ {error}
@@ -119,7 +119,7 @@ export default function Login() {
         </div>
       </div>
 
-      {/* ── Right: visual ── */}
+      {}
       <div className="auth-visual">
         <div style={s.visualContent}>
           <div style={s.visualIcon}>🧮</div>
@@ -147,7 +147,7 @@ export default function Login() {
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+
 
 const s = {
   errorBox: {
@@ -179,7 +179,7 @@ const s = {
     fontSize: 13,
   },
 
-  // Visual panel
+  
   visualContent: {
     position: "relative",
     zIndex: 1,
@@ -223,3 +223,8 @@ const s = {
     color: "#fff",
   },
 };
+
+
+
+
+
