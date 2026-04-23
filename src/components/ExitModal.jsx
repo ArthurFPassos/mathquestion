@@ -1,27 +1,31 @@
+import "./ExitModal.css";
 
 export default function ExitModal({ onConfirm, onCancel }) {
   return (
-    
-    <div style={s.backdrop} onClick={onCancel}>
-      <div style={s.modal} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="exit-title">
+    <div className="em-backdrop" onClick={onCancel}>
+      <div
+        className="em-modal"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="exit-title"
+      >
+        <div className="em-icon-wrap">⚠️</div>
 
-        {}
-        <div style={s.iconWrap}>
-          <span style={s.icon}>⚠️</span>
-        </div>
-
-        {}
-        <h2 id="exit-title" style={s.title}>Tem certeza que deseja sair?</h2>
-        <p style={s.body}>
-          Se você sair agora, <strong>todo o seu progresso neste exercício será perdido</strong>. Esta ação não pode ser desfeita.
+        <h2 id="exit-title" className="em-title">
+          Tem certeza que deseja sair?
+        </h2>
+        <p className="em-body">
+          Se você sair agora,{" "}
+          <strong>todo o seu progresso neste exercício será perdido</strong>.
+          Esta ação não pode ser desfeita.
         </p>
 
-        {}
-        <div style={s.actions}>
-          <button onClick={onCancel} style={s.btnCancel}>
+        <div className="em-actions">
+          <button className="em-btn-cancel" onClick={onCancel}>
             Cancelar
           </button>
-          <button onClick={onConfirm} style={s.btnConfirm}>
+          <button className="em-btn-confirm" onClick={onConfirm}>
             Sim, sair
           </button>
         </div>
@@ -29,84 +33,3 @@ export default function ExitModal({ onConfirm, onCancel }) {
     </div>
   );
 }
-
-const s = {
-  backdrop: {
-    position: "fixed",
-    inset: 0,
-    background: "rgba(15, 23, 42, 0.55)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 2000,
-    padding: 16,
-  },
-  modal: {
-    background: "#fff",
-    borderRadius: 20,
-    padding: "36px 32px",
-    maxWidth: 420,
-    width: "100%",
-    textAlign: "center",
-    boxShadow: "0 24px 64px rgba(0,0,0,0.18)",
-    animation: "modalIn 0.18s ease",
-  },
-  iconWrap: {
-    width: 64,
-    height: 64,
-    borderRadius: "50%",
-    background: "#FEF3C7",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    margin: "0 auto 20px",
-  },
-  icon: { fontSize: 30 },
-  title: {
-    fontSize: 20,
-    fontWeight: 800,
-    color: "#0F172A",
-    margin: "0 0 10px",
-  },
-  body: {
-    fontSize: 15,
-    color: "#475569",
-    lineHeight: 1.65,
-    margin: "0 0 28px",
-  },
-  actions: {
-    display: "flex",
-    gap: 12,
-  },
-  btnCancel: {
-    flex: 1,
-    padding: "13px 20px",
-    borderRadius: 12,
-    border: "1.5px solid #E2E8F0",
-    background: "#F8FAFC",
-    color: "#475569",
-    fontWeight: 700,
-    fontSize: 15,
-    cursor: "pointer",
-    fontFamily: "inherit",
-    transition: "background 0.15s",
-  },
-  btnConfirm: {
-    flex: 1,
-    padding: "13px 20px",
-    borderRadius: 12,
-    border: "none",
-    background: "#EF4444",
-    color: "#fff",
-    fontWeight: 700,
-    fontSize: 15,
-    cursor: "pointer",
-    fontFamily: "inherit",
-    transition: "background 0.15s",
-  },
-};
-
-
-
-
-

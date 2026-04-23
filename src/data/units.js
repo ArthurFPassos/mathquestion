@@ -331,8 +331,3 @@ export const DIAGNOSTIC = [
     answer: "8",
   },
 ];
-
-
-
-
-

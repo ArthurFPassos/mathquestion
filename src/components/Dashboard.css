@@ -1,0 +1,264 @@
+/* ─── Dashboard ─────────────────────────────────────────────────────────────── */
+
+.db-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 28px 16px 48px;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+
+.db-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.db-header h1 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 4px;
+}
+
+.db-header-subtitle {
+  color: #64748b;
+  font-size: 14px;
+  margin: 0;
+}
+
+.db-header-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Shared small button ────────────────────────────────────────────────────── */
+
+.db-btn-sm {
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+.db-btn-sm:hover { background: #f1f5f9; }
+.db-btn-sm--review { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
+.db-btn-sm--report { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+.db-btn-sm--logout { background: #fef2f2; color: #ef4444; border-color: #fecaca; }
+
+/* ── Stats grid ─────────────────────────────────────────────────────────────── */
+
+.db-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.db-stat-card {
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 14px 12px;
+  text-align: center;
+  border: 1px solid #f1f5f9;
+}
+
+.db-stat-icon  { font-size: 20px; margin-bottom: 4px; }
+.db-stat-value { font-size: 20px; font-weight: 700; color: #1e293b; }
+.db-stat-label { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+
+/* ── Review banner ──────────────────────────────────────────────────────────── */
+
+.db-review-banner {
+  background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+  border: 1.5px solid #bfdbfe;
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.db-review-banner-left  { display: flex; align-items: flex-start; gap: 14px; flex: 1; }
+.db-review-banner-icon  { font-size: 26px; flex-shrink: 0; margin-top: 2px; }
+.db-review-banner-title { font-size: 14px; font-weight: 700; color: #1e40af; margin: 0 0 3px; }
+.db-review-banner-sub   { font-size: 13px; color: #3b82f6; margin: 0; line-height: 1.5; }
+
+.db-review-banner-btn {
+  padding: 9px 18px;
+  border-radius: 10px;
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.db-review-banner-btn:hover { background: #1d4ed8; }
+
+/* ── Notification banners ───────────────────────────────────────────────────── */
+
+.db-banner {
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.db-banner--info    { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+.db-banner--pass    { background: #f0fdf4; border: 1px solid #86efac; color: #15803d; }
+.db-banner--fail    { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+.db-banner--success { background: #f0fdf4; border: 1px solid #86efac; color: #15803d; font-weight: 600; margin-bottom: 16px; }
+.db-banner--warning { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; margin-bottom: 16px; }
+
+.db-diag-review-link {
+  margin-left: 8px;
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: underline;
+}
+
+/* ── Unit cards ─────────────────────────────────────────────────────────────── */
+
+.db-unit-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #f1f5f9;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.db-unit-card--locked { opacity: 0.55; }
+
+.db-unit-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 12px; }
+
+.db-unit-icon-box {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 22px;
+}
+
+.db-unit-meta { flex: 1; }
+
+.db-unit-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.db-unit-title { font-weight: 700; font-size: 15px; color: #1e293b; margin: 0; }
+.db-unit-pct   { font-size: 13px; font-weight: 700; }
+.db-unit-desc  { font-size: 12px; color: #64748b; margin: 3px 0 8px; }
+
+.db-progress-track {
+  background: #f1f5f9;
+  border-radius: 99px;
+  height: 5px;
+  overflow: hidden;
+}
+
+.db-progress-fill {
+  height: 5px;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* ── Review shortcut (Unit 1) ───────────────────────────────────────────────── */
+
+.db-review-shortcut {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px dashed;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  transition: background 0.15s;
+  box-sizing: border-box;
+}
+.db-review-shortcut:hover { background: #f8fafc; }
+.db-review-shortcut-arrow { margin-left: auto; font-size: 13px; }
+
+/* ── Module rows ────────────────────────────────────────────────────────────── */
+
+.db-module-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 60px;
+}
+
+.db-module-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 10px 14px;
+  gap: 10px;
+}
+
+.db-module-info  { display: flex; align-items: center; gap: 8px; flex: 1; }
+.db-module-name  { font-size: 14px; font-weight: 600; color: #334155; }
+.db-module-score { font-size: 12px; font-weight: 700; }
+
+.db-btn-module {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.db-locked-msg {
+  font-size: 12px;
+  color: #94a3b8;
+  padding-left: 60px;
+  margin: 8px 0 0;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .db-stats-grid   { grid-template-columns: repeat(2, 1fr); }
+  .db-module-list  { padding-left: 0; }
+}

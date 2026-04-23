@@ -1,0 +1,73 @@
+/* ─── Register ───────────────────────────────────────────────────────────────── */
+
+.reg-field-error {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.reg-switch-text {
+  text-align: center;
+  font-size: 14px;
+  color: #475569;
+  margin-bottom: 12px;
+}
+
+.reg-switch-link { color: #2563eb; font-weight: 600; }
+
+.reg-terms {
+  text-align: center;
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.reg-terms-link { color: #2563eb; cursor: pointer; }
+
+/* Visual panel */
+.reg-visual-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 340px;
+}
+
+.reg-visual-icon  { font-size: 56px; margin-bottom: 20px; }
+.reg-visual-title { font-size: 28px; font-weight: 800; color: #fff; margin: 0 0 12px; }
+.reg-visual-desc  { font-size: 15px; color: rgba(255, 255, 255, 0.75); line-height: 1.65; margin: 0 0 36px; }
+
+.reg-steps-wrap { display: flex; flex-direction: column; gap: 12px; }
+
+.reg-step {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  backdrop-filter: blur(4px);
+}
+
+.reg-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.reg-step-label { font-size: 14px; font-weight: 600; color: #fff; text-align: left; }
+
+/* Error border state — applied inline via style prop */
+.reg-field-input-error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}

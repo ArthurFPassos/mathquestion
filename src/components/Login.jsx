@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
+import "./Login.css";
 
 export default function Login() {
   const { dispatch } = useApp();
-  const navigate = useNavigate();
-
-  const [form, setForm] = useState({ email: "", password: "" });
+  const navigate     = useNavigate();
+  const [form, setForm]   = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -16,24 +16,18 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
-
     if (!form.email || !form.password) {
       setError("Preencha e-mail e senha para continuar.");
       return;
     }
-
-    
     setLoading(true);
     setTimeout(() => {
-      const storedRaw = localStorage.getItem("mq_user");
-      const stored = storedRaw ? JSON.parse(storedRaw) : null;
-
+      const stored = JSON.parse(localStorage.getItem("mq_user") || "null");
       if (!stored || stored.email !== form.email || stored.password !== form.password) {
-        setError("E-mail ou senha incorretos. Verifique seus dados.");
+        setError("E-mail ou senha incorretos.");
         setLoading(false);
         return;
       }
-
       dispatch({ type: "LOGIN", payload: { name: stored.name, email: stored.email, grade: stored.grade } });
       navigate("/app");
     }, 700);
@@ -42,10 +36,9 @@ export default function Login() {
   return (
     <div className="auth-layout">
 
-      {}
+      {/* Form panel */}
       <div className="auth-panel">
         <div className="form-box">
-          {}
           <div className="form-logo">
             <div className="form-logo-icon">🧮</div>
             <span className="form-logo-text">MathQuestion</span>
@@ -61,36 +54,24 @@ export default function Login() {
               <div className="field">
                 <label htmlFor="email">E-mail</label>
                 <input
-                  id="email"
-                  type="email"
-                  name="email"
+                  id="email" type="email" name="email"
                   placeholder="seu@email.com"
-                  value={form.email}
-                  onChange={handleChange}
+                  value={form.email} onChange={handleChange}
                   autoComplete="email"
                 />
               </div>
-
               <div className="field">
                 <label htmlFor="password">Senha</label>
                 <input
-                  id="password"
-                  type="password"
-                  name="password"
+                  id="password" type="password" name="password"
                   placeholder="••••••••"
-                  value={form.password}
-                  onChange={handleChange}
+                  value={form.password} onChange={handleChange}
                   autoComplete="current-password"
                 />
               </div>
             </div>
 
-            {}
-            {error && (
-              <div style={s.errorBox}>
-                ⚠️ {error}
-              </div>
-            )}
+            {error && <div className="login-error-box">⚠️ {error}</div>}
 
             <button
               type="submit"
@@ -102,41 +83,38 @@ export default function Login() {
             </button>
           </form>
 
-          <p style={s.switchText}>
+          <p className="login-switch-text">
             Não tem uma conta?{" "}
-            <Link to="/cadastro" style={s.switchLink}>
+            <Link to="/cadastro" className="login-switch-link">
               Cadastre-se grátis
             </Link>
           </p>
 
-          <div style={s.divider}><span>ou</span></div>
-
           <Link to="/">
-            <button className="btn-ghost" style={{ width: "100%", justifyContent: "center" }}>
+            <button className="btn-ghost" style={{ width: "100%" }}>
               ← Voltar para a página inicial
             </button>
           </Link>
         </div>
       </div>
 
-      {}
+      {/* Visual panel */}
       <div className="auth-visual">
-        <div style={s.visualContent}>
-          <div style={s.visualIcon}>🧮</div>
-          <h2 style={s.visualTitle}>Continue evoluindo!</h2>
-          <p style={s.visualDesc}>
+        <div className="login-visual-content">
+          <div className="login-visual-icon">🧮</div>
+          <h2 className="login-visual-title">Continue evoluindo!</h2>
+          <p className="login-visual-desc">
             Acesse seu painel, veja seu progresso e continue de onde parou.
           </p>
-
-          <div style={s.statsWrap}>
+          <div className="login-stats-wrap">
             {[
               { icon: "⭐", label: "XP acumulado" },
               { icon: "📊", label: "Progresso por unidade" },
               { icon: "🏆", label: "Metas desbloqueadas" },
-            ].map((item, i) => (
-              <div key={i} style={s.statItem}>
-                <span style={s.statItemIcon}>{item.icon}</span>
-                <span style={s.statItemLabel}>{item.label}</span>
+            ].map((item) => (
+              <div key={item.label} className="login-stat-item">
+                <span className="login-stat-icon">{item.icon}</span>
+                <span className="login-stat-label">{item.label}</span>
               </div>
             ))}
           </div>
@@ -146,85 +124,3 @@ export default function Login() {
     </div>
   );
 }
-
-
-
-const s = {
-  errorBox: {
-    background: "#FEF2F2",
-    border: "1px solid #FECACA",
-    color: "#DC2626",
-    borderRadius: 10,
-    padding: "10px 14px",
-    fontSize: 13,
-    fontWeight: 500,
-    marginBottom: 16,
-  },
-  switchText: {
-    textAlign: "center",
-    fontSize: 14,
-    color: "#475569",
-    marginBottom: 20,
-  },
-  switchLink: {
-    color: "#2563EB",
-    fontWeight: 600,
-    textDecoration: "none",
-  },
-  divider: {
-    textAlign: "center",
-    position: "relative",
-    margin: "0 0 16px",
-    color: "#94A3B8",
-    fontSize: 13,
-  },
-
-  
-  visualContent: {
-    position: "relative",
-    zIndex: 1,
-    textAlign: "center",
-    maxWidth: 320,
-  },
-  visualIcon: {
-    fontSize: 56,
-    marginBottom: 20,
-  },
-  visualTitle: {
-    fontSize: 28,
-    fontWeight: 800,
-    color: "#fff",
-    marginBottom: 12,
-  },
-  visualDesc: {
-    fontSize: 15,
-    color: "rgba(255,255,255,0.75)",
-    lineHeight: 1.65,
-    marginBottom: 36,
-  },
-  statsWrap: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 14,
-  },
-  statItem: {
-    background: "rgba(255,255,255,0.12)",
-    borderRadius: 12,
-    padding: "12px 20px",
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-    backdropFilter: "blur(4px)",
-  },
-  statItemIcon: { fontSize: 20 },
-  statItemLabel: {
-    fontSize: 14,
-    fontWeight: 600,
-    color: "#fff",
-  },
-};
-
-
-
-
-

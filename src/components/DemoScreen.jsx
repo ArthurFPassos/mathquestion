@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useApp } from "../context/AppContext";
 import { UNITS } from "../data/units";
+import "./DemoScreen.css";
 
-
-
-function getDemoSlides(module, unit) {
+function getDemoSlides(module) {
   return [
     {
       icon: "📘",
@@ -29,11 +28,9 @@ function getDemoSlides(module, unit) {
   ];
 }
 
-
-
 export default function DemoScreen() {
   const { state, dispatch } = useApp();
-  const [step, setStep] = useState(0);
+  const [step, setStep]     = useState(0);
 
   const module = UNITS.flatMap((u) => u.modules).find(
     (m) => m.id === state.currentModule
@@ -42,64 +39,52 @@ export default function DemoScreen() {
     u.modules.some((m) => m.id === state.currentModule)
   );
 
-  const slides = getDemoSlides(module, unit);
+  const slides = getDemoSlides(module);
   const isLast = step === slides.length - 1;
 
-  const handleStart = () => {
-    dispatch({ type: "DEMO_WATCHED", payload: state.currentModule });
-  };
-
-  const handleBack = () => {
-    dispatch({ type: "SET_SCREEN", payload: "dashboard" });
-  };
-
   return (
-    <div style={styles.wrapper}>
-      <div style={styles.card}>
-        {}
-        <div style={styles.iconWrap}>
-          <span style={styles.icon}>{slides[step].icon}</span>
+    <div className="demo-wrapper">
+      <div className="demo-card">
+        <div className="demo-icon-wrap">
+          <span>{slides[step].icon}</span>
         </div>
 
-        {}
         <div
-          style={{
-            ...styles.badge,
-            background: unit?.light,
-            color: unit?.color,
-          }}
+          className="demo-badge"
+          style={{ background: unit?.light, color: unit?.color }}
         >
           {unit?.emoji} {unit?.title}
         </div>
 
-        {}
-        <h2 style={{ ...styles.title, color: unit?.color }}>
+        <h2
+          className="demo-title"
+          style={{ color: unit?.color }}
+        >
           {slides[step].title}
         </h2>
-        <p style={styles.body}>{slides[step].body}</p>
+        <p className="demo-body">{slides[step].body}</p>
 
-        {}
-        <div style={styles.dots}>
+        {/* Dot indicators */}
+        <div className="demo-dots">
           {slides.map((_, i) => (
             <button
               key={i}
+              className="demo-dot"
               onClick={() => setStep(i)}
+              aria-label={`Slide ${i + 1}`}
               style={{
-                ...styles.dot,
-                width: i === step ? 24 : 8,
+                width:      i === step ? 24 : 8,
                 background: i === step ? unit?.color : "#e2e8f0",
               }}
-              aria-label={`Slide ${i + 1}`}
             />
           ))}
         </div>
 
-        {}
-        <div style={styles.btnRow}>
+        <div className="demo-btn-row">
           {step > 0 && (
             <button
+              className="demo-btn-ghost"
               onClick={() => setStep((s) => s - 1)}
-              style={styles.btnGhost}
             >
               ← Anterior
             </button>
@@ -107,137 +92,32 @@ export default function DemoScreen() {
 
           {!isLast ? (
             <button
+              className="demo-btn-primary"
+              style={{ background: unit?.color }}
               onClick={() => setStep((s) => s + 1)}
-              style={{ ...styles.btnPrimary, background: unit?.color }}
             >
               Próximo →
             </button>
           ) : (
             <button
-              onClick={handleStart}
-              style={{ ...styles.btnPrimary, background: unit?.color }}
+              className="demo-btn-primary"
+              style={{ background: unit?.color }}
+              onClick={() =>
+                dispatch({ type: "DEMO_WATCHED", payload: state.currentModule })
+              }
             >
               Entendi! Começar questões 🚀
             </button>
           )}
         </div>
 
-        <button onClick={handleBack} style={styles.btnBack}>
+        <button
+          className="demo-btn-back"
+          onClick={() => dispatch({ type: "SET_SCREEN", payload: "dashboard" })}
+        >
           Voltar ao painel
         </button>
       </div>
     </div>
   );
 }
-
-
-
-const styles = {
-  wrapper: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: "100vh",
-    padding: 16,
-    background: "#f8fafc",
-  },
-  card: {
-    background: "#fff",
-    borderRadius: 20,
-    padding: "36px 32px",
-    maxWidth: 480,
-    width: "100%",
-    textAlign: "center",
-    boxShadow: "0 4px 24px rgba(0,0,0,0.07)",
-    border: "1px solid #f1f5f9",
-  },
-  iconWrap: {
-    width: 72,
-    height: 72,
-    borderRadius: 20,
-    background: "#f8fafc",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    margin: "0 auto 16px",
-  },
-  icon: {
-    fontSize: 36,
-  },
-  badge: {
-    display: "inline-block",
-    padding: "4px 14px",
-    borderRadius: 99,
-    fontSize: 12,
-    fontWeight: 700,
-    marginBottom: 14,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 700,
-    margin: "0 0 12px",
-  },
-  body: {
-    fontSize: 15,
-    color: "#475569",
-    lineHeight: 1.7,
-    margin: "0 0 24px",
-  },
-  dots: {
-    display: "flex",
-    gap: 6,
-    justifyContent: "center",
-    marginBottom: 28,
-  },
-  dot: {
-    height: 8,
-    border: "none",
-    borderRadius: 4,
-    cursor: "pointer",
-    padding: 0,
-    transition: "all 0.25s",
-  },
-  btnRow: {
-    display: "flex",
-    gap: 10,
-    justifyContent: "center",
-    marginBottom: 12,
-  },
-  btnPrimary: {
-    padding: "12px 24px",
-    borderRadius: 12,
-    border: "none",
-    color: "#fff",
-    fontWeight: 700,
-    fontSize: 15,
-    cursor: "pointer",
-    fontFamily: "inherit",
-    flex: 1,
-    maxWidth: 260,
-  },
-  btnGhost: {
-    padding: "12px 20px",
-    borderRadius: 12,
-    border: "1.5px solid #e2e8f0",
-    background: "transparent",
-    color: "#475569",
-    fontWeight: 600,
-    fontSize: 14,
-    cursor: "pointer",
-    fontFamily: "inherit",
-  },
-  btnBack: {
-    background: "none",
-    border: "none",
-    color: "#94a3b8",
-    fontSize: 13,
-    cursor: "pointer",
-    textDecoration: "underline",
-    fontFamily: "inherit",
-  },
-};
-
-
-
-
-

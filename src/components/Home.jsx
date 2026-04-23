@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
+import "./Home.css";
 
-
-
-const features = [
+const FEATURES = [
   {
     icon: "🎯",
     title: "Exercícios contextualizados",
@@ -25,33 +24,33 @@ const features = [
   },
 ];
 
-const stats = [
-  { value: "4", label: "Unidades" },
-  { value: "24+", label: "Questões" },
+const STATS = [
+  { value: "4",    label: "Unidades" },
+  { value: "24+",  label: "Questões" },
   { value: "100%", label: "Gratuito" },
-  { value: "6º", label: "Ano EF" },
+  { value: "6º",   label: "Ano EF" },
 ];
 
-
+const MOCK_OPTIONS = ["6", "9", "8", "12"];
 
 export default function Home() {
   return (
-    <div style={s.page}>
+    <div className="home-page">
 
-      {}
-      <header style={s.navbar}>
-        <div style={s.navInner}>
-          <Link to="/" style={s.brand}>
-            <div style={s.brandIcon}>🧮</div>
-            <span style={s.brandText}>MathQuestion</span>
+      {/* ── Navbar ── */}
+      <header className="home-navbar">
+        <div className="home-nav-inner">
+          <Link to="/" className="home-brand">
+            <div className="home-brand-icon">🧮</div>
+            <span className="home-brand-text">MathQuestion</span>
           </Link>
 
-          <nav style={s.navLinks}>
-            <a href="#recursos" style={s.navLink}>Recursos</a>
-            <a href="#sobre" style={s.navLink}>Sobre</a>
+          <nav className="home-nav-links">
+            <a href="#recursos" className="home-nav-link">Recursos</a>
+            <a href="#sobre"    className="home-nav-link">Sobre</a>
           </nav>
 
-          <div style={s.navActions}>
+          <div className="home-nav-actions">
             <Link to="/login">
               <button className="btn-ghost" style={{ padding: "9px 20px", fontSize: 14 }}>
                 Entrar
@@ -66,21 +65,20 @@ export default function Home() {
         </div>
       </header>
 
-      {}
-      <section style={s.hero}>
-        <div style={s.heroInner}>
-          <div style={s.heroContent}>
-            <div style={s.heroBadge}>✨ Plataforma educacional gratuita</div>
-            <h1 style={s.heroTitle}>
+      {/* ── Hero ── */}
+      <section className="home-hero">
+        <div className="home-hero-inner">
+          <div className="home-hero-content">
+            <div className="home-hero-badge">✨ Plataforma educacional gratuita</div>
+            <h1 className="home-hero-title">
               Para cada aluno, o domínio da{" "}
-              <span style={s.heroHighlight}>matemática.</span>
+              <span className="home-hero-highlight">matemática.</span>
             </h1>
-            <p style={s.heroDesc}>
+            <p className="home-hero-desc">
               Exercícios progressivos, contextualizados e gamificados para alunos
-              do 6º ano do Ensino Fundamental. Aprenda no seu ritmo, ganhe XP e
-              acompanhe sua evolução.
+              do 6º ano. Aprenda no seu ritmo, ganhe XP e acompanhe sua evolução.
             </p>
-            <div style={s.heroCta}>
+            <div className="home-hero-cta">
               <Link to="/cadastro">
                 <button className="btn-primary" style={{ width: "auto", padding: "14px 32px", fontSize: 16 }}>
                   Começar agora →
@@ -94,306 +92,102 @@ export default function Home() {
             </div>
           </div>
 
-          {}
-          <div style={s.heroVisual}>
-            <div style={s.heroCard}>
-              <div style={s.heroCardTop}>
-                <span style={{ fontSize: 22 }}>⚡</span>
-                <span style={s.heroCardTitle}>Unidade 2 — Potenciação</span>
+          {/* Mock card */}
+          <div className="home-hero-visual">
+            <div className="home-hero-card">
+              <div className="home-hero-card-top">
+                <span>⚡</span>
+                <span className="home-hero-card-title">Unidade 2 — Potenciação</span>
               </div>
-              <div style={s.heroQuestion}>
-                <p style={s.heroQText}>Quanto é 3² (3 ao quadrado)?</p>
+              <div className="home-hero-question">
+                <p className="home-hero-q-text">Quanto é 3² (3 ao quadrado)?</p>
               </div>
-              <div style={s.heroOptions}>
-                {["6", "9", "8", "12"].map((opt, i) => (
+              <div className="home-hero-options">
+                {MOCK_OPTIONS.map((opt) => (
                   <div
-                    key={i}
+                    key={opt}
+                    className="home-hero-opt"
                     style={{
-                      ...s.heroOpt,
-                      background: opt === "9" ? "#2563EB" : "#F1F5F9",
-                      color: opt === "9" ? "#fff" : "#475569",
-                      fontWeight: opt === "9" ? 700 : 500,
+                      background: opt === "9" ? "#2563EB" : "#f1f5f9",
+                      color:      opt === "9" ? "#fff"    : "#475569",
+                      fontWeight: opt === "9" ? 700       : 500,
                     }}
                   >
                     {opt}
                   </div>
                 ))}
               </div>
-              <div style={s.heroXP}>
-                <span style={s.heroXPBadge}>+15 XP ⭐</span>
-                <span style={{ fontSize: 12, color: "#22c55e", fontWeight: 600 }}>✅ Correto!</span>
+              <div className="home-hero-xp">
+                <span className="home-hero-xp-badge">+15 XP ⭐</span>
+                <span className="home-hero-xp-correct">✅ Correto!</span>
               </div>
             </div>
 
-            {}
-            <div style={{ ...s.floatBadge, top: 0, right: -16 }}>
+            <div className="home-float-badge" style={{ top: 0, right: -16 }}>
               📊 <strong>92%</strong> de aproveitamento
             </div>
-            <div style={{ ...s.floatBadge, bottom: 40, left: -24 }}>
+            <div className="home-float-badge" style={{ bottom: 40, left: -24 }}>
               🏆 <strong>340 XP</strong> acumulados
             </div>
           </div>
         </div>
 
-        {}
-        <div style={s.statsRow}>
-          {stats.map((st, i) => (
-            <div key={i} style={s.statItem}>
-              <span style={s.statValue}>{st.value}</span>
-              <span style={s.statLabel}>{st.label}</span>
+        {/* Stats */}
+        <div className="home-stats-row">
+          {STATS.map((st) => (
+            <div key={st.label} className="home-stat-item">
+              <span className="home-stat-value">{st.value}</span>
+              <span className="home-stat-label">{st.label}</span>
             </div>
           ))}
         </div>
       </section>
 
-      {}
-      <section id="recursos" style={s.features}>
-        <div style={s.sectionInner}>
-          <h2 style={s.sectionTitle}>Tudo que o aluno precisa para evoluir</h2>
-          <p style={s.sectionSub}>
+      {/* ── Features ── */}
+      <section id="recursos" className="home-features">
+        <div className="home-section-inner">
+          <h2 className="home-section-title">Tudo que o aluno precisa para evoluir</h2>
+          <p className="home-section-sub">
             A MathQuestion combina design instrucional com gamificação leve para
             manter a motivação sem distrações.
           </p>
-          <div style={s.featuresGrid}>
-            {features.map((f, i) => (
-              <div key={i} style={s.featureCard}>
-                <div style={s.featureIcon}>{f.icon}</div>
-                <h3 style={s.featureTitle}>{f.title}</h3>
-                <p style={s.featureDesc}>{f.desc}</p>
+          <div className="home-features-grid">
+            {FEATURES.map((f) => (
+              <div key={f.title} className="home-feature-card">
+                <div className="home-feature-icon">{f.icon}</div>
+                <h3 className="home-feature-title">{f.title}</h3>
+                <p className="home-feature-desc">{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {}
-      <section style={s.ctaBand}>
-        <div style={s.ctaInner}>
-          <h2 style={s.ctaTitle}>Pronto para começar?</h2>
-          <p style={s.ctaSub}>
+      {/* ── CTA band ── */}
+      <section className="home-cta-band">
+        <div className="home-cta-inner">
+          <h2 className="home-cta-title">Pronto para começar?</h2>
+          <p className="home-cta-sub">
             Crie sua conta gratuita e comece a praticar agora mesmo.
           </p>
           <Link to="/cadastro">
-            <button
-              className="btn-primary"
-              style={{ width: "auto", padding: "14px 36px", fontSize: 16, background: "#fff", color: "#2563EB" }}
-            >
+            <button className="home-cta-btn">
               Criar conta gratuita →
             </button>
           </Link>
         </div>
       </section>
 
-      {}
-      <footer style={s.footer}>
-        <div style={s.footerInner}>
-          <span style={s.footerBrand}>🧮 MathQuestion</span>
-          <span style={s.footerNote}>
+      {/* ── Footer ── */}
+      <footer className="home-footer">
+        <div className="home-footer-inner">
+          <span className="home-footer-brand">🧮 MathQuestion</span>
+          <span className="home-footer-note">
             Plataforma educacional para o 6º ano do Ensino Fundamental.
           </span>
         </div>
       </footer>
+
     </div>
   );
 }
-
-
-
-const s = {
-  page: { minHeight: "100vh", background: "#fff" },
-
-  
-  navbar: {
-    position: "sticky",
-    top: 0,
-    background: "rgba(255,255,255,0.92)",
-    backdropFilter: "blur(10px)",
-    borderBottom: "1px solid #E2E8F0",
-    zIndex: 100,
-  },
-  navInner: {
-    maxWidth: 1100,
-    margin: "0 auto",
-    padding: "0 24px",
-    height: 64,
-    display: "flex",
-    alignItems: "center",
-    gap: 32,
-  },
-  brand: { display: "flex", alignItems: "center", gap: 10, textDecoration: "none" },
-  brandIcon: {
-    width: 34, height: 34, background: "#2563EB",
-    borderRadius: 8, display: "flex", alignItems: "center",
-    justifyContent: "center", fontSize: 18,
-  },
-  brandText: { fontSize: 17, fontWeight: 800, color: "#0F172A" },
-  navLinks: { display: "flex", gap: 28, flex: 1 },
-  navLink: { fontSize: 14, fontWeight: 500, color: "#475569", transition: "color 0.15s" },
-  navActions: { display: "flex", gap: 10 },
-
-  
-  hero: {
-    background: "linear-gradient(180deg, #EFF6FF 0%, #fff 100%)",
-    padding: "72px 24px 56px",
-  },
-  heroInner: {
-    maxWidth: 1100,
-    margin: "0 auto",
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: 64,
-    alignItems: "center",
-    marginBottom: 56,
-  },
-  heroContent: {},
-  heroBadge: {
-    display: "inline-block",
-    background: "#DBEAFE",
-    color: "#1D4ED8",
-    fontSize: 12,
-    fontWeight: 700,
-    padding: "6px 14px",
-    borderRadius: 99,
-    marginBottom: 20,
-    letterSpacing: 0.3,
-  },
-  heroTitle: {
-    fontSize: 44,
-    fontWeight: 800,
-    color: "#0F172A",
-    lineHeight: 1.18,
-    marginBottom: 18,
-  },
-  heroHighlight: { color: "#2563EB" },
-  heroDesc: {
-    fontSize: 17,
-    color: "#475569",
-    lineHeight: 1.7,
-    marginBottom: 32,
-    maxWidth: 480,
-  },
-  heroCta: { display: "flex", gap: 14, flexWrap: "wrap" },
-
-  
-  heroVisual: { position: "relative", paddingRight: 24 },
-  heroCard: {
-    background: "#fff",
-    borderRadius: 20,
-    padding: 24,
-    boxShadow: "0 20px 60px rgba(37,99,235,0.14)",
-    border: "1px solid #E2E8F0",
-  },
-  heroCardTop: {
-    display: "flex", alignItems: "center", gap: 10, marginBottom: 16,
-  },
-  heroCardTitle: { fontSize: 13, fontWeight: 700, color: "#64748b" },
-  heroQuestion: {
-    background: "#F8FAFC",
-    borderRadius: 12,
-    padding: "14px 18px",
-    marginBottom: 14,
-    border: "1.5px solid #E2E8F0",
-  },
-  heroQText: { fontSize: 15, color: "#1e293b", lineHeight: 1.6, margin: 0 },
-  heroOptions: {
-    display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14,
-  },
-  heroOpt: {
-    padding: "10px 14px", borderRadius: 10, fontSize: 15,
-    textAlign: "center", transition: "all 0.15s",
-  },
-  heroXP: {
-    display: "flex", justifyContent: "space-between", alignItems: "center",
-  },
-  heroXPBadge: {
-    background: "#FFFBEB", color: "#92400E",
-    fontSize: 12, fontWeight: 700,
-    padding: "4px 10px", borderRadius: 99,
-  },
-  floatBadge: {
-    position: "absolute",
-    background: "#fff",
-    border: "1px solid #E2E8F0",
-    borderRadius: 10,
-    padding: "8px 14px",
-    fontSize: 12,
-    fontWeight: 500,
-    color: "#334155",
-    boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
-    whiteSpace: "nowrap",
-  },
-
-  
-  statsRow: {
-    maxWidth: 1100,
-    margin: "0 auto",
-    display: "flex",
-    justifyContent: "center",
-    gap: 48,
-    flexWrap: "wrap",
-  },
-  statItem: {
-    display: "flex", flexDirection: "column",
-    alignItems: "center", gap: 4,
-  },
-  statValue: { fontSize: 28, fontWeight: 800, color: "#2563EB" },
-  statLabel: { fontSize: 13, color: "#64748b", fontWeight: 500 },
-
-  
-  features: { padding: "80px 24px", background: "#fff" },
-  sectionInner: { maxWidth: 1100, margin: "0 auto" },
-  sectionTitle: {
-    fontSize: 32, fontWeight: 800, color: "#0F172A",
-    textAlign: "center", marginBottom: 12,
-  },
-  sectionSub: {
-    fontSize: 16, color: "#475569", textAlign: "center",
-    maxWidth: 560, margin: "0 auto 48px", lineHeight: 1.65,
-  },
-  featuresGrid: {
-    display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24,
-  },
-  featureCard: {
-    background: "#F8FAFC",
-    border: "1.5px solid #E2E8F0",
-    borderRadius: 16,
-    padding: "24px 22px",
-    transition: "box-shadow 0.2s",
-  },
-  featureIcon: {
-    fontSize: 28, marginBottom: 14,
-    width: 52, height: 52,
-    background: "#EFF6FF", borderRadius: 12,
-    display: "flex", alignItems: "center", justifyContent: "center",
-  },
-  featureTitle: { fontSize: 15, fontWeight: 700, color: "#0F172A", marginBottom: 8 },
-  featureDesc: { fontSize: 14, color: "#475569", lineHeight: 1.65 },
-
-  
-  ctaBand: {
-    background: "linear-gradient(135deg, #1E40AF 0%, #2563EB 100%)",
-    padding: "72px 24px",
-    textAlign: "center",
-  },
-  ctaInner: { maxWidth: 600, margin: "0 auto" },
-  ctaTitle: { fontSize: 32, fontWeight: 800, color: "#fff", marginBottom: 12 },
-  ctaSub: { fontSize: 16, color: "#BFDBFE", marginBottom: 32, lineHeight: 1.6 },
-
-  
-  footer: {
-    background: "#0F172A",
-    padding: "24px",
-  },
-  footerInner: {
-    maxWidth: 1100, margin: "0 auto",
-    display: "flex", justifyContent: "space-between",
-    alignItems: "center", flexWrap: "wrap", gap: 12,
-  },
-  footerBrand: { fontSize: 15, fontWeight: 700, color: "#fff" },
-  footerNote: { fontSize: 13, color: "#64748b" },
-};
-
-
-
-
-
