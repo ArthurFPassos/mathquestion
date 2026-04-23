@@ -41,7 +41,7 @@ export default function Register() {
     setTimeout(() => {
       localStorage.setItem("mq_user", JSON.stringify({ ...form }));
       dispatch({ type: "REGISTER", payload: { name: form.name, email: form.email, grade: form.grade } });
-      navigate("/app");
+      navigate("/diagnostico"); // Novo aluno → sempre começa pelo diagnóstico
     }, 700);
   };
 

@@ -29,7 +29,7 @@ export default function Login() {
         return;
       }
       dispatch({ type: "LOGIN", payload: { name: stored.name, email: stored.email, grade: stored.grade } });
-      navigate("/app");
+      navigate("/dashboard"); // Aluno recorrente → vai direto ao painel
     }, 700);
   };
 

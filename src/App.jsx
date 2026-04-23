@@ -48,14 +48,30 @@ export default function App() {
         <Route path="/login"    element={<Login />} />
         <Route path="/cadastro" element={<Register />} />
 
-        {/* ── Protected: entry point after login ── */}
+        {/* ── /diagnostico: entry for NEW users (after Register) ── */}
         <Route
-          path="/app"
+          path="/diagnostico"
           element={
             <PrivateRoute>
               <DiagnosticScreen />
             </PrivateRoute>
           }
+        />
+
+        {/* ── /dashboard: entry for RETURNING users (after Login) ── */}
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Module1 />
+            </PrivateRoute>
+          }
+        />
+
+        {/* ── /app: legacy redirect — keeps old bookmarks working ── */}
+        <Route
+          path="/app"
+          element={<Navigate to="/dashboard" replace />}
         />
 
         {/* ── RF16: low score → review page ── */}
