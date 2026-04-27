@@ -26,6 +26,7 @@ export default function QuizEngine() {
   const [xpLog,       setXpLog]       = useState([]);
   const [startTime]                   = useState(Date.now());
   const [showExit,    setShowExit]    = useState(false);
+  const [simplified,  setSimplified]  = useState(false); // RNF05
 
   if (!module || !unit) return null;
 
@@ -131,7 +132,7 @@ export default function QuizEngine() {
       )}
       {state.scratchpadOpen && <Scratchpad />}
 
-      <div className="qe-card">
+      <div className={`qe-card${simplified ? " qe-card--simplified" : ""}`}>
 
         {/* Top bar */}
         <div className="qe-top-bar">
@@ -145,6 +146,15 @@ export default function QuizEngine() {
             </div>
             <button className="qe-btn-sm" onClick={() => dispatch({ type: "TOGGLE_SCRATCHPAD" })}>
               ✏️
+            </button>
+            {/* RNF05 — Modo Simplificado */}
+            <button
+              className={`qe-btn-sm${simplified ? " qe-btn-sm--simplified-on" : ""}`}
+              onClick={() => setSimplified((v) => !v)}
+              aria-pressed={simplified}
+              title="Modo Simplificado"
+            >
+              {simplified ? "🔤 ON" : "🔤"}
             </button>
             <button
               className="qe-btn-sm qe-btn-sm--exit"
@@ -165,12 +175,14 @@ export default function QuizEngine() {
         </div>
         <p className="qe-q-counter">
           Questão <strong>{qIndex + 1}</strong> de {module.questions.length}
-          <span
-            className="qe-xp-pill"
-            style={{ background: unit.light, color: unit.color }}
-          >
-            +{currentXP} XP
-          </span>
+          {!simplified && (
+            <span
+              className="qe-xp-pill"
+              style={{ background: unit.light, color: unit.color }}
+            >
+              +{currentXP} XP
+            </span>
+          )}
         </p>
 
         {/* Statement */}
@@ -178,7 +190,9 @@ export default function QuizEngine() {
           className="qe-question-box"
           style={{ borderColor: unit.color + "44" }}
         >
-          <p className="qe-statement">{q.statement}</p>
+          <p className={`qe-statement${simplified ? " qe-statement--simplified" : ""}`}>
+            {simplified && q.simplifiedText ? q.simplifiedText : q.statement}
+          </p>
         </div>
 
         {/* Hint */}

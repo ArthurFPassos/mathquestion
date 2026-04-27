@@ -22,6 +22,9 @@ const initialState = {
   hintsUsedInBattery:  0,
   scratchpadOpen:      false,
   demoWatched:         {},   // { [moduleId]: true }
+  // RF02 — tracks whether the instructional demo has been completed per unit
+  // Key = unitId (number), value = true once the user finishes the demo slides
+  demoCompleted:       {},   // { [unitId]: true }
 };
 
 // ─── Reducer ──────────────────────────────────────────────────────────────────
@@ -80,6 +83,19 @@ function reducer(state, action) {
         ...state,
         screen: "quiz",
         demoWatched: { ...state.demoWatched, [action.payload]: true },
+      };
+
+    /**
+     * MARK_DEMO_COMPLETE — RF02
+     * payload: unitId (number)
+     * Called from DemoScreen when the user reaches the last slide and clicks
+     * "Entendi! Ir para os exercícios". Permanently unlocks quiz access for
+     * that unit so the button in Dashboard changes from "Ver Demonstração" to "Iniciar".
+     */
+    case "MARK_DEMO_COMPLETE":
+      return {
+        ...state,
+        demoCompleted: { ...state.demoCompleted, [action.payload]: true },
       };
 
     case "COMPLETE_MODULE": {

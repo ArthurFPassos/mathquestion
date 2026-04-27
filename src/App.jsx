@@ -13,6 +13,7 @@ import SecondDiagnosticScreen from "./components/SecondDiagnosticScreen";  // RF
 
 // ── Main app ──────────────────────────────────────────────────────────────────
 import Dashboard  from "./components/Dashboard";
+import Navbar     from "./components/Navbar";      // RNF06
 import DemoScreen from "./components/DemoScreen";
 import QuizEngine from "./components/QuizEngine";
 
@@ -26,14 +27,24 @@ function PrivateRoute({ children }) {
 // ─── Module-1 placeholder (entry point after diagnostics) ─────────────────────
 // Replace this with your real Módulo 1 component when ready.
 
+// ─── Internal layout — wraps every protected screen with Navbar (RNF06) ──────
+
+function InternalLayout({ children }) {
+  return (
+    <>
+      <Navbar />
+      {children}
+    </>
+  );
+}
+
 function Module1() {
-  const { state, dispatch } = useApp();
+  const { state } = useApp();
 
-  // If module screen state is active, render quiz flow
-  if (state.screen === "demo") return <DemoScreen />;
-  if (state.screen === "quiz") return <QuizEngine />;
+  if (state.screen === "demo") return <InternalLayout><DemoScreen /></InternalLayout>;
+  if (state.screen === "quiz") return <InternalLayout><QuizEngine /></InternalLayout>;
 
-  return <Dashboard />;
+  return <InternalLayout><Dashboard /></InternalLayout>;
 }
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
@@ -53,7 +64,7 @@ export default function App() {
           path="/diagnostico"
           element={
             <PrivateRoute>
-              <DiagnosticScreen />
+              <InternalLayout><DiagnosticScreen /></InternalLayout>
             </PrivateRoute>
           }
         />
@@ -79,7 +90,7 @@ export default function App() {
           path="/revisao"
           element={
             <PrivateRoute>
-              <ReviewScreen />
+              <InternalLayout><ReviewScreen /></InternalLayout>
             </PrivateRoute>
           }
         />
@@ -89,7 +100,7 @@ export default function App() {
           path="/segundo-diagnostico"
           element={
             <PrivateRoute>
-              <SecondDiagnosticScreen />
+              <InternalLayout><SecondDiagnosticScreen /></InternalLayout>
             </PrivateRoute>
           }
         />

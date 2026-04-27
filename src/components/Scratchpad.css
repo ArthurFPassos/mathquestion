@@ -3,9 +3,9 @@
 .sp-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.55);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 16px;
@@ -13,11 +13,11 @@
 
 .sp-panel {
   background: #fff;
-  border-radius: 16px 16px 0 0;
-  padding: 16px;
+  border-radius: 20px;
+  padding: 20px;
   width: 100%;
-  max-width: 608px;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.14);
+  max-width: 620px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
 }
 
 .sp-header {

@@ -243,3 +243,47 @@
   transition: opacity 0.15s;
 }
 .qe-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── RNF05 — Simplified Mode ────────────────────────────────────────────── */
+
+/* Toggle button: lit state */
+.qe-btn-sm--simplified-on {
+  background: #eff6ff;
+  color: #2563eb;
+  border-color: #bfdbfe;
+  font-weight: 700;
+}
+
+/* Card in simplified mode: wider padding, softer shadow */
+.qe-card--simplified {
+  padding: 32px 32px 36px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Question box: more breathing room */
+.qe-question-box--simplified {
+  padding: 20px 24px;
+  border-color: #bfdbfe !important;
+  background: #f0f7ff;
+}
+
+/* Statement text: larger, more line height */
+.qe-statement--simplified {
+  font-size: 20px;
+  line-height: 2;
+  letter-spacing: 0.02em;
+  color: #1e293b;
+}
+
+/* Option buttons: taller hit area */
+.qe-card--simplified .qe-option-btn {
+  padding: 16px 18px;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+/* Input field: larger text */
+.qe-card--simplified .qe-input {
+  font-size: 18px;
+  padding: 14px 18px;
+}

@@ -203,6 +203,21 @@ export default function Dashboard() {
                   const done   = result?.completed;
                   const passed = done && result.score >= 0.8;
 
+                  // RF02 — demo must be completed before the first attempt
+                  const demoComplete = !!state.demoCompleted?.[unit.id];
+                  const needsDemo    = !done && !demoComplete;
+
+                  const handleModuleClick = () => {
+                    if (needsDemo) {
+                      // Send user to demo first; set currentModule so DemoScreen knows which unit
+                      dispatch({ type: "START_MODULE", payload: mod.id });
+                      navigate("/modulo-1");
+                    } else {
+                      dispatch({ type: "START_MODULE", payload: mod.id });
+                      navigate("/modulo-1");
+                    }
+                  };
+
                   return (
                     <div key={mod.id} className="db-module-row">
                       <div className="db-module-info">
@@ -216,19 +231,30 @@ export default function Dashboard() {
                             {(result.score * 100).toFixed(0)}%
                           </span>
                         )}
+                        {/* RF02 — show "demo required" badge */}
+                        {needsDemo && (
+                          <span className="db-demo-required-badge">
+                            📖 Demo obrigatória
+                          </span>
+                        )}
                       </div>
+
                       <button
-                        className="db-btn-module"
-                        style={{
-                          background: passed ? unit.light : unit.color,
-                          color:      passed ? unit.color : "#fff",
-                          border:     passed ? `1.5px solid ${unit.color}` : "none",
-                        }}
-                        onClick={() =>
-                          dispatch({ type: "START_MODULE", payload: mod.id })
+                        className={`db-btn-module${needsDemo ? " db-btn-module--demo" : ""}`}
+                        style={
+                          needsDemo
+                            ? { background: "#fffbeb", color: "#92400e", border: "1.5px solid #fde68a" }
+                            : passed
+                              ? { background: unit.light, color: unit.color, border: `1.5px solid ${unit.color}` }
+                              : { background: unit.color, color: "#fff", border: "none" }
                         }
+                        onClick={handleModuleClick}
                       >
-                        {done ? (passed ? "Refazer" : "Tentar novamente") : "Iniciar"}
+                        {needsDemo
+                          ? "📖 Ver Demonstração"
+                          : done
+                            ? passed ? "Refazer" : "Tentar novamente"
+                            : "Iniciar"}
                       </button>
                     </div>
                   );
