@@ -34,6 +34,7 @@
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 /* ── Shared small button ────────────────────────────────────────────────────── */
@@ -49,11 +50,22 @@
   cursor: pointer;
   font-family: inherit;
   transition: background 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
-.db-btn-sm:hover { background: #f1f5f9; }
-.db-btn-sm--review { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
-.db-btn-sm--report { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
-.db-btn-sm--logout { background: #fef2f2; color: #ef4444; border-color: #fecaca; }
+.db-btn-sm:hover      { background: #f1f5f9; }
+.db-btn-sm--review    { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
+.db-btn-sm--report    { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+.db-btn-sm--logout    { background: #fef2f2; color: #ef4444; border-color: #fecaca; }
+
+/* Tiny image inside action buttons (Revisão) */
+.db-btn-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
 
 /* ── Stats grid ─────────────────────────────────────────────────────────────── */
 
@@ -72,7 +84,24 @@
   border: 1px solid #f1f5f9;
 }
 
-.db-stat-icon  { font-size: 20px; margin-bottom: 4px; }
+/* Icon container — fixed size to keep cards consistent */
+.db-stat-icon {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Asset image inside stat icon */
+.db-stat-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+}
+
 .db-stat-value { font-size: 20px; font-weight: 700; color: #1e293b; }
 .db-stat-label { font-size: 11px; color: #94a3b8; margin-top: 2px; }
 
@@ -92,7 +121,16 @@
 }
 
 .db-review-banner-left  { display: flex; align-items: flex-start; gap: 14px; flex: 1; }
-.db-review-banner-icon  { font-size: 26px; flex-shrink: 0; margin-top: 2px; }
+
+/* revisao.png in review banner */
+.db-review-banner-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
 .db-review-banner-title { font-size: 14px; font-weight: 700; color: #1e40af; margin: 0 0 3px; }
 .db-review-banner-sub   { font-size: 13px; color: #3b82f6; margin: 0; line-height: 1.5; }
 
@@ -157,6 +195,7 @@
 
 .db-unit-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 12px; }
 
+/* Unit icon box — holds revisao.png */
 .db-unit-icon-box {
   width: 46px;
   height: 46px;
@@ -165,8 +204,18 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 22px;
 }
+
+/* revisao.png inside unit icon box */
+.db-unit-img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Lock icon fallback text */
+.db-unit-lock { font-size: 20px; }
 
 .db-unit-meta { flex: 1; }
 
@@ -213,6 +262,15 @@
   box-sizing: border-box;
 }
 .db-review-shortcut:hover { background: #f8fafc; }
+
+/* revisao.png inside the review shortcut button */
+.db-review-shortcut-img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .db-review-shortcut-arrow { margin-left: auto; font-size: 13px; }
 
 /* ── Module rows ────────────────────────────────────────────────────────────── */
@@ -256,13 +314,6 @@
   margin: 8px 0 0;
 }
 
-/* ── Responsive ─────────────────────────────────────────────────────────────── */
-
-@media (max-width: 600px) {
-  .db-stats-grid   { grid-template-columns: repeat(2, 1fr); }
-  .db-module-list  { padding-left: 0; }
-}
-
 /* ── RF02 — Demo required badge & button modifier ───────────────────────────── */
 
 .db-demo-required-badge {
@@ -286,4 +337,12 @@
 @keyframes db-pulse-demo {
   0%, 100% { box-shadow: 0 0 0 0 rgba(253, 230, 138, 0.5); }
   50%       { box-shadow: 0 0 0 6px rgba(253, 230, 138, 0); }
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .db-stats-grid   { grid-template-columns: repeat(2, 1fr); }
+  .db-module-list  { padding-left: 0; }
+  .db-stat-img     { width: 28px; height: 28px; }
 }

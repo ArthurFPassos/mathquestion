@@ -10,12 +10,24 @@ import {
   downloadReport,
 } from "../utilis/helpers";
 import Scratchpad from "./Scratchpad";
+
+// ── Asset imports ─────────────────────────────────────────────────────────────
+import imgXP        from "../assets/xp.png";
+import imgProgresso from "../assets/progresso.png";
+import imgQuestao   from "../assets/questao.png";
+import imgRelogio   from "../assets/relogio.png";
+import imgRevisao   from "../assets/revisao.png";
+
 import "./Dashboard.css";
 
-function StatCard({ icon, label, value, accentColor }) {
+// ─── Stat card ────────────────────────────────────────────────────────────────
+
+function StatCard({ imgSrc, imgAlt, label, value, accentColor }) {
   return (
     <div className="db-stat-card">
-      <div className="db-stat-icon">{icon}</div>
+      <div className="db-stat-icon">
+        <img src={imgSrc} alt={imgAlt} className="db-stat-img" />
+      </div>
       <div className="db-stat-value" style={{ color: accentColor || undefined }}>
         {value}
       </div>
@@ -23,6 +35,8 @@ function StatCard({ icon, label, value, accentColor }) {
     </div>
   );
 }
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function Dashboard() {
   const { state, dispatch } = useApp();
@@ -38,13 +52,14 @@ export default function Dashboard() {
 
   const avg           = getOverallAvg(state.moduleResults);
   const avgTime       = getAvgTimeMs(state.moduleResults);
-  const totalAnswered = Object.values(state.moduleResults).reduce((s, r) => s + (r.total   || 0), 0);
-  const allModules    = UNITS.flatMap((u) => u.modules);
-  const allCompleted  = allModules.every(
+  const totalAnswered = Object.values(state.moduleResults).reduce(
+    (s, r) => s + (r.total || 0), 0
+  );
+  const allModules   = UNITS.flatMap((u) => u.modules);
+  const allCompleted = allModules.every(
     (m) => state.moduleResults[m.id]?.completed && state.moduleResults[m.id]?.score >= 0.8
   );
 
-  // Cap at 1.0 to guard against legacy state issues
   const diagScore = Math.min(state.firstDiagnosticScore ?? state.diagnosticScore ?? 0, 1);
   const diagDone  = state.firstDiagnosticDone ?? state.diagnosticDone ?? false;
 
@@ -55,22 +70,23 @@ export default function Dashboard() {
       {/* ── Header ── */}
       <div className="db-header">
         <div>
-          <h1>Olá, {state.user?.name || state.studentName || "Aluno"}! 👋</h1>
+          <h1>Olá, {state.user?.name || state.studentName || "Aluno"}!</h1>
           <p className="db-header-subtitle">
             {allCompleted
-              ? "🎉 Você completou todas as unidades!"
+              ? "Você completou todas as unidades!"
               : "Continue seu progresso abaixo."}
           </p>
         </div>
         <div className="db-header-actions">
           <button className="db-btn-sm db-btn-sm--review" onClick={toReview}>
-            📚 Revisão
+            <img src={imgRevisao} alt="" className="db-btn-icon" />
+            Revisão
           </button>
           <button className="db-btn-sm" onClick={() => dispatch({ type: "TOGGLE_SCRATCHPAD" })}>
-            ✏️ Rascunho
+            Rascunho
           </button>
           <button className="db-btn-sm db-btn-sm--report" onClick={() => downloadReport(state)}>
-            ⬇ Relatório
+            Relatório
           </button>
           <button className="db-btn-sm db-btn-sm--logout" onClick={handleLogout}>
             Sair
@@ -78,18 +94,31 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ── Stats ── */}
+      {/* ── Stats — asset images substituem emojis ── */}
       <div className="db-stats-grid">
-        <StatCard icon="⭐" label="Total XP"    value={`${state.totalXP} pts`} accentColor="#2563eb" />
-        <StatCard icon="📊" label="Média Geral" value={`${(avg * 100).toFixed(0)}%`} />
-        <StatCard icon="📝" label="Questões"    value={totalAnswered} />
-        <StatCard icon="⏱" label="Tempo Médio" value={formatTime(avgTime)} />
+        <StatCard
+          imgSrc={imgXP}        imgAlt="XP"
+          label="Total XP"      value={`${state.totalXP} pts`}
+          accentColor="#2563eb"
+        />
+        <StatCard
+          imgSrc={imgProgresso} imgAlt="Progresso"
+          label="Média Geral"   value={`${(avg * 100).toFixed(0)}%`}
+        />
+        <StatCard
+          imgSrc={imgQuestao}   imgAlt="Questões"
+          label="Questões"      value={totalAnswered}
+        />
+        <StatCard
+          imgSrc={imgRelogio}   imgAlt="Tempo"
+          label="Tempo Médio"   value={formatTime(avgTime)}
+        />
       </div>
 
-      {/* ── Review banner ── */}
+      {/* ── Review banner — revisao.png substitui emoji 📖 ── */}
       <div className="db-review-banner">
         <div className="db-review-banner-left">
-          <span className="db-review-banner-icon">📖</span>
+          <img src={imgRevisao} alt="Revisão" className="db-review-banner-img" />
           <div>
             <p className="db-review-banner-title">Material de Revisão</p>
             <p className="db-review-banner-sub">
@@ -105,16 +134,12 @@ export default function Dashboard() {
 
       {/* ── Diagnostic banners ── */}
       {diagDone && (
-        <div
-          className={`db-banner ${
-            diagScore >= 0.6 ? "db-banner--pass" : "db-banner--fail"
-          }`}
-        >
-          🩺 Diagnóstico inicial:{" "}
+        <div className={`db-banner ${diagScore >= 0.6 ? "db-banner--pass" : "db-banner--fail"}`}>
+          Diagnóstico inicial:{" "}
           <strong>{(diagScore * 100).toFixed(0)}%</strong> de acertos
           {diagScore < 0.6 && (
             <button className="db-diag-review-link" onClick={toReview}>
-              → Ver revisão
+              Ver revisão
             </button>
           )}
         </div>
@@ -122,25 +147,22 @@ export default function Dashboard() {
 
       {state.secondDiagnosticDone && (
         <div className="db-banner db-banner--info">
-          🔬 2º Diagnóstico:{" "}
-          <strong>
-            {((state.secondDiagnosticScore || 0) * 100).toFixed(0)}%
-          </strong>{" "}
+          2.º Diagnóstico:{" "}
+          <strong>{((state.secondDiagnosticScore || 0) * 100).toFixed(0)}%</strong>{" "}
           de acertos
         </div>
       )}
 
       {allCompleted && avg >= 0.9 && (
         <div className="db-banner db-banner--success">
-          🏆 Parabéns! Você concluiu o curso com média de{" "}
-          <strong>{(avg * 100).toFixed(0)}%</strong>! Excelente desempenho!
+          Parabéns! Você concluiu o curso com média de{" "}
+          <strong>{(avg * 100).toFixed(0)}%</strong>. Excelente desempenho!
         </div>
       )}
       {allCompleted && avg < 0.9 && (
         <div className="db-banner db-banner--warning">
           Você completou todos os módulos com média de{" "}
-          <strong>{(avg * 100).toFixed(0)}%</strong>. Refaça módulos para
-          alcançar 90%! 🎯
+          <strong>{(avg * 100).toFixed(0)}%</strong>. Refaça módulos para alcançar 90%.
         </div>
       )}
 
@@ -156,12 +178,22 @@ export default function Dashboard() {
             className={`db-unit-card${unlocked ? "" : " db-unit-card--locked"}`}
           >
             <div className="db-unit-header">
+              {/* Ícone da unidade — revisao.png para todas, cadeado se bloqueada */}
               <div
                 className="db-unit-icon-box"
                 style={{ background: unit.light }}
               >
-                {unlocked ? unit.emoji : "🔒"}
+                {unlocked ? (
+                  <img
+                    src={imgRevisao}
+                    alt={`Unidade ${unit.id}`}
+                    className="db-unit-img"
+                  />
+                ) : (
+                  <span className="db-unit-lock" aria-label="Bloqueada">🔒</span>
+                )}
               </div>
+
               <div className="db-unit-meta">
                 <div className="db-unit-title-row">
                   <h3 className="db-unit-title">
@@ -175,27 +207,26 @@ export default function Dashboard() {
                 <div className="db-progress-track">
                   <div
                     className="db-progress-fill"
-                    style={{
-                      width: `${unitPct * 100}%`,
-                      background: unit.color,
-                    }}
+                    style={{ width: `${unitPct * 100}%`, background: unit.color }}
                   />
                 </div>
               </div>
             </div>
 
+            {/* Atalho de revisão — revisao.png substitui emoji 📚 */}
             {isUnit1 && unlocked && (
               <button
                 className="db-review-shortcut"
                 style={{ borderColor: unit.color + "55", color: unit.color }}
                 onClick={toReview}
               >
-                <span>📚</span>
+                <img src={imgRevisao} alt="" className="db-review-shortcut-img" />
                 <span>Ver Material de Revisão da Unidade 1</span>
                 <span className="db-review-shortcut-arrow">→</span>
               </button>
             )}
 
+            {/* Module list */}
             {unlocked ? (
               <div className="db-module-list">
                 {unit.modules.map((mod) => {
@@ -203,19 +234,12 @@ export default function Dashboard() {
                   const done   = result?.completed;
                   const passed = done && result.score >= 0.8;
 
-                  // RF02 — demo must be completed before the first attempt
                   const demoComplete = !!state.demoCompleted?.[unit.id];
                   const needsDemo    = !done && !demoComplete;
 
                   const handleModuleClick = () => {
-                    if (needsDemo) {
-                      // Send user to demo first; set currentModule so DemoScreen knows which unit
-                      dispatch({ type: "START_MODULE", payload: mod.id });
-                      navigate("/modulo-1");
-                    } else {
-                      dispatch({ type: "START_MODULE", payload: mod.id });
-                      navigate("/modulo-1");
-                    }
+                    dispatch({ type: "START_MODULE", payload: mod.id });
+                    navigate("/modulo-1");
                   };
 
                   return (
@@ -227,14 +251,12 @@ export default function Dashboard() {
                             className="db-module-score"
                             style={{ color: passed ? "#22c55e" : "#f59e0b" }}
                           >
-                            {passed ? "✅" : "⚠️"}{" "}
-                            {(result.score * 100).toFixed(0)}%
+                            {passed ? "✓" : "!"} {(result.score * 100).toFixed(0)}%
                           </span>
                         )}
-                        {/* RF02 — show "demo required" badge */}
                         {needsDemo && (
                           <span className="db-demo-required-badge">
-                            📖 Demo obrigatória
+                            Demo obrigatória
                           </span>
                         )}
                       </div>
@@ -251,7 +273,7 @@ export default function Dashboard() {
                         onClick={handleModuleClick}
                       >
                         {needsDemo
-                          ? "📖 Ver Demonstração"
+                          ? "Ver Demonstração"
                           : done
                             ? passed ? "Refazer" : "Tentar novamente"
                             : "Iniciar"}

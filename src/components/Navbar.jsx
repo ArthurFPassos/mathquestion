@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
+import calculadora from "../assets/calculadora.png";
 import "./Navbar.css";
 
 /**
@@ -35,7 +36,7 @@ export default function Navbar() {
           aria-label="Voltar para seleção de módulos"
           title="Voltar para seleção de módulos"
         >
-          <span className="nb-logo-icon" aria-hidden="true">🧮</span>
+          <img src={calculadora} alt="" className="nb-logo-icon" aria-hidden="true" />
           <span className="nb-logo-text">MathQuestion</span>
           <span className="nb-home-hint">Home</span>
         </button>

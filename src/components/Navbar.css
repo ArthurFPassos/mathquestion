@@ -47,7 +47,13 @@
   outline-offset: 2px;
 }
 
-.nb-logo-icon { font-size: 22px; flex-shrink: 0; }
+.nb-logo-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
+}
 
 .nb-logo-text {
   font-size: 16px;

@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { useApp } from "../context/AppContext";
+import calculadora from "../assets/calculadora.png";
 import "./WelcomeScreen.css";
 
 const FEATURES = [
-  { icon: "📚", label: "4 unidades progressivas" },
-  { icon: "🎯", label: "Múltipla escolha + input" },
-  { icon: "💡", label: "Dicas orientadoras" },
-  { icon: "⭐", label: "Sistema de XP" },
-  { icon: "✏️", label: "Rascunho na tela" },
-  { icon: "📊", label: "Relatório de desempenho" },
+  { label: "4 unidades progressivas" },
+  { label: "Múltipla escolha + resposta aberta" },
+  { label: "Dicas orientadoras" },
+  { label: "Sistema de pontos (XP)" },
+  { label: "Rascunho na tela" },
+  { label: "Relatório de desempenho" },
 ];
 
 export default function WelcomeScreen() {
@@ -24,12 +25,21 @@ export default function WelcomeScreen() {
   return (
     <div className="ws-wrapper">
       <div className="ws-card">
-        <div className="ws-logo-wrap">🧮</div>
+
+        {/* Logo com imagem calculadora.png */}
+        <div className="ws-logo-wrap">
+          <img
+            src={calculadora}
+            alt="Calculadora MathQuestion"
+            className="ws-logo-img"
+          />
+        </div>
+
         <h1 className="ws-title">MathQuestion</h1>
+
         <p className="ws-tagline">
-          Plataforma de exercícios de matemática para o 6º ano.
-          <br />
-          Aprenda resolvendo problemas do cotidiano!
+          Plataforma de exercícios de matemática para o 6.º ano.
+          Aprenda resolvendo problemas do cotidiano.
         </p>
 
         <div className="ws-field-group">
@@ -53,13 +63,13 @@ export default function WelcomeScreen() {
           onClick={handleStart}
           disabled={!name.trim()}
         >
-          Começar → Avaliação Diagnóstica
+          Começar — Avaliação Diagnóstica
         </button>
 
         <div className="ws-feature-grid">
           {FEATURES.map((f, i) => (
             <div key={i} className="ws-feature-item">
-              <span className="ws-feature-icon">{f.icon}</span>
+              <span className="ws-feature-dot" />
               <span>{f.label}</span>
             </div>
           ))}
