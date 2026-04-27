@@ -3,13 +3,6 @@ import { useApp } from "../context/AppContext";
 import calculadora from "../assets/calculadora.png";
 import "./Navbar.css";
 
-/**
- * Navbar — RNF06
- * Rendered on all internal screens (Dashboard, QuizEngine, DemoScreen,
- * ReviewScreen, DiagnosticScreen, SecondDiagnosticScreen).
- *
- * The logo / "MathQuestion" text acts as the Home button → /dashboard.
- */
 export default function Navbar() {
   const { state, dispatch } = useApp();
   const navigate            = useNavigate();

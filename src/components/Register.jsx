@@ -41,7 +41,7 @@ export default function Register() {
     setTimeout(() => {
       localStorage.setItem("mq_user", JSON.stringify({ ...form }));
       dispatch({ type: "REGISTER", payload: { name: form.name, email: form.email, grade: form.grade } });
-      navigate("/diagnostico"); // Novo aluno → sempre começa pelo diagnóstico
+      navigate("/diagnostico");
     }, 700);
   };
 
@@ -51,7 +51,7 @@ export default function Register() {
   return (
     <div className="auth-layout">
 
-      {/* Form panel */}
+      {}
       <div className="auth-panel">
         <div className="form-box">
           <div className="form-logo">

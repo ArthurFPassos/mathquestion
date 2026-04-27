@@ -58,11 +58,6 @@ function reducer(state, action) {
         wentToReview:         action.payload < 0.6,
       };
 
-    /**
-     * SECOND_DIAGNOSTIC_DONE
-     * RF20: after second diagnostic, user always goes to /modulo-1.
-     * Routing is handled in SecondDiagnosticScreen.jsx.
-     */
     case "SECOND_DIAGNOSTIC_DONE":
       return {
         ...state,
@@ -85,13 +80,6 @@ function reducer(state, action) {
         demoWatched: { ...state.demoWatched, [action.payload]: true },
       };
 
-    /**
-     * MARK_DEMO_COMPLETE — RF02
-     * payload: unitId (number)
-     * Called from DemoScreen when the user reaches the last slide and clicks
-     * "Entendi! Ir para os exercícios". Permanently unlocks quiz access for
-     * that unit so the button in Dashboard changes from "Ver Demonstração" to "Iniciar".
-     */
     case "MARK_DEMO_COMPLETE":
       return {
         ...state,

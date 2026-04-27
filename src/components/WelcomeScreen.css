@@ -111,7 +111,6 @@
 .ws-btn-primary:hover    { background: #4f46e5; }
 .ws-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* ── Feature grid — sem emojis, uso de dot indicator ───────────────────────── */
 
 .ws-feature-grid {
   display: grid;
@@ -132,7 +131,7 @@
   border: 1px solid #f1f5f9;
 }
 
-/* Dot bullet em vez de emoji */
+
 .ws-feature-dot {
   width: 7px;
   height: 7px;
