@@ -221,19 +221,14 @@
 }
 .home-feature-card:hover { box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08); }
 
-.home-feature-icon {
-  font-size: 28px;
-  margin-bottom: 14px;
-  width: 52px;
-  height: 52px;
-  background: #eff6ff;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.home-feature-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 8px;
+  padding-left: 12px;
+  border-left: 3px solid #2563eb;
 }
-
-.home-feature-title { font-size: 15px; font-weight: 700; color: #0f172a; margin: 0 0 8px; }
 .home-feature-desc  { font-size: 14px; color: #475569; line-height: 1.65; margin: 0; }
 
 /* ── CTA band ────────────────────────────────────────────────────────────────── */
@@ -278,4 +273,22 @@
   .home-hero-visual       { display: none; }
   .home-hero-title        { font-size: 32px; }
   .home-nav-links         { display: none; }
+}
+
+/* ── Calculadora.png — brand logo image ─────────────────────────────────────── */
+
+.home-brand-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
+}
+
+.home-footer-img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 2px;
 }

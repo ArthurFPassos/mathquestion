@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useApp } from "../context/AppContext";
-import calculadora from "../assets/calculadora.png";
 import "./WelcomeScreen.css";
 
 const FEATURES = [
@@ -28,11 +27,8 @@ export default function WelcomeScreen() {
 
         {/* Logo com imagem calculadora.png */}
         <div className="ws-logo-wrap">
-          <img
-            src={calculadora}
-            alt="Calculadora MathQuestion"
-            className="ws-logo-img"
-          />
+          {/* Substitua por <img src={calculadora} .../> após adicionar o PNG ao repositório */}
+          <span className="ws-logo-fallback">🧮</span>
         </div>
 
         <h1 className="ws-title">MathQuestion</h1>

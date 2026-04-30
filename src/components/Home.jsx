@@ -1,24 +1,21 @@
 import { Link } from "react-router-dom";
+import calculadora from "../assets/calculadora.png";
 import "./Home.css";
 
 const FEATURES = [
   {
-    icon: "🎯",
     title: "Exercícios contextualizados",
     desc: "Problemas do cotidiano que tornam a matemática relevante e interessante para o aluno.",
   },
   {
-    icon: "📈",
     title: "Progresso visível",
     desc: "Dashboard com métricas de desempenho, XP acumulado e histórico por módulo.",
   },
   {
-    icon: "💡",
     title: "Dicas inteligentes",
     desc: "Sistema de dicas que orienta sem entregar a resposta, desenvolvendo o raciocínio.",
   },
   {
-    icon: "🔒",
     title: "Progressão por domínio",
     desc: "Próxima unidade liberada somente após 80% de aproveitamento na atual.",
   },
@@ -41,13 +38,13 @@ export default function Home() {
       <header className="home-navbar">
         <div className="home-nav-inner">
           <Link to="/" className="home-brand">
-            <div className="home-brand-icon">🧮</div>
+            <div className="home-brand-icon"><img src={calculadora} alt="MathQuestion logo" className="home-brand-img" /></div>
             <span className="home-brand-text">MathQuestion</span>
           </Link>
 
           <nav className="home-nav-links">
             <a href="#recursos" className="home-nav-link">Recursos</a>
-            <a href="#sobre"    className="home-nav-link">Sobre</a>
+            <Link to="/sobre"   className="home-nav-link">Sobre</Link>
           </nav>
 
           <div className="home-nav-actions">
@@ -124,10 +121,10 @@ export default function Home() {
             </div>
 
             <div className="home-float-badge" style={{ top: 0, right: -16 }}>
-              📊 <strong>92%</strong> de aproveitamento
+              <strong>92%</strong> de aproveitamento
             </div>
             <div className="home-float-badge" style={{ bottom: 40, left: -24 }}>
-              🏆 <strong>340 XP</strong> acumulados
+              <strong>340 XP</strong> acumulados
             </div>
           </div>
         </div>
@@ -154,7 +151,6 @@ export default function Home() {
           <div className="home-features-grid">
             {FEATURES.map((f) => (
               <div key={f.title} className="home-feature-card">
-                <div className="home-feature-icon">{f.icon}</div>
                 <h3 className="home-feature-title">{f.title}</h3>
                 <p className="home-feature-desc">{f.desc}</p>
               </div>
@@ -181,7 +177,7 @@ export default function Home() {
       {/* ── Footer ── */}
       <footer className="home-footer">
         <div className="home-footer-inner">
-          <span className="home-footer-brand">🧮 MathQuestion</span>
+          <span className="home-footer-brand"><img src={calculadora} alt="" className="home-footer-img" /> MathQuestion</span>
           <span className="home-footer-note">
             Plataforma educacional para o 6º ano do Ensino Fundamental.
           </span>

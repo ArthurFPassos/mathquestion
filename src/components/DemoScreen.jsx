@@ -4,6 +4,10 @@ import { useApp } from "../context/AppContext";
 import { UNITS } from "../data/units";
 import "./DemoScreen.css";
 
+// ─── Pedagogical demo content per unit ───────────────────────────────────────
+// Each unit has a series of didactic "slides" that walk through a worked
+// example step by step (Merrill's First Principles of Instruction — RF02).
+
 const UNIT_DEMOS = {
   1: {
     title: "Operações Básicas",

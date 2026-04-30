@@ -1,3 +1,4 @@
+import React from "react";
 import { useApp } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 import { UNITS } from "../data/units";
@@ -11,22 +12,44 @@ import {
 } from "../utilis/helpers";
 import Scratchpad from "./Scratchpad";
 
-// ── Asset imports ─────────────────────────────────────────────────────────────
+// ── Asset imports — PNG images from src/assets/ ──────────────────────────────
+// Vite resolves these at build time. Make sure the files exist in src/assets/.
 import imgXP        from "../assets/xp.png";
 import imgProgresso from "../assets/progresso.png";
 import imgQuestao   from "../assets/questao.png";
 import imgRelogio   from "../assets/relogio.png";
 import imgRevisao   from "../assets/revisao.png";
-
+import imgCalculadora from "../assets/calculadora.png";
 import "./Dashboard.css";
+
+// Map name → imported PNG
+const ASSET_MAP = {
+  xp:        imgXP,
+  progresso: imgProgresso,
+  questao:   imgQuestao,
+  relogio:   imgRelogio,
+  revisao:   imgRevisao,
+};
+
+function AssetIcon({ name, size = 32, alt = "" }) {
+  const src = ASSET_MAP[name];
+  if (!src) return null;
+  return (
+    <img
+      src={src}
+      alt={alt}
+      style={{ width: size, height: size, objectFit: "contain", display: "block" }}
+    />
+  );
+}
 
 // ─── Stat card ────────────────────────────────────────────────────────────────
 
-function StatCard({ imgSrc, imgAlt, label, value, accentColor }) {
+function StatCard({ imgSrc, label, value, accentColor }) {
   return (
     <div className="db-stat-card">
       <div className="db-stat-icon">
-        <img src={imgSrc} alt={imgAlt} className="db-stat-img" />
+        <AssetIcon name={imgSrc} size={36} alt={label} />
       </div>
       <div className="db-stat-value" style={{ color: accentColor || undefined }}>
         {value}
@@ -63,6 +86,8 @@ export default function Dashboard() {
   const diagScore = Math.min(state.firstDiagnosticScore ?? state.diagnosticScore ?? 0, 1);
   const diagDone  = state.firstDiagnosticDone ?? state.diagnosticDone ?? false;
 
+  const [reviewBannerVisible, setReviewBannerVisible] = React.useState(true);
+
   return (
     <div className="db-page">
       {state.scratchpadOpen && <Scratchpad />}
@@ -79,7 +104,7 @@ export default function Dashboard() {
         </div>
         <div className="db-header-actions">
           <button className="db-btn-sm db-btn-sm--review" onClick={toReview}>
-            <img src={imgRevisao} alt="" className="db-btn-icon" />
+            <AssetIcon name="revisao" size={14} />
             Revisão
           </button>
           <button className="db-btn-sm" onClick={() => dispatch({ type: "TOGGLE_SCRATCHPAD" })}>
@@ -97,40 +122,52 @@ export default function Dashboard() {
       {/* ── Stats — asset images substituem emojis ── */}
       <div className="db-stats-grid">
         <StatCard
-          imgSrc={imgXP}        imgAlt="XP"
+          imgSrc="xp"
           label="Total XP"      value={`${state.totalXP} pts`}
           accentColor="#2563eb"
         />
         <StatCard
-          imgSrc={imgProgresso} imgAlt="Progresso"
+          imgSrc="progresso"
           label="Média Geral"   value={`${(avg * 100).toFixed(0)}%`}
         />
         <StatCard
-          imgSrc={imgQuestao}   imgAlt="Questões"
+          imgSrc="questao"
           label="Questões"      value={totalAnswered}
         />
         <StatCard
-          imgSrc={imgRelogio}   imgAlt="Tempo"
+          imgSrc="relogio"
           label="Tempo Médio"   value={formatTime(avgTime)}
         />
       </div>
 
-      {/* ── Review banner — revisao.png substitui emoji 📖 ── */}
-      <div className="db-review-banner">
-        <div className="db-review-banner-left">
-          <img src={imgRevisao} alt="Revisão" className="db-review-banner-img" />
-          <div>
-            <p className="db-review-banner-title">Material de Revisão</p>
-            <p className="db-review-banner-sub">
-              Consulte as explicações de soma, subtração, multiplicação, divisão,
-              potenciação e frações a qualquer momento.
-            </p>
+      {/* ── Review banner — dismissible (item 4 fix) ── */}
+      {reviewBannerVisible && (
+        <div className="db-review-banner">
+          <div className="db-review-banner-left">
+            <AssetIcon name="revisao" size={36} alt="Revisão" />
+            <div>
+              <p className="db-review-banner-title">Material de Revisão</p>
+              <p className="db-review-banner-sub">
+                Consulte as explicações de soma, subtração, multiplicação, divisão,
+                potenciação e frações a qualquer momento.
+              </p>
+            </div>
+          </div>
+          <div className="db-review-banner-actions">
+            <button className="db-review-banner-btn" onClick={toReview}>
+              Ver material →
+            </button>
+            <button
+              className="db-review-banner-close"
+              onClick={() => setReviewBannerVisible(false)}
+              aria-label="Fechar banner de revisão"
+              title="Fechar"
+            >
+              ✕
+            </button>
           </div>
         </div>
-        <button className="db-review-banner-btn" onClick={toReview}>
-          Ver material →
-        </button>
-      </div>
+      )}
 
       {/* ── Diagnostic banners ── */}
       {diagDone && (
@@ -184,11 +221,7 @@ export default function Dashboard() {
                 style={{ background: unit.light }}
               >
                 {unlocked ? (
-                  <img
-                    src={imgRevisao}
-                    alt={`Unidade ${unit.id}`}
-                    className="db-unit-img"
-                  />
+                  <AssetIcon name="revisao" size={28} />
                 ) : (
                   <span className="db-unit-lock" aria-label="Bloqueada">🔒</span>
                 )}
@@ -220,7 +253,7 @@ export default function Dashboard() {
                 style={{ borderColor: unit.color + "55", color: unit.color }}
                 onClick={toReview}
               >
-                <img src={imgRevisao} alt="" className="db-review-shortcut-img" />
+                <AssetIcon name="revisao" size={18} />
                 <span>Ver Material de Revisão da Unidade 1</span>
                 <span className="db-review-shortcut-arrow">→</span>
               </button>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
+import calculadora from "../assets/calculadora.png";
 import "./Register.css";
 
 const GRADES = [
@@ -41,7 +42,7 @@ export default function Register() {
     setTimeout(() => {
       localStorage.setItem("mq_user", JSON.stringify({ ...form }));
       dispatch({ type: "REGISTER", payload: { name: form.name, email: form.email, grade: form.grade } });
-      navigate("/diagnostico");
+      navigate("/diagnostico"); // Novo aluno → sempre começa pelo diagnóstico
     }, 700);
   };
 
@@ -51,11 +52,11 @@ export default function Register() {
   return (
     <div className="auth-layout">
 
-      {}
+      {/* Form panel */}
       <div className="auth-panel">
         <div className="form-box">
           <div className="form-logo">
-            <div className="form-logo-icon">🧮</div>
+            <div className="form-logo-icon"><img src={calculadora} alt="MathQuestion" className="reg-brand-img" /></div>
             <span className="form-logo-text">MathQuestion</span>
           </div>
 
@@ -142,24 +143,16 @@ export default function Register() {
       {/* Visual panel */}
       <div className="auth-visual">
         <div className="reg-visual-content">
-          <div className="reg-visual-icon">🚀</div>
           <h2 className="reg-visual-title">Sua jornada começa agora!</h2>
           <p className="reg-visual-desc">
             Desbloqueie unidades, ganhe XP e veja sua evolução em tempo real.
           </p>
-          <div className="reg-steps-wrap">
-            {[
-              "Faça o diagnóstico inicial",
-              "Assista a demonstração",
-              "Resolva as questões",
-              "Acompanhe seu progresso",
-            ].map((label, i) => (
-              <div key={i} className="reg-step">
-                <div className="reg-step-num">{i + 1}</div>
-                <span className="reg-step-label">{label}</span>
-              </div>
-            ))}
-          </div>
+          <ol className="reg-benefits-list">
+            <li>Faça o diagnóstico inicial</li>
+            <li>Assista a demonstração</li>
+            <li>Resolva as questões</li>
+            <li>Acompanhe seu progresso</li>
+          </ol>
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
+import calculadora from "../assets/calculadora.png";
 import "./Login.css";
 
 export default function Login() {
@@ -40,7 +41,7 @@ export default function Login() {
       <div className="auth-panel">
         <div className="form-box">
           <div className="form-logo">
-            <div className="form-logo-icon">🧮</div>
+            <div className="form-logo-icon"><img src={calculadora} alt="MathQuestion" className="login-brand-img" /></div>
             <span className="form-logo-text">MathQuestion</span>
           </div>
 
@@ -101,23 +102,16 @@ export default function Login() {
       {/* Visual panel */}
       <div className="auth-visual">
         <div className="login-visual-content">
-          <div className="login-visual-icon">🧮</div>
+          <img src={calculadora} alt="MathQuestion" className="login-visual-img" />
           <h2 className="login-visual-title">Continue evoluindo!</h2>
           <p className="login-visual-desc">
             Acesse seu painel, veja seu progresso e continue de onde parou.
           </p>
-          <div className="login-stats-wrap">
-            {[
-              { icon: "⭐", label: "XP acumulado" },
-              { icon: "📊", label: "Progresso por unidade" },
-              { icon: "🏆", label: "Metas desbloqueadas" },
-            ].map((item) => (
-              <div key={item.label} className="login-stat-item">
-                <span className="login-stat-icon">{item.icon}</span>
-                <span className="login-stat-label">{item.label}</span>
-              </div>
-            ))}
-          </div>
+          <ul className="login-benefits-list">
+            <li>Retome de onde parou a qualquer momento</li>
+            <li>Acompanhe seu XP e progresso por unidade</li>
+            <li>Revise o material de apoio quando quiser</li>
+          </ul>
         </div>
       </div>
 

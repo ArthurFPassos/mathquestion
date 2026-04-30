@@ -346,3 +346,33 @@
   .db-module-list  { padding-left: 0; }
   .db-stat-img     { width: 28px; height: 28px; }
 }
+
+/* ── Review banner actions row (close button — fix 4) ───────────────────────── */
+
+.db-review-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.db-review-banner-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid #bfdbfe;
+  background: transparent;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.db-review-banner-close:hover {
+  background: #dbeafe;
+}

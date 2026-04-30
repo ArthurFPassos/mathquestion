@@ -5,6 +5,7 @@ import { useApp } from "./context/AppContext";
 import Home     from "./components/Home";
 import Login    from "./components/Login";
 import Register from "./components/Register";
+import Sobre    from "./components/Sobre";
 
 // ── Diagnostic flow ───────────────────────────────────────────────────────────
 import DiagnosticScreen       from "./components/DiagnosticScreen";       // RF16
@@ -58,6 +59,7 @@ export default function App() {
         <Route path="/"         element={<Home />} />
         <Route path="/login"    element={<Login />} />
         <Route path="/cadastro" element={<Register />} />
+        <Route path="/sobre"    element={<Sobre />} />
 
         {/* ── /diagnostico: entry for NEW users (after Register) ── */}
         <Route
