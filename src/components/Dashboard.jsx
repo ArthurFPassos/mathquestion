@@ -2,13 +2,14 @@ import React from "react";
 import { useApp } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 import { UNITS } from "../data/units";
+import { logoutStudent } from "../firebase/firebaseService";
 import {
   getUnitProgress,
   isUnitUnlocked,
   getOverallAvg,
   getAvgTimeMs,
   formatTime,
-  downloadReport,
+  downloadReportPDF,
 } from "../utilis/helpers";
 import Scratchpad from "./Scratchpad";
 
@@ -65,7 +66,8 @@ export default function Dashboard() {
   const { state, dispatch } = useApp();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try { await logoutStudent(); } catch (_) {}
     dispatch({ type: "LOGOUT" });
     navigate("/");
   };
@@ -110,8 +112,8 @@ export default function Dashboard() {
           <button className="db-btn-sm" onClick={() => dispatch({ type: "TOGGLE_SCRATCHPAD" })}>
             Rascunho
           </button>
-          <button className="db-btn-sm db-btn-sm--report" onClick={() => downloadReport(state)}>
-            Relatório
+          <button className="db-btn-sm db-btn-sm--report" onClick={() => downloadReportPDF(state)}>
+            📄 PDF
           </button>
           <button className="db-btn-sm db-btn-sm--logout" onClick={handleLogout}>
             Sair

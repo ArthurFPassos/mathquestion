@@ -20,8 +20,29 @@ import QuizEngine from "./components/QuizEngine";
 
 // ─── Protected route ──────────────────────────────────────────────────────────
 
+// Enquanto o Firebase verifica a sessão salva, mostra spinner
+// Evita redirecionar para /login um aluno que já estava autenticado
 function PrivateRoute({ children }) {
   const { state } = useApp();
+
+  if (state.authLoading) {
+    return (
+      <div style={{
+        minHeight: "100vh", display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center", gap: 16,
+        background: "#f8fafc", fontFamily: "inherit",
+      }}>
+        <div style={{
+          width: 48, height: 48, border: "4px solid #e2e8f0",
+          borderTop: "4px solid #6366f1", borderRadius: "50%",
+          animation: "spin 0.8s linear infinite",
+        }} />
+        <p style={{ color: "#64748b", fontSize: 15, margin: 0 }}>Carregando...</p>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
   return state.isAuthenticated ? children : <Navigate to="/login" replace />;
 }
 

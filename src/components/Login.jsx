@@ -1,20 +1,21 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
+import { loginStudent, loadProgress, firebaseErrorMsg } from "../firebase/firebaseService";
 import calculadora from "../assets/calculadora.png";
 import "./Login.css";
 
 export default function Login() {
   const { dispatch } = useApp();
   const navigate     = useNavigate();
-  const [form, setForm]   = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
+  const [form, setForm]     = useState({ email: "", password: "" });
+  const [error, setError]   = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) =>
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     if (!form.email || !form.password) {
@@ -22,26 +23,31 @@ export default function Login() {
       return;
     }
     setLoading(true);
-    setTimeout(() => {
-      const stored = JSON.parse(localStorage.getItem("mq_user") || "null");
-      if (!stored || stored.email !== form.email || stored.password !== form.password) {
-        setError("E-mail ou senha incorretos.");
-        setLoading(false);
-        return;
-      }
-      dispatch({ type: "LOGIN", payload: { name: stored.name, email: stored.email, grade: stored.grade } });
-      navigate("/dashboard"); // Aluno recorrente → vai direto ao painel
-    }, 700);
+    try {
+      // 1. Autentica no Firebase Auth + busca perfil no Firestore
+      const student = await loginStudent({ email: form.email, password: form.password });
+      dispatch({ type: "LOGIN", payload: student });
+
+      // 2. Carrega progresso salvo no Firestore
+      const progress = await loadProgress(student.uid);
+      dispatch({ type: "LOAD_PROGRESS", payload: progress });
+
+      navigate("/dashboard");
+    } catch (err) {
+      setError(firebaseErrorMsg(err));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="auth-layout">
-
-      {/* Form panel */}
       <div className="auth-panel">
         <div className="form-box">
           <div className="form-logo">
-            <div className="form-logo-icon"><img src={calculadora} alt="MathQuestion" className="login-brand-img" /></div>
+            <div className="form-logo-icon">
+              <img src={calculadora} alt="MathQuestion" className="login-brand-img" />
+            </div>
             <span className="form-logo-text">MathQuestion</span>
           </div>
 
@@ -99,7 +105,6 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Visual panel */}
       <div className="auth-visual">
         <div className="login-visual-content">
           <img src={calculadora} alt="MathQuestion" className="login-visual-img" />
@@ -114,7 +119,6 @@ export default function Login() {
           </ul>
         </div>
       </div>
-
     </div>
   );
 }

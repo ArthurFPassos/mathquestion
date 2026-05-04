@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
+import { registerStudent, firebaseErrorMsg } from "../firebase/firebaseService";
 import calculadora from "../assets/calculadora.png";
 import "./Register.css";
 
@@ -26,24 +27,37 @@ export default function Register() {
 
   const validate = () => {
     const errs = {};
-    if (!form.name.trim())          errs.name     = "Informe seu nome.";
-    if (!form.email.trim())         errs.email    = "Informe seu e-mail.";
+    if (!form.name.trim())        errs.name     = "Informe seu nome.";
+    if (!form.email.trim())       errs.email    = "Informe seu e-mail.";
     else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = "E-mail inválido.";
-    if (form.password.length < 6)   errs.password = "A senha deve ter ao menos 6 caracteres.";
-    if (!form.grade)                errs.grade    = "Selecione seu ano escolar.";
+    if (form.password.length < 6) errs.password = "A senha deve ter ao menos 6 caracteres.";
+    if (!form.grade)              errs.grade    = "Selecione seu ano escolar.";
     return errs;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }
+
     setLoading(true);
-    setTimeout(() => {
-      localStorage.setItem("mq_user", JSON.stringify({ ...form }));
-      dispatch({ type: "REGISTER", payload: { name: form.name, email: form.email, grade: form.grade } });
-      navigate("/diagnostico"); // Novo aluno → sempre começa pelo diagnóstico
-    }, 700);
+    try {
+      // Cria conta no Firebase Auth + salva perfil no Firestore
+      const student = await registerStudent({
+        name:     form.name,
+        email:    form.email,
+        password: form.password,
+        grade:    form.grade,
+      });
+      dispatch({ type: "REGISTER", payload: student });
+      navigate("/diagnostico");
+    } catch (err) {
+      const msg = firebaseErrorMsg(err);
+      // Erros de e-mail duplicado vão para o campo e-mail
+      setErrors({ email: msg });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fieldClass = (name) =>
@@ -51,12 +65,12 @@ export default function Register() {
 
   return (
     <div className="auth-layout">
-
-      {/* Form panel */}
       <div className="auth-panel">
         <div className="form-box">
           <div className="form-logo">
-            <div className="form-logo-icon"><img src={calculadora} alt="MathQuestion" className="reg-brand-img" /></div>
+            <div className="form-logo-icon">
+              <img src={calculadora} alt="MathQuestion" className="reg-brand-img" />
+            </div>
             <span className="form-logo-text">MathQuestion</span>
           </div>
 
@@ -140,7 +154,6 @@ export default function Register() {
         </div>
       </div>
 
-      {/* Visual panel */}
       <div className="auth-visual">
         <div className="reg-visual-content">
           <h2 className="reg-visual-title">Sua jornada começa agora!</h2>
@@ -155,7 +168,6 @@ export default function Register() {
           </ol>
         </div>
       </div>
-
     </div>
   );
 }

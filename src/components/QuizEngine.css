@@ -287,3 +287,192 @@
   font-size: 18px;
   padding: 14px 18px;
 }
+
+/* ─── Type Badge ─────────────────────────────────────────────────────────────── */
+
+.qe-type-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 99px;
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
+/* ─── Drag & Drop ────────────────────────────────────────────────────────────── */
+
+.qe-dd-wrapper {
+  margin: 12px 0;
+}
+
+.qe-dd-instruction {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.qe-dd-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+  user-select: none;
+  touch-action: none;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.qe-dd-item:hover:not(.qe-dd-item--disabled) {
+  border-color: #94a3b8;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.qe-dd-item--dragging {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  border-color: #6366f1;
+  background: #eef2ff;
+  z-index: 999;
+}
+
+.qe-dd-item--disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.qe-dd-handle {
+  color: #94a3b8;
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.qe-dd-confirm-btn {
+  margin-top: 14px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: #6366f1;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.qe-dd-confirm-btn:hover { background: #4f46e5; }
+.qe-dd-confirm-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ─── Matching / Association ─────────────────────────────────────────────────── */
+
+.qe-match-wrapper {
+  margin: 12px 0;
+}
+
+.qe-match-grid {
+  display: grid;
+  grid-template-columns: 1fr 32px 1fr;
+  gap: 8px;
+  align-items: start;
+}
+
+.qe-match-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.qe-match-item {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  position: relative;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qe-match-item:hover:not(.qe-match-item--connected) {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+}
+
+.qe-match-item--selected {
+  border-color: #6366f1 !important;
+  background: #eef2ff !important;
+  color: #4f46e5;
+  transform: scale(1.02);
+}
+
+.qe-match-item--connected {
+  border-color: #22c55e;
+  background: #f0fdf4;
+  color: #15803d;
+  cursor: default;
+}
+
+.qe-match-dot {
+  position: absolute;
+  right: 8px;
+  font-size: 10px;
+  color: #22c55e;
+}
+
+.qe-match-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.qe-match-line-slot {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qe-match-line-badge {
+  font-size: 16px;
+  color: #22c55e;
+  font-weight: 800;
+}
+
+.qe-match-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.qe-match-reset-btn {
+  flex: 0 0 auto;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.qe-match-reset-btn:hover { background: #f1f5f9; }

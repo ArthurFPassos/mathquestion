@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
+import { saveDiagnostic } from "../firebase/firebaseService";
 import ExitModal from "./ExitModal";
 import "./SecondDiagnosticScreen.css";
 
@@ -76,7 +77,7 @@ function ResultScreen({ score, onContinue }) {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function SecondDiagnosticScreen() {
-  const { dispatch }               = useApp();
+  const { state, dispatch }               = useApp();
   const navigate                   = useNavigate();
   const [qIndex, setQIndex]        = useState(0);
   const [selected, setSelected]    = useState(null);
@@ -101,6 +102,12 @@ export default function SecondDiagnosticScreen() {
     if (isLast) {
       const score = finalCorrect / QUESTIONS.length;
       dispatch({ type: "SECOND_DIAGNOSTIC_DONE", payload: score });
+
+      // Salva no Firestore
+      if (state.user?.uid) {
+        saveDiagnostic(state.user.uid, 2, score, finalCorrect, QUESTIONS.length).catch(console.error);
+      }
+
       setFinalScore(score);
       setFinished(true);
     } else {

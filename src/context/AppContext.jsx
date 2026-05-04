@@ -1,30 +1,32 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer, useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase/config";
+import { loadProgress } from "../firebase/firebaseService";
 
 // ─── Initial State ────────────────────────────────────────────────────────────
 
 const initialState = {
-  // ── Auth ──────────────────────────────────────────────────────────────────
-  user: null,            // { name, email, grade } | null
+  // Auth
+  user:            null,   // { uid, name, email, grade }
   isAuthenticated: false,
+  authLoading:     true,   // true enquanto Firebase verifica sessão salva
 
-  // ── Diagnostic flow ───────────────────────────────────────────────────────
-  firstDiagnosticDone:  false,
-  firstDiagnosticScore: 0,      // 0–1
-  wentToReview:         false,  // true if score < 60% on first diagnostic
-  secondDiagnosticDone: false,
-  secondDiagnosticScore:0,
+  // Diagnostic flow
+  firstDiagnosticDone:   false,
+  firstDiagnosticScore:  0,
+  wentToReview:          false,
+  secondDiagnosticDone:  false,
+  secondDiagnosticScore: 0,
 
-  // ── Quiz flow ─────────────────────────────────────────────────────────────
-  screen:              "dashboard", // dashboard | demo | quiz
-  currentModule:       null,
-  moduleResults:       {},   // { [moduleId]: { score, xp, timeMs, completed, correct, total } }
-  totalXP:             0,
-  hintsUsedInBattery:  0,
-  scratchpadOpen:      false,
-  demoWatched:         {},   // { [moduleId]: true }
-  // RF02 — tracks whether the instructional demo has been completed per unit
-  // Key = unitId (number), value = true once the user finishes the demo slides
-  demoCompleted:       {},   // { [unitId]: true }
+  // Quiz flow
+  screen:             "dashboard",
+  currentModule:      null,
+  moduleResults:      {},
+  totalXP:            0,
+  hintsUsedInBattery: 0,
+  scratchpadOpen:     false,
+  demoWatched:        {},
+  demoCompleted:      {},
 };
 
 // ─── Reducer ──────────────────────────────────────────────────────────────────
@@ -32,24 +34,41 @@ const initialState = {
 function reducer(state, action) {
   switch (action.type) {
 
-    // ── Auth ──────────────────────────────────────────────────────────────────
-
+    // Auth
     case "LOGIN":
-      return { ...state, user: action.payload, isAuthenticated: true };
-
     case "REGISTER":
-      return { ...state, user: action.payload, isAuthenticated: true };
+      return {
+        ...state,
+        user:            action.payload,
+        isAuthenticated: true,
+        authLoading:     false,
+      };
 
     case "LOGOUT":
-      return { ...initialState };
+      return { ...initialState, authLoading: false };
 
-    // ── Diagnostic (RF16 / RF20) ──────────────────────────────────────────────
+    case "AUTH_READY":
+      // Firebase confirmou que não há sessão salva
+      return { ...state, authLoading: false };
 
-    /**
-     * FIRST_DIAGNOSTIC_DONE
-     * Saves score. The routing decision (< 60% → /revisao, else → /modulo-1)
-     * is made inside DiagnosticScreen.jsx using react-router navigate().
-     */
+    // Carrega progresso salvo no Firestore após login
+    case "LOAD_PROGRESS": {
+      const { moduleResults, totalXP, diagnostics } = action.payload;
+      const diag1 = diagnostics.find((d) => d.attempt === 1);
+      const diag2 = diagnostics.find((d) => d.attempt === 2);
+      return {
+        ...state,
+        moduleResults,
+        totalXP,
+        firstDiagnosticDone:   !!diag1,
+        firstDiagnosticScore:  diag1?.score ?? 0,
+        wentToReview:          diag1 ? diag1.score < 0.6 : false,
+        secondDiagnosticDone:  !!diag2,
+        secondDiagnosticScore: diag2?.score ?? 0,
+      };
+    }
+
+    // Diagnostic
     case "FIRST_DIAGNOSTIC_DONE":
       return {
         ...state,
@@ -58,11 +77,6 @@ function reducer(state, action) {
         wentToReview:         action.payload < 0.6,
       };
 
-    /**
-     * SECOND_DIAGNOSTIC_DONE
-     * RF20: after second diagnostic, user always goes to /modulo-1.
-     * Routing is handled in SecondDiagnosticScreen.jsx.
-     */
     case "SECOND_DIAGNOSTIC_DONE":
       return {
         ...state,
@@ -70,8 +84,7 @@ function reducer(state, action) {
         secondDiagnosticScore: action.payload,
       };
 
-    // ── Quiz flow ─────────────────────────────────────────────────────────────
-
+    // Quiz flow
     case "SET_SCREEN":
       return { ...state, screen: action.payload };
 
@@ -81,17 +94,10 @@ function reducer(state, action) {
     case "DEMO_WATCHED":
       return {
         ...state,
-        screen: "quiz",
+        screen:      "quiz",
         demoWatched: { ...state.demoWatched, [action.payload]: true },
       };
 
-    /**
-     * MARK_DEMO_COMPLETE — RF02
-     * payload: unitId (number)
-     * Called from DemoScreen when the user reaches the last slide and clicks
-     * "Entendi! Ir para os exercícios". Permanently unlocks quiz access for
-     * that unit so the button in Dashboard changes from "Ver Demonstração" to "Iniciar".
-     */
     case "MARK_DEMO_COMPLETE":
       return {
         ...state,
@@ -99,13 +105,13 @@ function reducer(state, action) {
       };
 
     case "COMPLETE_MODULE": {
-      const prev      = state.moduleResults[action.payload.moduleId];
-      const isBetter  = !prev || action.payload.score > prev.score;
-      const newResult = isBetter ? action.payload : prev;
-      const xpDiff    = isBetter ? Math.max(0, (newResult.xp || 0) - (prev?.xp || 0)) : 0;
+      const prev     = state.moduleResults[action.payload.moduleId];
+      const isBetter = !prev || action.payload.score > prev.score;
+      const result   = isBetter ? action.payload : prev;
+      const xpDiff   = isBetter ? Math.max(0, (result.xp || 0) - (prev?.xp || 0)) : 0;
       return {
         ...state,
-        moduleResults: { ...state.moduleResults, [action.payload.moduleId]: newResult },
+        moduleResults:  { ...state.moduleResults, [action.payload.moduleId]: result },
         totalXP:        state.totalXP + xpDiff,
         screen:         "dashboard",
         currentModule:  null,
@@ -129,6 +135,42 @@ export const AppContext = createContext(null);
 
 export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  // Observa estado de autenticação do Firebase.
+  // Se o aluno já fez login antes (sessão salva no navegador),
+  // ele é restaurado automaticamente aqui — sem precisar logar de novo.
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const { uid, displayName, email } = firebaseUser;
+
+        // Busca perfil completo do Firestore
+        try {
+          const { getDoc, doc } = await import("firebase/firestore");
+          const { db } = await import("../firebase/config");
+          const snap = await getDoc(doc(db, "students", uid));
+          const profile = snap.exists() ? snap.data() : {};
+
+          dispatch({
+            type:    "LOGIN",
+            payload: { uid, name: displayName || profile.name || "Aluno", email, grade: profile.grade || "" },
+          });
+
+          // Carrega progresso salvo
+          const progress = await loadProgress(uid);
+          dispatch({ type: "LOAD_PROGRESS", payload: progress });
+        } catch {
+          dispatch({ type: "AUTH_READY" });
+        }
+      } else {
+        // Nenhum usuário autenticado
+        dispatch({ type: "AUTH_READY" });
+      }
+    });
+
+    return unsubscribe; // cleanup ao desmontar
+  }, []);
+
   return (
     <AppContext.Provider value={{ state, dispatch }}>
       {children}

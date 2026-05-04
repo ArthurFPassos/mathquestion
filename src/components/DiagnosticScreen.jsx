@@ -2,13 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { DIAGNOSTIC } from "../data/units";
+import { saveDiagnostic } from "../firebase/firebaseService";
 import ExitModal from "./ExitModal";
 import "./DiagnosticScreen.css";
 
 const PASS_THRESHOLD = 0.6;
 
 export default function DiagnosticScreen() {
-  const { dispatch }              = useApp();
+  const { state, dispatch }       = useApp();
   const navigate                  = useNavigate();
   const [qIndex, setQIndex]       = useState(0);
   const [selected, setSelected]   = useState(null);
@@ -31,6 +32,12 @@ export default function DiagnosticScreen() {
     if (isLast) {
       const score = finalCorrect / DIAGNOSTIC.length;
       dispatch({ type: "FIRST_DIAGNOSTIC_DONE", payload: score });
+
+      // Salva no Firestore (silencioso — não bloqueia o fluxo)
+      if (state.user?.uid) {
+        saveDiagnostic(state.user.uid, 1, score, finalCorrect, DIAGNOSTIC.length).catch(console.error);
+      }
+
       navigate(
         score < PASS_THRESHOLD ? "/revisao" : "/modulo-1",
         score < PASS_THRESHOLD ? { state: { fromDiagnostic: true, score } } : undefined
