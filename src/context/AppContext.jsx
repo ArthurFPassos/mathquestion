@@ -94,8 +94,10 @@ function reducer(state, action) {
     case "DEMO_WATCHED":
       return {
         ...state,
-        screen:      "quiz",
-        demoWatched: { ...state.demoWatched, [action.payload]: true },
+        screen:             "quiz",
+        currentModule:      action.payload,   // garante módulo definido mesmo pulando a demo
+        hintsUsedInBattery: 0,
+        demoWatched:        { ...state.demoWatched, [action.payload]: true },
       };
 
     case "MARK_DEMO_COMPLETE":

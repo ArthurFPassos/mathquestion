@@ -266,7 +266,13 @@ export default function Dashboard() {
                   const needsDemo    = !done && !demoComplete;
 
                   const handleModuleClick = () => {
-                    dispatch({ type: "START_MODULE", payload: mod.id });
+                    if (demoComplete) {
+                      // Demo já vista — vai direto para o quiz
+                      dispatch({ type: "DEMO_WATCHED", payload: mod.id });
+                    } else {
+                      // Primeira vez — mostra a demo
+                      dispatch({ type: "START_MODULE", payload: mod.id });
+                    }
                     navigate("/modulo-1");
                   };
 
