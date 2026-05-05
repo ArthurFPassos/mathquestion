@@ -1,13 +1,13 @@
 export const DIAGNOSTIC = [
   {
-  id: "d1",
-  type: "multiple",           // ← era "input", agora é "multiple"
-  statement: "João comprou uma calça por R$ 125 e uma blusa por R$ 48. Quanto ele gastou ao todo?",
-  simplifiedText: "Some 125 e 48.",
-  options: ["163", "173", "183", "153"],   // ← adicionar esta linha
-  answer: "173",
-  hint: "Faça a soma das unidades, depois dezenas e centenas: 125 + 48."
-},
+    id: "d1",
+    type: "multiple",
+    statement: "João comprou uma calça por R$ 125 e uma blusa por R$ 48. Quanto ele gastou ao todo?",
+    simplifiedText: "Some 125 e 48.",
+    options: ["163", "173", "183", "153"],
+    answer: "173",
+    hint: "Faça a soma das unidades, depois dezenas e centenas: 125 + 48."
+  },
   {
     id: "d2",
     type: "multiple",
