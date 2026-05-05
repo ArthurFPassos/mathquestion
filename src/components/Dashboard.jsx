@@ -88,7 +88,11 @@ export default function Dashboard() {
   const diagScore = Math.min(state.firstDiagnosticScore ?? state.diagnosticScore ?? 0, 1);
   const diagDone  = state.firstDiagnosticDone ?? state.diagnosticDone ?? false;
 
-  const [reviewBannerVisible, setReviewBannerVisible] = React.useState(true);
+  // Banner de revisão: só aparece automaticamente se aluno falhou no diagnóstico
+  // e nunca foi à tela de revisão. Começa fechado por padrão.
+  const [reviewBannerVisible, setReviewBannerVisible] = React.useState(
+    () => state.wentToReview && !state.secondDiagnosticDone
+  );
 
   return (
     <div className="db-page">
@@ -187,23 +191,12 @@ export default function Dashboard() {
       {state.secondDiagnosticDone && (
         <div className="db-banner db-banner--info">
           2.º Diagnóstico:{" "}
-          <strong>{((state.secondDiagnosticScore || 0) * 100).toFixed(0)}%</strong>{" "}
+          <strong>{Math.min(100, Math.round((state.secondDiagnosticScore || 0) * 100))}%</strong>{" "}
           de acertos
         </div>
       )}
 
-      {allCompleted && avg >= 0.9 && (
-        <div className="db-banner db-banner--success">
-          Parabéns! Você concluiu o curso com média de{" "}
-          <strong>{(avg * 100).toFixed(0)}%</strong>. Excelente desempenho!
-        </div>
-      )}
-      {allCompleted && avg < 0.9 && (
-        <div className="db-banner db-banner--warning">
-          Você completou todos os módulos com média de{" "}
-          <strong>{(avg * 100).toFixed(0)}%</strong>. Refaça módulos para alcançar 90%.
-        </div>
-      )}
+      {/* Banners de conclusão removidos — informação disponível nos cards de unidade */}
 
       {/* ── Units ── */}
       {UNITS.map((unit) => {

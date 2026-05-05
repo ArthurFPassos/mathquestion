@@ -2,22 +2,22 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { saveDiagnostic } from "../firebase/firebaseService";
-import ExitModal from "./ExitModal";
+import Scratchpad from "./Scratchpad";
 import "./SecondDiagnosticScreen.css";
 
 const QUESTIONS = [
-  { id:"sd1", statement:"Quanto é 234 + 58?",           options:["282","292","302","272"], answer:"292" },
-  { id:"sd2", statement:"Calcule 500 − 137.",            options:["353","363","373","343"], answer:"363" },
-  { id:"sd3", statement:"Quanto é 15 × 6?",             options:["80","90","75","95"],     answer:"90"  },
-  { id:"sd4", statement:"Quanto é 96 ÷ 8?",             options:["10","12","14","16"],     answer:"12"  },
-  { id:"sd5", statement:"Quanto é 2⁴?",                  options:["8","12","16","24"],      answer:"16"  },
-  { id:"sd6", statement:"Calcule: 3/8 + 2/8",           options:["4/8","5/8","6/8","1/8"], answer:"5/8" },
+  { id:"sd1", statement:"Quanto é 234 + 58?",  options:["282","292","302","272"], answer:"292" },
+  { id:"sd2", statement:"Calcule 500 − 137.",   options:["353","363","373","343"], answer:"363" },
+  { id:"sd3", statement:"Quanto é 15 × 6?",    options:["80","90","75","95"],     answer:"90"  },
+  { id:"sd4", statement:"Quanto é 96 ÷ 8?",    options:["10","12","14","16"],     answer:"12"  },
+  { id:"sd5", statement:"Quanto é 2⁴?",         options:["8","12","16","24"],      answer:"16"  },
+  { id:"sd6", statement:"Calcule: 3/8 + 2/8",  options:["4/8","5/8","6/8","1/8"], answer:"5/8" },
 ];
 
 // ─── Result screen ────────────────────────────────────────────────────────────
 
-function ResultScreen({ score, onContinue }) {
-  const pct    = Math.round(score * 100);
+function ResultScreen({ correctCount, total, onContinue }) {
+  const pct    = Math.min(100, Math.round((correctCount / total) * 100));
   const passed = pct >= 60;
 
   return (
@@ -36,7 +36,7 @@ function ResultScreen({ score, onContinue }) {
         <div
           className="sd-score-ring"
           style={{
-            background: passed ? "#eff6ff" : "#fffbeb",
+            background:  passed ? "#eff6ff" : "#fffbeb",
             borderColor: passed ? "#bfdbfe" : "#fde68a",
           }}
         >
@@ -48,17 +48,17 @@ function ResultScreen({ score, onContinue }) {
 
         <div className="sd-stats-row">
           <div className="sd-stat-item">
-            <span className="sd-stat-val">{Math.round(score * QUESTIONS.length)}</span>
+            <span className="sd-stat-val">{correctCount}</span>
             <span className="sd-stat-lbl">Acertos</span>
           </div>
           <div className="sd-stat-divider" />
           <div className="sd-stat-item">
-            <span className="sd-stat-val">{QUESTIONS.length - Math.round(score * QUESTIONS.length)}</span>
+            <span className="sd-stat-val">{total - correctCount}</span>
             <span className="sd-stat-lbl">Erros</span>
           </div>
           <div className="sd-stat-divider" />
           <div className="sd-stat-item">
-            <span className="sd-stat-val">{QUESTIONS.length}</span>
+            <span className="sd-stat-val">{total}</span>
             <span className="sd-stat-lbl">Total</span>
           </div>
         </div>
@@ -77,15 +77,14 @@ function ResultScreen({ score, onContinue }) {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function SecondDiagnosticScreen() {
-  const { state, dispatch }               = useApp();
-  const navigate                   = useNavigate();
-  const [qIndex, setQIndex]        = useState(0);
-  const [selected, setSelected]    = useState(null);
-  const [answered, setAnswered]    = useState(false);
-  const [correctCount, setCorrect] = useState(0);
-  const [showExit, setShowExit]    = useState(false);
-  const [finished, setFinished]    = useState(false);
-  const [finalScore, setFinalScore]= useState(0);
+  const { state, dispatch }             = useApp();
+  const navigate                        = useNavigate();
+  const [qIndex, setQIndex]             = useState(0);
+  const [selected, setSelected]         = useState(null);
+  const [answered, setAnswered]         = useState(false);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [finished, setFinished]         = useState(false);
+  const [finalCorrect, setFinalCorrect] = useState(0);
 
   const q        = QUESTIONS[qIndex];
   const isLast   = qIndex === QUESTIONS.length - 1;
@@ -93,24 +92,28 @@ export default function SecondDiagnosticScreen() {
 
   const confirm = () => {
     if (!selected) return;
-    if (selected === q.answer) setCorrect((c) => c + 1);
+    if (selected === q.answer) setCorrectCount((c) => c + 1);
     setAnswered(true);
   };
 
   const next = () => {
-    const finalCorrect = correctCount + (selected === q.answer ? 1 : 0);
+    const addedCorrect = selected === q.answer ? 1 : 0;
+    const totalCorrect = correctCount + addedCorrect;
+
     if (isLast) {
-      const score = finalCorrect / QUESTIONS.length;
+      const total = QUESTIONS.length;
+      const score = Math.min(1, totalCorrect / total);
+
       dispatch({ type: "SECOND_DIAGNOSTIC_DONE", payload: score });
 
-      // Salva no Firestore
       if (state.user?.uid) {
-        saveDiagnostic(state.user.uid, 2, score, finalCorrect, QUESTIONS.length).catch(console.error);
+        saveDiagnostic(state.user.uid, 2, score, totalCorrect, total).catch(console.error);
       }
 
-      setFinalScore(score);
+      setFinalCorrect(totalCorrect);
       setFinished(true);
     } else {
+      setCorrectCount(totalCorrect);
       setQIndex((i) => i + 1);
       setSelected(null);
       setAnswered(false);
@@ -120,23 +123,24 @@ export default function SecondDiagnosticScreen() {
   const optionClass = (opt) => {
     const base = "sd-option-btn";
     if (!answered) return selected === opt ? `${base} sd-option-btn--selected` : base;
-    if (opt === q.answer)                       return `${base} sd-option-btn--correct`;
-    if (opt === selected && opt !== q.answer)   return `${base} sd-option-btn--wrong`;
+    if (opt === q.answer)                     return `${base} sd-option-btn--correct`;
+    if (opt === selected && opt !== q.answer) return `${base} sd-option-btn--wrong`;
     return `${base} sd-option-btn--dim`;
   };
 
   if (finished) {
-    return <ResultScreen score={finalScore} onContinue={() => navigate("/modulo-1")} />;
+    return (
+      <ResultScreen
+        correctCount={finalCorrect}
+        total={QUESTIONS.length}
+        onContinue={() => navigate("/modulo-1")}
+      />
+    );
   }
 
   return (
     <div className="sd-wrapper">
-      {showExit && (
-        <ExitModal
-          onConfirm={() => navigate("/revisao")}
-          onCancel={() => setShowExit(false)}
-        />
-      )}
+      {state.scratchpadOpen && <Scratchpad />}
 
       <div className="sd-card">
         <div className="sd-top-row">
@@ -144,13 +148,16 @@ export default function SecondDiagnosticScreen() {
             <span className="sd-badge">🔬 2º Diagnóstico</span>
             <span className="sd-q-counter">{qIndex + 1} / {QUESTIONS.length}</span>
           </div>
-          <button
-            className="sd-exit-btn"
-            onClick={() => setShowExit(true)}
-            aria-label="Sair"
-          >
-            ✕ Sair
-          </button>
+          <div className="sd-top-actions">
+            <button
+              className="sd-scratchpad-btn"
+              onClick={() => dispatch({ type: "TOGGLE_SCRATCHPAD" })}
+              title="Abrir rascunho"
+              aria-label="Abrir rascunho"
+            >
+              ✏️
+            </button>
+          </div>
         </div>
 
         <div className="sd-progress-track">

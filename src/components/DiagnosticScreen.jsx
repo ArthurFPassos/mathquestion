@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { DIAGNOSTIC } from "../data/units";
 import { saveDiagnostic } from "../firebase/firebaseService";
-import ExitModal from "./ExitModal";
+import Scratchpad from "./Scratchpad";
 import "./DiagnosticScreen.css";
 
 const PASS_THRESHOLD = 0.6;
@@ -15,7 +15,6 @@ export default function DiagnosticScreen() {
   const [selected, setSelected]   = useState(null);
   const [answered, setAnswered]   = useState(false);
   const [correctCount, setCorrect]= useState(0);
-  const [showExit, setShowExit]   = useState(false);
 
   const q        = DIAGNOSTIC[qIndex];
   const isLast   = qIndex === DIAGNOSTIC.length - 1;
@@ -59,13 +58,6 @@ export default function DiagnosticScreen() {
 
   return (
     <div className="ds-wrapper">
-      {showExit && (
-        <ExitModal
-          onConfirm={() => navigate("/app")}
-          onCancel={() => setShowExit(false)}
-        />
-      )}
-
       <div className="ds-card">
         <div className="ds-top-row">
           <span className="ds-badge">🩺 Diagnóstico inicial</span>
@@ -73,13 +65,6 @@ export default function DiagnosticScreen() {
             <span className="ds-counter">
               {qIndex + 1} / {DIAGNOSTIC.length}
             </span>
-            <button
-              className="ds-exit-btn"
-              onClick={() => setShowExit(true)}
-              aria-label="Sair"
-            >
-              ✕ Sair
-            </button>
           </div>
         </div>
 

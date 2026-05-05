@@ -11,11 +11,12 @@ import "./DemoScreen.css";
 const UNIT_DEMOS = {
   1: {
     title: "Operações Básicas",
-    intro: "Veja como resolver operações de adição e subtração passo a passo.",
+    intro: "Veja como resolver adição, subtração, multiplicação e divisão passo a passo.",
     slides: [
+      // ── ADIÇÃO ──────────────────────────────────────────────────────────────
       {
         step: 1,
-        heading: "Armando a conta",
+        heading: "➕ Adição — Armando a conta",
         visual: (
           <>
             <div className="ds-visual-box">
@@ -25,64 +26,107 @@ const UNIT_DEMOS = {
               <p className="ds-visual-line ds-visual-blank">   ?</p>
             </div>
             <p className="ds-slide-tip">
-              Alinhamos os números pela direita: unidades com unidades, dezenas
-              com dezenas, centenas com centenas.
+              Alinhamos os números pela direita: unidades com unidades,
+              dezenas com dezenas, centenas com centenas.
             </p>
           </>
         ),
       },
       {
         step: 2,
-        heading: "Somando as unidades",
+        heading: "➕ Adição — Somando coluna a coluna",
         visual: (
           <>
             <div className="ds-visual-box ds-visual-box--highlight">
-              <p className="ds-visual-line">  3 4 <span className="ds-hl">8</span></p>
-              <p className="ds-visual-line">+ 2 7 <span className="ds-hl">5</span></p>
+              <p className="ds-visual-line">  3 4 <span className="ds-hl">8</span>  → 8+5=13 → escreve 3, vai 1</p>
+              <p className="ds-visual-line">  3 <span className="ds-hl">4</span> 8  → 4+7+1=12 → escreve 2, vai 1</p>
+              <p className="ds-visual-line">  <span className="ds-hl">3</span> 4 8  → 3+2+1=6</p>
               <p className="ds-visual-divider">───────</p>
-              <p className="ds-visual-line ds-visual-result">        <span className="ds-hl">3</span></p>
+              <p className="ds-visual-final">  6 2 3 ✓</p>
             </div>
             <p className="ds-slide-tip">
-              8 + 5 = <strong>13</strong>. Escreva o <strong>3</strong> e leve
-              1 para as dezenas ("vai um" ↑).
+              Sempre comece pelas <strong>unidades</strong> e vá levando o
+              "vai um" para a próxima coluna quando necessário.
             </p>
           </>
         ),
       },
+      // ── SUBTRAÇÃO ───────────────────────────────────────────────────────────
       {
         step: 3,
-        heading: "Somando as dezenas",
+        heading: "➖ Subtração — O empréstimo",
         visual: (
           <>
-            <div className="ds-visual-box ds-visual-box--highlight">
-              <p className="ds-visual-line">  3 <span className="ds-hl">4</span> 8</p>
-              <p className="ds-visual-line">+ 2 <span className="ds-hl">7</span> 5</p>
+            <div className="ds-visual-box">
+              <p className="ds-visual-line">  5 2 0</p>
+              <p className="ds-visual-line">− 1 8 7</p>
               <p className="ds-visual-divider">───────</p>
-              <p className="ds-visual-line ds-visual-result">     <span className="ds-hl">2</span> 3</p>
+              <p className="ds-visual-line ds-visual-blank">   ?</p>
             </div>
             <p className="ds-slide-tip">
-              4 + 7 + 1 (vai um) = <strong>12</strong>. Escreva o{" "}
-              <strong>2</strong> e leve 1 para as centenas.
+              Quando o de cima é menor que o de baixo, fazemos um{" "}
+              <strong>empréstimo</strong> da coluna à esquerda.
             </p>
           </>
         ),
       },
       {
         step: 4,
-        heading: "Somando as centenas",
+        heading: "➖ Subtração — Resolvendo",
         visual: (
           <>
             <div className="ds-visual-box ds-visual-box--highlight">
-              <p className="ds-visual-line">  <span className="ds-hl">3</span> 4 8</p>
-              <p className="ds-visual-line">+ <span className="ds-hl">2</span> 7 5</p>
+              <p className="ds-visual-line"><span className="ds-hl">Unid:</span> 10−7=3 (emprestou do 2)</p>
+              <p className="ds-visual-line"><span className="ds-hl">Dez:</span>  11−8=3 (emprestou do 5)</p>
+              <p className="ds-visual-line"><span className="ds-hl">Cent:</span> 4−1=3</p>
               <p className="ds-visual-divider">───────</p>
-              <p className="ds-visual-line ds-visual-result ds-visual-final">
-                <span className="ds-hl">6</span> 2 3
-              </p>
+              <p className="ds-visual-final">  3 3 3 ✓</p>
             </div>
             <p className="ds-slide-tip">
-              3 + 2 + 1 (vai um) = <strong>6</strong>.{" "}
-              <strong>Resposta: 623 ✓</strong>
+              Cada empréstimo <strong>soma 10</strong> à coluna atual e{" "}
+              <strong>subtrai 1</strong> da coluna à esquerda.
+            </p>
+          </>
+        ),
+      },
+      // ── MULTIPLICAÇÃO ────────────────────────────────────────────────────────
+      {
+        step: 5,
+        heading: "✖️ Multiplicação — Decomposição",
+        visual: (
+          <>
+            <div className="ds-visual-box ds-visual-box--highlight">
+              <p className="ds-visual-formula" style={{fontSize:20}}>24 × 15 = ?</p>
+              <p className="ds-visual-arrow">↓ decomponha o 15</p>
+              <p className="ds-visual-line">24 × 10 = <span className="ds-hl">240</span></p>
+              <p className="ds-visual-line">24 ×  5 = <span className="ds-hl">120</span></p>
+              <p className="ds-visual-divider">───────────</p>
+              <p className="ds-visual-final">240 + 120 = 360 ✓</p>
+            </div>
+            <p className="ds-slide-tip">
+              Decompor facilita: separe o multiplicador em parcelas mais
+              simples (dezenas e unidades) e some os resultados.
+            </p>
+          </>
+        ),
+      },
+      // ── DIVISÃO ──────────────────────────────────────────────────────────────
+      {
+        step: 6,
+        heading: "➗ Divisão — Chave",
+        visual: (
+          <>
+            <div className="ds-visual-box ds-visual-box--highlight">
+              <p className="ds-visual-formula" style={{fontSize:20}}>168 ÷ 8 = ?</p>
+              <p className="ds-visual-arrow">↓ pense na tabuada do 8</p>
+              <p className="ds-visual-line">8 × <span className="ds-hl">2</span> = 16 → sobra 0 8</p>
+              <p className="ds-visual-line">8 × <span className="ds-hl">1</span> = 8  → sobra 0</p>
+              <p className="ds-visual-divider">───────────</p>
+              <p className="ds-visual-final">168 ÷ 8 = 21 ✓</p>
+            </div>
+            <p className="ds-slide-tip">
+              Na divisão, pergunte: <em>"Quantas vezes o divisor cabe
+              no dividendo?"</em> — use a tabuada para responder!
             </p>
           </>
         ),
