@@ -84,7 +84,7 @@ function reducer(state, action) {
         secondDiagnosticScore: action.payload,
       };
 
-    // Quiz flow
+
     case "SET_SCREEN":
       return { ...state, screen: action.payload };
 
@@ -95,7 +95,7 @@ function reducer(state, action) {
       return {
         ...state,
         screen:             "quiz",
-        currentModule:      action.payload,   // garante módulo definido mesmo pulando a demo
+        currentModule:      action.payload,
         hintsUsedInBattery: 0,
         demoWatched:        { ...state.demoWatched, [action.payload]: true },
       };
@@ -131,16 +131,11 @@ function reducer(state, action) {
   }
 }
 
-// ─── Context & Provider ───────────────────────────────────────────────────────
-
 export const AppContext = createContext(null);
 
 export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Observa estado de autenticação do Firebase.
-  // Se o aluno já fez login antes (sessão salva no navegador),
-  // ele é restaurado automaticamente aqui — sem precisar logar de novo.
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
@@ -170,7 +165,7 @@ export function AppProvider({ children }) {
       }
     });
 
-    return unsubscribe; // cleanup ao desmontar
+    return unsubscribe;
   }, []);
 
   return (

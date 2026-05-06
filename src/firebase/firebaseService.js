@@ -1,7 +1,3 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// Firebase Service — todas as operações de auth e banco em um só lugar
-// ─────────────────────────────────────────────────────────────────────────────
-
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -22,10 +18,10 @@ import { auth, db } from "./config";
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
 
-/**
- * Cadastra novo aluno.
- * Cria conta no Firebase Auth e salva perfil no Firestore.
- * Retorna objeto { uid, name, email, grade } ou lança erro.
+/*
+ Cadastra novo aluno.
+  Cria conta no Firebase Auth e salva perfil no Firestore.
+  Retorna objeto { uid, name, email, grade } ou lança erro.
  */
 export async function registerStudent({ name, email, password, grade }) {
   const credential = await createUserWithEmailAndPassword(auth, email, password);
@@ -45,10 +41,8 @@ export async function registerStudent({ name, email, password, grade }) {
   return { uid, name, email, grade };
 }
 
-/**
- * Autentica aluno existente.
- * Retorna { uid, name, email, grade } ou lança erro.
- */
+/*Autentica aluno existente.
+ Retorna { uid, name, email, grade } ou lança erro.*/
 export async function loginStudent({ email, password }) {
   const credential = await signInWithEmailAndPassword(auth, email, password);
   const { uid } = credential.user;
@@ -67,14 +61,13 @@ export async function logoutStudent() {
   await signOut(auth);
 }
 
-// ── Progresso ─────────────────────────────────────────────────────────────────
+// Progresso 
 
-/**
+/*
  * Carrega todo o progresso do aluno (módulos + diagnósticos) do Firestore.
  * Retorna { moduleResults, totalXP, diagnostics }
  */
 export async function loadProgress(uid) {
-  // Módulos
   const modulesSnap = await getDocs(collection(db, "students", uid, "modules"));
   const moduleResults = {};
   let totalXP = 0;
@@ -101,9 +94,7 @@ export async function loadProgress(uid) {
   return { moduleResults, totalXP, diagnostics };
 }
 
-/**
- * Salva (ou atualiza se melhorou) o resultado de um módulo.
- */
+ /*Salva (ou atualiza se melhorou) o resultado de um módulo.*/
 export async function saveModuleResult(uid, moduleId, result) {
   const ref  = doc(db, "students", uid, "modules", moduleId);
   const snap = await getDoc(ref);
@@ -117,10 +108,9 @@ export async function saveModuleResult(uid, moduleId, result) {
   });
 }
 
-/**
- * Salva resultado de diagnóstico (1º ou 2º).
- * attempt: 1 | 2
- */
+/*
+ /Salva resultado de diagnóstico (1º ou 2º).
+ attempt: 1 | 2*/
 export async function saveDiagnostic(uid, attempt, score, correct, total) {
   await setDoc(doc(db, "students", uid, "diagnostics", `attempt_${attempt}`), {
     attempt,
@@ -131,17 +121,13 @@ export async function saveDiagnostic(uid, attempt, score, correct, total) {
   });
 }
 
-/**
- * Salva flag de demo concluída por unidade.
- */
 export async function saveDemoCompleted(uid, unitId) {
   const ref = doc(db, "students", uid);
   await setDoc(ref, { [`demoCompleted_${unitId}`]: true }, { merge: true });
 }
 
-/**
- * Traduz erro do Firebase para mensagem amigável em português.
- */
+
+ /* Traduz erro do Firebase*/
 export function firebaseErrorMsg(error) {
   const code = error?.code || "";
   const map = {

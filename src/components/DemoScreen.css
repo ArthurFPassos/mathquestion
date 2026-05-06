@@ -1,4 +1,4 @@
-/* ─── DemoScreen ─────────────────────────────────────────────────────────────── */
+
 
 .demo-wrapper {
   display: flex;
@@ -19,10 +19,10 @@
   border: 1px solid #f1f5f9;
 }
 
-/* Wide variant for richer slide content */
+
 .demo-card--wide { max-width: 580px; }
 
-/* ── Header ────────────────────────────────────────────────────────────────── */
+
 
 .demo-header { text-align: center; margin-bottom: 20px; }
 
@@ -38,7 +38,7 @@
 .demo-title  { font-size: 20px; font-weight: 800; margin: 0 0 8px; }
 .demo-intro  { font-size: 14px; color: #64748b; line-height: 1.6; margin: 0; }
 
-/* ── Step indicator ────────────────────────────────────────────────────────── */
+
 
 .demo-step-indicator {
   display: flex;
@@ -83,7 +83,7 @@
   margin-left: 8px;
 }
 
-/* ── Slide ─────────────────────────────────────────────────────────────────── */
+
 
 .demo-slide { margin-bottom: 24px; }
 
@@ -101,7 +101,7 @@
   gap: 12px;
 }
 
-/* ── Visual calculation box ─────────────────────────────────────────────────── */
+
 
 .ds-visual-box {
   background: #f8fafc;
@@ -165,10 +165,10 @@
   letter-spacing: 0;
 }
 
-/* Highlight span */
+
 .ds-hl { color: #2563eb; font-weight: 800; }
 
-/* Tip below visual */
+
 .ds-slide-tip {
   font-size: 14px;
   color: #475569;
@@ -178,7 +178,7 @@
   margin: 0;
 }
 
-/* Annotations (base/exponent labels) */
+
 .ds-annotation-row {
   display: flex;
   justify-content: space-around;
@@ -203,7 +203,7 @@
   line-height: 1.4;
 }
 
-/* ── Navigation ────────────────────────────────────────────────────────────── */
+
 
 .demo-nav-row {
   display: flex;
@@ -256,7 +256,7 @@
 }
 .demo-btn-ghost:hover { background: #f8fafc; }
 
-/* ── Progress bar ───────────────────────────────────────────────────────────── */
+
 
 .demo-progress-track {
   background: #f1f5f9;
@@ -271,7 +271,7 @@
   transition: width 0.35s ease;
 }
 
-/* ── Responsive ─────────────────────────────────────────────────────────────── */
+
 
 @media (max-width: 480px) {
   .demo-card { padding: 24px 18px; }
@@ -279,3 +279,4 @@
   .ds-visual-formula { font-size: 22px; }
   .demo-btn-finish { font-size: 14px; }
 }
+

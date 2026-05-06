@@ -1,4 +1,4 @@
-# 🧮 MathQuestion
+# MathQuestion
 
 Plataforma educacional de exercícios de matemática para o 6º ano do Ensino Fundamental.
 

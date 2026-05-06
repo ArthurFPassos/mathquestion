@@ -32,7 +32,7 @@ export default function DiagnosticScreen() {
       const score = finalCorrect / DIAGNOSTIC.length;
       dispatch({ type: "FIRST_DIAGNOSTIC_DONE", payload: score });
 
-      // Salva no Firestore (silencioso — não bloqueia o fluxo)
+      // Salva no Firestore
       if (state.user?.uid) {
         saveDiagnostic(state.user.uid, 1, score, finalCorrect, DIAGNOSTIC.length).catch(console.error);
       }

@@ -1,6 +1,6 @@
-/* ─── Login ──────────────────────────────────────────────────────────────────── */
 
-/* Two-column layout inherited from .auth-layout in index.css */
+
+
 
 .login-error-box {
   background: #fef2f2;
@@ -33,7 +33,7 @@
   font-size: 13px;
 }
 
-/* Visual panel */
+
 .login-visual-content {
   position: relative;
   z-index: 1;
@@ -45,7 +45,7 @@
 .login-visual-title { font-size: 28px; font-weight: 800; color: #fff; margin: 0 0 12px; }
 .login-visual-desc  { font-size: 15px; color: rgba(255, 255, 255, 0.75); line-height: 1.65; margin: 0 0 36px; }
 
-/* Flat benefits list — no white cards, text directly on blue bg */
+
 .login-benefits-list {
   list-style: none;
   padding: 0;
@@ -72,7 +72,7 @@
   font-weight: 700;
 }
 
-/* ── Calculadora.png images ──────────────────────────────────────────────────── */
+
 
 .login-brand-img {
   width: 36px;
@@ -86,5 +86,6 @@
   height: 72px;
   object-fit: contain;
   margin-bottom: 20px;
-  filter: brightness(1) invert(0); /* white tint on blue bg */
+  filter: brightness(1) invert(0); 
 }
+
