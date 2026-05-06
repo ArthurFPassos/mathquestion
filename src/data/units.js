@@ -529,9 +529,9 @@ export const UNITS = [
             xp: 25,
             pairs: [
               { left: "2/4",  right: "1/2" },
-              { left: "3/6",  right: "1/2" },
-              { left: "4/8",  right: "1/2" },
-              { left: "6/12", right: "1/2" },
+              { left: "8/12",  right: "2/3" },
+              { left: "10/100",  right: "1/10" },
+              { left: "5/5", right: "1" },
             ],
           },
           {
