@@ -13,7 +13,8 @@ import ReviewScreen           from "./components/ReviewScreen";            // RF
 import SecondDiagnosticScreen from "./components/SecondDiagnosticScreen";  // RF20
 
 // ── Main app ──────────────────────────────────────────────────────────────────
-import Dashboard  from "./components/Dashboard";
+import Dashboard        from "./components/Dashboard";
+import TeacherDashboard from "./components/TeacherDashboard";
 import Navbar     from "./components/Navbar";      // RNF06
 import DemoScreen from "./components/DemoScreen";
 import QuizEngine from "./components/QuizEngine";
@@ -22,6 +23,15 @@ import QuizEngine from "./components/QuizEngine";
 
 // Enquanto o Firebase verifica a sessão salva, mostra spinner
 // Evita redirecionar para /login um aluno que já estava autenticado
+// Rota exclusiva para professores
+function TeacherRoute({ children }) {
+  const { state } = useApp();
+  if (state.authLoading) return null;
+  if (!state.isAuthenticated) return <Navigate to="/login" replace />;
+  if (state.user?.role !== "professor") return <Navigate to="/dashboard" replace />;
+  return children;
+}
+
 function PrivateRoute({ children }) {
   const { state } = useApp();
 
@@ -135,6 +145,16 @@ export default function App() {
             <PrivateRoute>
               <Module1 />
             </PrivateRoute>
+          }
+        />
+
+        {/* ── RF23: Painel do professor ── */}
+        <Route
+          path="/teacher-dashboard"
+          element={
+            <TeacherRoute>
+              <TeacherDashboard />
+            </TeacherRoute>
           }
         />
 

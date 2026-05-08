@@ -1,4 +1,4 @@
-
+/* ─── ExitModal ─────────────────────────────────────────────────────────────── */
 
 .em-backdrop {
   position: fixed;
@@ -68,4 +68,3 @@
   transition: background 0.15s;
 }
 .em-btn-confirm:hover { background: #dc2626; }
-

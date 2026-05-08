@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import calculadora from "../assets/calculadora.png";
 import "./Sobre.css";
 
+// ─── Data ─────────────────────────────────────────────────────────────────────
 
 const UNITS = [
   {
@@ -114,11 +115,13 @@ const PRINCIPLES = [
   },
 ];
 
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export default function Sobre() {
   return (
     <div className="sobre-page">
 
-      {}
+      {/* ── Navbar ── */}
       <header className="sobre-navbar">
         <div className="sobre-nav-inner">
           <Link to="/" className="sobre-brand">
@@ -147,7 +150,7 @@ export default function Sobre() {
         </div>
       </header>
 
-      {}
+      {/* ── Hero ── */}
       <section className="sobre-hero">
         <div className="sobre-hero-inner">
           <div className="sobre-hero-badge">Sobre a plataforma</div>
@@ -176,7 +179,7 @@ export default function Sobre() {
         </div>
       </section>
 
-      {}
+      {/* ── Unidades ── */}
       <section className="sobre-units-section">
         <div className="sobre-section-inner">
           <h2 className="sobre-section-title">Estrutura de Conteúdo</h2>
@@ -192,7 +195,7 @@ export default function Sobre() {
                 className="sobre-unit-card"
                 style={{ borderTopColor: unit.color }}
               >
-                {}
+                {/* Header */}
                 <div className="sobre-unit-header">
                   <div
                     className="sobre-unit-icon"
@@ -212,10 +215,10 @@ export default function Sobre() {
                   </div>
                 </div>
 
-                {}
+                {/* Description */}
                 <p className="sobre-unit-desc">{unit.description}</p>
 
-                {}
+                {/* Modules */}
                 <div className="sobre-unit-modules">
                   <p className="sobre-unit-modules-label">Módulos</p>
                   {unit.modules.map((m) => (
@@ -229,7 +232,7 @@ export default function Sobre() {
                   ))}
                 </div>
 
-                {}
+                {/* Skills */}
                 <div className="sobre-unit-skills">
                   <p className="sobre-unit-modules-label">Habilidades desenvolvidas</p>
                   <ul className="sobre-skills-list">
@@ -246,7 +249,7 @@ export default function Sobre() {
         </div>
       </section>
 
-      {}
+      {/* ── Como funciona ── */}
       <section className="sobre-how-section">
         <div className="sobre-section-inner">
           <h2 className="sobre-section-title">Como funciona</h2>
@@ -265,7 +268,7 @@ export default function Sobre() {
         </div>
       </section>
 
-      {}
+      {/* ── Princípios ── */}
       <section className="sobre-principles-section">
         <div className="sobre-section-inner">
           <h2 className="sobre-section-title sobre-section-title--white">
@@ -286,7 +289,7 @@ export default function Sobre() {
         </div>
       </section>
 
-      {}
+      {/* ── CTA ── */}
       <section className="sobre-cta">
         <h2 className="sobre-cta-title">Pronto para começar?</h2>
         <p className="sobre-cta-desc">
@@ -299,7 +302,7 @@ export default function Sobre() {
         </Link>
       </section>
 
-      {}
+      {/* ── Footer ── */}
       <footer className="sobre-footer">
         <div className="sobre-footer-inner">
           <span className="sobre-footer-brand">

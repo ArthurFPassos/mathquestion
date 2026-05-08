@@ -1,4 +1,4 @@
-
+/* ─── Dashboard ─────────────────────────────────────────────────────────────── */
 
 .db-page {
   max-width: 720px;
@@ -6,7 +6,7 @@
   padding: 28px 16px 48px;
 }
 
-
+/* ── Header ─────────────────────────────────────────────────────────────────── */
 
 .db-header {
   display: flex;
@@ -37,7 +37,7 @@
   align-items: center;
 }
 
-
+/* ── Shared small button ────────────────────────────────────────────────────── */
 
 .db-btn-sm {
   padding: 7px 14px;
@@ -59,7 +59,7 @@
 .db-btn-sm--report    { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
 .db-btn-sm--logout    { background: #fef2f2; color: #ef4444; border-color: #fecaca; }
 
-
+/* Tiny image inside action buttons (Revisão) */
 .db-btn-icon {
   width: 14px;
   height: 14px;
@@ -67,7 +67,7 @@
   flex-shrink: 0;
 }
 
-
+/* ── Stats grid ─────────────────────────────────────────────────────────────── */
 
 .db-stats-grid {
   display: grid;
@@ -84,7 +84,7 @@
   border: 1px solid #f1f5f9;
 }
 
-
+/* Icon container — fixed size to keep cards consistent */
 .db-stat-icon {
   width: 40px;
   height: 40px;
@@ -94,7 +94,7 @@
   justify-content: center;
 }
 
-
+/* Asset image inside stat icon */
 .db-stat-img {
   width: 36px;
   height: 36px;
@@ -105,7 +105,7 @@
 .db-stat-value { font-size: 20px; font-weight: 700; color: #1e293b; }
 .db-stat-label { font-size: 11px; color: #94a3b8; margin-top: 2px; }
 
-
+/* ── Review banner ──────────────────────────────────────────────────────────── */
 
 .db-review-banner {
   background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
@@ -122,7 +122,7 @@
 
 .db-review-banner-left  { display: flex; align-items: flex-start; gap: 14px; flex: 1; }
 
-
+/* revisao.png in review banner */
 .db-review-banner-img {
   width: 36px;
   height: 36px;
@@ -150,7 +150,7 @@
 }
 .db-review-banner-btn:hover { background: #1d4ed8; }
 
-
+/* ── Notification banners ───────────────────────────────────────────────────── */
 
 .db-banner {
   border-radius: 12px;
@@ -181,7 +181,7 @@
   text-decoration: underline;
 }
 
-
+/* ── Unit cards ─────────────────────────────────────────────────────────────── */
 
 .db-unit-card {
   background: #fff;
@@ -195,7 +195,7 @@
 
 .db-unit-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 12px; }
 
-
+/* Unit icon box — holds revisao.png */
 .db-unit-icon-box {
   width: 46px;
   height: 46px;
@@ -206,7 +206,7 @@
   flex-shrink: 0;
 }
 
-
+/* revisao.png inside unit icon box */
 .db-unit-img {
   width: 30px;
   height: 30px;
@@ -214,7 +214,7 @@
   display: block;
 }
 
-
+/* Lock icon fallback text */
 .db-unit-lock { font-size: 20px; }
 
 .db-unit-meta { flex: 1; }
@@ -242,7 +242,7 @@
   transition: width 0.4s ease;
 }
 
-
+/* ── Review shortcut (Unit 1) ───────────────────────────────────────────────── */
 
 .db-review-shortcut {
   display: flex;
@@ -263,7 +263,7 @@
 }
 .db-review-shortcut:hover { background: #f8fafc; }
 
-
+/* revisao.png inside the review shortcut button */
 .db-review-shortcut-img {
   width: 18px;
   height: 18px;
@@ -273,7 +273,7 @@
 
 .db-review-shortcut-arrow { margin-left: auto; font-size: 13px; }
 
-
+/* ── Module rows ────────────────────────────────────────────────────────────── */
 
 .db-module-list {
   display: flex;
@@ -314,7 +314,7 @@
   margin: 8px 0 0;
 }
 
-
+/* ── RF02 — Demo required badge & button modifier ───────────────────────────── */
 
 .db-demo-required-badge {
   display: inline-flex;
@@ -339,7 +339,7 @@
   50%       { box-shadow: 0 0 0 6px rgba(253, 230, 138, 0); }
 }
 
-
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
 
 @media (max-width: 600px) {
   .db-stats-grid   { grid-template-columns: repeat(2, 1fr); }
@@ -347,7 +347,7 @@
   .db-stat-img     { width: 28px; height: 28px; }
 }
 
-
+/* ── Review banner actions row (close button — fix 4) ───────────────────────── */
 
 .db-review-banner-actions {
   display: flex;
@@ -376,4 +376,3 @@
 .db-review-banner-close:hover {
   background: #dbeafe;
 }
-

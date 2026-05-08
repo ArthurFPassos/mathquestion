@@ -137,7 +137,7 @@ export const UNITS = [
             xp: 10,
           },
           {
-            // ASSOCIAÇÃO: ligue a operação ao resultado
+            // ── ASSOCIAÇÃO: ligue a operação ao resultado ─────────────────────
             id: "q7-match",
             type: "matching",
             statement: "Ligue cada operação ao seu resultado correto.",
@@ -203,7 +203,7 @@ export const UNITS = [
             statement: "Calcule 2⁵ (2 elevado à quinta potência).",
             simplifiedText: "Multiplique 2 por ele mesmo 5 vezes: 2×2×2×2×2.",
             answer: "32",
-            hint: "2⁵ = 2×2×2×2×2. Vá multiplicando: 2, 4, 8...",
+            hint: "2⁵ = 2×2×2×2×2. Vá multiplicando: 2, 4, 8, 16, 32.",
             xp: 15,
           },
           {
@@ -271,14 +271,14 @@ export const UNITS = [
             type: "drag-drop",
             statement: "Arraste para ordenar as potências de 2 do MENOR para o MAIOR valor.",
             simplifiedText: "Coloque as potências de 2 em ordem crescente de valor.",
-            hint: "Calcule cada potência",
+            hint: "Calcule cada potência: 2¹=2, 2²=4, 2³=8, 2⁴=16, 2⁵=32.",
             xp: 15,
             items: [
-              { id: "pot2", label: "2³"  },
-              { id: "pot1", label: "7¹"  },
-              { id: "pot5", label: "2⁵" },
-              { id: "pot3", label: "3²"  },
-              { id: "pot4", label: "4²" },
+              { id: "pot3", label: "2³ = 8"  },
+              { id: "pot1", label: "2¹ = 2"  },
+              { id: "pot5", label: "2⁵ = 32" },
+              { id: "pot2", label: "2² = 4"  },
+              { id: "pot4", label: "2⁴ = 16" },
             ],
             answer: ["pot1", "pot2", "pot3", "pot4", "pot5"],
           },
@@ -529,9 +529,9 @@ export const UNITS = [
             xp: 25,
             pairs: [
               { left: "2/4",  right: "1/2" },
-              { left: "8/12",  right: "2/3" },
-              { left: "10/100",  right: "1/10" },
-              { left: "5/5", right: "1" },
+              { left: "3/6",  right: "1/2" },
+              { left: "4/8",  right: "1/2" },
+              { left: "6/12", right: "1/2" },
             ],
           },
           {

@@ -1,4 +1,4 @@
-
+/* ─── Navbar (RNF06) ─────────────────────────────────────────────────────────── */
 
 .nb-nav {
   position: sticky;
@@ -8,7 +8,7 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid #e5e7eb;
-  
+  /* Subtle shadow — not competing with content */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
@@ -23,7 +23,7 @@
   gap: 12px;
 }
 
-
+/* ── Home button ────────────────────────────────────────────────────────────── */
 
 .nb-home-btn {
   display: flex;
@@ -36,7 +36,7 @@
   border-radius: 10px;
   transition: background 0.15s;
   font-family: inherit;
-  
+  /* Accessible tap target */
   min-height: 44px;
 }
 
@@ -62,7 +62,7 @@
   letter-spacing: -0.3px;
 }
 
-
+/* "Home" hint label — small, secondary */
 .nb-home-hint {
   font-size: 10px;
   font-weight: 700;
@@ -76,7 +76,7 @@
   margin-left: 2px;
 }
 
-
+/* ── Right section ──────────────────────────────────────────────────────────── */
 
 .nb-right {
   display: flex;
@@ -84,7 +84,7 @@
   gap: 10px;
 }
 
-
+/* XP badge */
 .nb-xp-badge {
   font-size: 12px;
   font-weight: 700;
@@ -96,7 +96,7 @@
   white-space: nowrap;
 }
 
-
+/* User avatar + name */
 .nb-user {
   display: flex;
   align-items: center;
@@ -127,11 +127,10 @@
   white-space: nowrap;
 }
 
-
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
 
 @media (max-width: 480px) {
   .nb-username  { display: none; }
   .nb-home-hint { display: none; }
   .nb-xp-badge  { font-size: 11px; padding: 3px 9px; }
 }
-

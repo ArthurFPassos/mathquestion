@@ -23,7 +23,7 @@ import Scratchpad from "./Scratchpad";
 import ExitModal from "./ExitModal";
 import "./QuizEngine.css";
 
-//  Drag & Drop
+// ── Drag & Drop — Sortable Item ──────────────────────────────────────────────
 
 function SortableItem({ id, label, disabled }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -50,7 +50,7 @@ function SortableItem({ id, label, disabled }) {
   );
 }
 
-// Drag & Drop questão
+// ── Drag & Drop Question ─────────────────────────────────────────────────────
 
 function DragDropQuestion({ question, onAnswer, disabled }) {
   const [orderedItems, setOrderedItems] = useState(() => [...question.items]);
@@ -102,11 +102,11 @@ function DragDropQuestion({ question, onAnswer, disabled }) {
   );
 }
 
-// ─associação
+// ── Matching Question ─────────────────────────────────────────────────────────
 
 function MatchingQuestion({ question, onAnswer, disabled }) {
-  const [selected, setSelected] = useState(null);
-  const [connections, setConnections] = useState({});
+  const [selected, setSelected] = useState(null);       // { side: 'left'|'right', index }
+  const [connections, setConnections] = useState({});   // { leftIndex: rightIndex }
   const [shuffledRight] = useState(() =>
     [...question.pairs.map((p, i) => ({ label: p.right, origIdx: i }))].sort(
       () => Math.random() - 0.5
@@ -121,6 +121,7 @@ function MatchingQuestion({ question, onAnswer, disabled }) {
   const handleLeftClick = (idx) => {
     if (disabled) return;
     if (selected?.side === "right") {
+      // connect left idx → right shuffledRight index
       const rightOrigIdx = shuffledRight[selected.index].origIdx;
       setConnections((c) => ({ ...c, [idx]: selected.index }));
       setSelected(null);
@@ -163,7 +164,7 @@ function MatchingQuestion({ question, onAnswer, disabled }) {
         {disabled ? "Suas associações:" : "Clique em um item da esquerda e depois um da direita para ligar:"}
       </p>
       <div className="qe-match-grid">
-        {}
+        {/* Left column */}
         <div className="qe-match-col">
           {question.pairs.map((pair, idx) => {
             const isSelected = selected?.side === "left" && selected.index === idx;
@@ -181,7 +182,7 @@ function MatchingQuestion({ question, onAnswer, disabled }) {
           })}
         </div>
 
-        {}
+        {/* Lines / connector indicator */}
         <div className="qe-match-lines">
           {question.pairs.map((_, leftIdx) => {
             const rightIdx = connections[leftIdx];
@@ -195,7 +196,7 @@ function MatchingQuestion({ question, onAnswer, disabled }) {
           })}
         </div>
 
-        {}
+        {/* Right column */}
         <div className="qe-match-col">
           {shuffledRight.map((item, idx) => {
             const isSelected = selected?.side === "right" && selected.index === idx;
@@ -231,7 +232,7 @@ function MatchingQuestion({ question, onAnswer, disabled }) {
   );
 }
 
-// Questões
+// ── Main QuizEngine ───────────────────────────────────────────────────────────
 
 export default function QuizEngine() {
   const { state, dispatch } = useApp();
@@ -247,13 +248,14 @@ export default function QuizEngine() {
   const [qIndex, setQIndex] = useState(0);
   const [textAnswer, setTextAnswer] = useState("");
   const [selected, setSelected] = useState(null);
-  const [feedback, setFeedback] = useState(null);
+  const [feedback, setFeedback] = useState(null);   // null | 'correct' | 'wrong'
   const [showHint, setShowHint] = useState(false);
   const [scores, setScores] = useState([]);
   const [xpLog, setXpLog] = useState([]);
   const [startTime] = useState(Date.now());
   const [showExit, setShowExit] = useState(false);
   const [simplified, setSimplified] = useState(false);
+  // For drag-drop and matching we track if the sub-component confirmed
   const [interactiveAnswered, setInteractiveAnswered] = useState(false);
 
   if (!module || !unit) return null;
@@ -270,7 +272,7 @@ export default function QuizEngine() {
 
   const isInteractive = q.type === "drag-drop" || q.type === "matching";
 
-  // Interactive question answer callback
+  // ── Interactive question answer callback ──────────────────────────────────
 
   const handleInteractiveAnswer = (correct) => {
     setInteractiveAnswered(true);
@@ -283,7 +285,7 @@ export default function QuizEngine() {
     }
   };
 
-  // Multipla escolha
+  // ── Multiple choice / input confirm ──────────────────────────────────────
 
   const confirm = () => {
     const ans = q.type === "multiple" ? selected : textAnswer.trim();
@@ -349,7 +351,7 @@ export default function QuizEngine() {
     };
     dispatch({ type: "COMPLETE_MODULE", payload: result });
 
-    // Firestore
+    // Persiste no Firestore (silencioso)
     if (state.user?.uid) {
       saveModuleResult(state.user.uid, module.id, {
         score:     result.score,
@@ -375,7 +377,7 @@ export default function QuizEngine() {
     opacity: !isAnswering && selected !== opt ? 0.55 : 1,
   });
 
-  // tabelas
+  // ── Type label ────────────────────────────────────────────────────────────
   const typeLabel =
     q.type === "drag-drop"
       ? "🧩 Arrastar e Soltar"
@@ -383,7 +385,8 @@ export default function QuizEngine() {
       ? "🔗 Associação"
       : null;
 
-  // Caixa de questão 
+  // ── Render ────────────────────────────────────────────────────────────────
+
   return (
     <div className="qe-wrapper">
       {showExit && (
@@ -393,7 +396,7 @@ export default function QuizEngine() {
 
       <div className={`qe-card${simplified ? " qe-card--simplified" : ""}`}>
 
-        {}
+        {/* Top bar */}
         <div className="qe-top-bar">
           <div className="qe-top-left">
             <div className="qe-unit-dot" style={{ background: unit.color }} />
@@ -420,7 +423,7 @@ export default function QuizEngine() {
           </div>
         </div>
 
-        {/* Progresso */}
+        {/* Progress */}
         <div className="qe-progress-track">
           <div className="qe-progress-fill" style={{ width: `${progressPct}%`, background: unit.color }} />
         </div>
@@ -433,21 +436,21 @@ export default function QuizEngine() {
           )}
         </p>
 
-        {/* tipo de questão */}
+        {/* Type badge for interactive questions */}
         {typeLabel && (
           <div className="qe-type-badge" style={{ background: unit.light, color: unit.color }}>
             {typeLabel}
           </div>
         )}
 
-        {/* Estado */}
+        {/* Statement */}
         <div className="qe-question-box" style={{ borderColor: unit.color + "44" }}>
           <p className={`qe-statement${simplified ? " qe-statement--simplified" : ""}`}>
             {simplified && q.simplifiedText ? q.simplifiedText : q.statement}
           </p>
         </div>
 
-        {/* Dica */}
+        {/* Hint */}
         {showHint && (
           <div className="qe-hint-box">
             <span className="qe-hint-icon">💡</span>
@@ -458,7 +461,7 @@ export default function QuizEngine() {
           </div>
         )}
 
-        {/* Acertar questão */}
+        {/* ── Answer input by type ── */}
         {q.type === "drag-drop" && (
           <DragDropQuestion
             question={q}
@@ -506,7 +509,7 @@ export default function QuizEngine() {
           />
         )}
 
-        {/* Resposta correta */}
+        {/* ── Correct ── */}
         {isCorrect && (
           <>
             <div className="qe-feedback qe-feedback--correct">
@@ -522,7 +525,7 @@ export default function QuizEngine() {
           </>
         )}
 
-        {/* Resposta incorreta */}
+        {/* ── Wrong: 3-option panel ── */}
         {isWrong && (
           <>
             <div className="qe-feedback qe-feedback--wrong">
@@ -564,7 +567,7 @@ export default function QuizEngine() {
           </>
         )}
 
-        {/*CONFIRMAR RESPOSTA*/}
+        {/* ── Answering: confirm button (only for multiple/input) ── */}
         {isAnswering && !isInteractive && (
           <button
             className="qe-btn-primary"

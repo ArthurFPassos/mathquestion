@@ -1,4 +1,4 @@
-
+/* ─── QuizEngine ────────────────────────────────────────────────────────────── */
 
 .qe-wrapper {
   display: flex;
@@ -19,7 +19,7 @@
   border: 1px solid #f1f5f9;
 }
 
-
+/* ── Top bar ────────────────────────────────────────────────────────────────── */
 
 .qe-top-bar {
   display: flex;
@@ -67,7 +67,7 @@
 .qe-btn-sm:hover { background: #f1f5f9; }
 .qe-btn-sm--exit { border-color: #fca5a5; background: #fef2f2; color: #ef4444; }
 
-
+/* ── Progress ───────────────────────────────────────────────────────────────── */
 
 .qe-progress-track {
   background: #f1f5f9;
@@ -100,7 +100,7 @@
   margin-left: auto;
 }
 
-
+/* ── Question box ───────────────────────────────────────────────────────────── */
 
 .qe-question-box {
   background: #f8fafc;
@@ -112,7 +112,7 @@
 
 .qe-statement { font-size: 16px; color: #1e293b; line-height: 1.75; margin: 0; }
 
-
+/* ── Hint box ───────────────────────────────────────────────────────────────── */
 
 .qe-hint-box {
   background: #fffbeb;
@@ -129,7 +129,7 @@
 .qe-hint-label { font-size: 11px; font-weight: 800; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 3px; }
 .qe-hint-text  { font-size: 14px; color: #78350f; line-height: 1.6; margin: 0; }
 
-
+/* ── Options ────────────────────────────────────────────────────────────────── */
 
 .qe-options-grid {
   display: grid;
@@ -156,7 +156,7 @@
 }
 .qe-option-btn:disabled { cursor: default; }
 
-
+/* ── Text input ─────────────────────────────────────────────────────────────── */
 
 .qe-input {
   width: 100%;
@@ -176,7 +176,7 @@
 .qe-input--correct               { border-color: #22c55e; }
 .qe-input--wrong                 { border-color: #ef4444; }
 
-
+/* ── Feedback banners ───────────────────────────────────────────────────────── */
 
 .qe-feedback {
   border-radius: 10px;
@@ -191,7 +191,7 @@
 .qe-feedback--correct { background: #f0fdf4; border-color: #86efac; color: #15803d; }
 .qe-feedback--wrong   { background: #fef2f2; border-color: #fca5a5; color: #dc2626; margin-bottom: 12px; }
 
-
+/* ── Error options panel ────────────────────────────────────────────────────── */
 
 .qe-error-panel {
   display: flex;
@@ -227,7 +227,7 @@
 .qe-error-opt-title--danger { color: #dc2626; }
 .qe-error-opt-sub   { font-size: 12px; color: #64748b; }
 
-
+/* ── Primary action button ──────────────────────────────────────────────────── */
 
 .qe-btn-primary {
   display: block;
@@ -244,9 +244,9 @@
 }
 .qe-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* ── RNF05 — Simplified Mode ────────────────────────────────────────────── */
 
-
-
+/* Toggle button: lit state */
 .qe-btn-sm--simplified-on {
   background: #eff6ff;
   color: #2563eb;
@@ -254,20 +254,20 @@
   font-weight: 700;
 }
 
-
+/* Card in simplified mode: wider padding, softer shadow */
 .qe-card--simplified {
   padding: 32px 32px 36px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 }
 
-
+/* Question box: more breathing room */
 .qe-question-box--simplified {
   padding: 20px 24px;
   border-color: #bfdbfe !important;
   background: #f0f7ff;
 }
 
-
+/* Statement text: larger, more line height */
 .qe-statement--simplified {
   font-size: 20px;
   line-height: 2;
@@ -275,20 +275,20 @@
   color: #1e293b;
 }
 
-
+/* Option buttons: taller hit area */
 .qe-card--simplified .qe-option-btn {
   padding: 16px 18px;
   font-size: 17px;
   line-height: 1.6;
 }
 
-
+/* Input field: larger text */
 .qe-card--simplified .qe-input {
   font-size: 18px;
   padding: 14px 18px;
 }
 
-
+/* ─── Type Badge ─────────────────────────────────────────────────────────────── */
 
 .qe-type-badge {
   display: inline-block;
@@ -300,7 +300,7 @@
   letter-spacing: 0.02em;
 }
 
-
+/* ─── Drag & Drop ────────────────────────────────────────────────────────────── */
 
 .qe-dd-wrapper {
   margin: 12px 0;
@@ -372,7 +372,7 @@
 .qe-dd-confirm-btn:hover { background: #4f46e5; }
 .qe-dd-confirm-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-
+/* ─── Matching / Association ─────────────────────────────────────────────────── */
 
 .qe-match-wrapper {
   margin: 12px 0;
@@ -476,4 +476,3 @@
 }
 
 .qe-match-reset-btn:hover { background: #f1f5f9; }
-

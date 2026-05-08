@@ -9,12 +9,12 @@ import "./DiagnosticScreen.css";
 const PASS_THRESHOLD = 0.6;
 
 export default function DiagnosticScreen() {
-  const { state, dispatch }       = useApp();
-  const navigate                  = useNavigate();
-  const [qIndex, setQIndex]       = useState(0);
-  const [selected, setSelected]   = useState(null);
-  const [answered, setAnswered]   = useState(false);
-  const [correctCount, setCorrect]= useState(0);
+  const { state, dispatch }        = useApp();
+  const navigate                   = useNavigate();
+  const [qIndex, setQIndex]        = useState(0);
+  const [selected, setSelected]    = useState(null);
+  const [answered, setAnswered]    = useState(false);
+  const [correctCount, setCorrect] = useState(0);
 
   const q        = DIAGNOSTIC[qIndex];
   const isLast   = qIndex === DIAGNOSTIC.length - 1;
@@ -32,7 +32,6 @@ export default function DiagnosticScreen() {
       const score = finalCorrect / DIAGNOSTIC.length;
       dispatch({ type: "FIRST_DIAGNOSTIC_DONE", payload: score });
 
-      // Salva no Firestore
       if (state.user?.uid) {
         saveDiagnostic(state.user.uid, 1, score, finalCorrect, DIAGNOSTIC.length).catch(console.error);
       }
@@ -51,27 +50,32 @@ export default function DiagnosticScreen() {
   const optionClass = (opt) => {
     const base = "ds-option-btn";
     if (!answered) return selected === opt ? `${base} ds-option-btn--selected` : base;
-    if (opt === q.answer)                          return `${base} ds-option-btn--correct`;
-    if (opt === selected && opt !== q.answer)      return `${base} ds-option-btn--wrong`;
+    if (opt === q.answer)                     return `${base} ds-option-btn--correct`;
+    if (opt === selected && opt !== q.answer) return `${base} ds-option-btn--wrong`;
     return `${base} ds-option-btn--dim`;
   };
 
   return (
     <div className="ds-wrapper">
+      {/* ── SCRATCHPAD ── */}
+      {state.scratchpadOpen && <Scratchpad />}
+
       <div className="ds-card">
         <div className="ds-top-row">
           <span className="ds-badge">🩺 Diagnóstico inicial</span>
           <div className="ds-top-right">
             <span className="ds-counter">
               {qIndex + 1} / {DIAGNOSTIC.length}
-              {state.scratchpadOpen && <Scratchpad />}
-              <button
-                className="ds-scratchpad-btn"
-                onClick={() => dispatch({ type: "TOGGLE_SCRATCHPAD" })}
-              >
-                ✏️
-              </button>
             </span>
+            {/* ── BOTÃO RASCUNHO ── */}
+            <button
+              className="ds-scratchpad-btn"
+              onClick={() => dispatch({ type: "TOGGLE_SCRATCHPAD" })}
+              title="Abrir rascunho"
+              aria-label="Abrir rascunho"
+            >
+              ✏️
+            </button>
           </div>
         </div>
 
@@ -99,11 +103,7 @@ export default function DiagnosticScreen() {
         </div>
 
         {answered && (
-          <div
-            className={`ds-feedback ${
-              selected === q.answer ? "ds-feedback--correct" : "ds-feedback--wrong"
-            }`}
-          >
+          <div className={`ds-feedback ${selected === q.answer ? "ds-feedback--correct" : "ds-feedback--wrong"}`}>
             {selected === q.answer
               ? "✅ Correto!"
               : `❌ A resposta correta era: ${q.answer}`}
@@ -111,11 +111,7 @@ export default function DiagnosticScreen() {
         )}
 
         {!answered ? (
-          <button
-            className="ds-btn-primary"
-            onClick={confirm}
-            disabled={!selected}
-          >
+          <button className="ds-btn-primary" onClick={confirm} disabled={!selected}>
             Confirmar
           </button>
         ) : (

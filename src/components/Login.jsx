@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
-import { loginStudent, loadProgress, firebaseErrorMsg } from "../firebase/firebaseService";
+import { loginStudent, loadProgress, firebaseErrorMsg, getUserRole } from "../firebase/firebaseService";
 import calculadora from "../assets/calculadora.png";
 import "./Login.css";
 
@@ -26,13 +26,19 @@ export default function Login() {
     try {
       // 1. Autentica no Firebase Auth + busca perfil no Firestore
       const student = await loginStudent({ email: form.email, password: form.password });
-      dispatch({ type: "LOGIN", payload: student });
 
-      // 2. Carrega progresso salvo no Firestore
-      const progress = await loadProgress(student.uid);
-      dispatch({ type: "LOAD_PROGRESS", payload: progress });
+      // 2. Busca o role do usuário (aluno | professor)
+      const role = await getUserRole(student.uid);
+      dispatch({ type: "LOGIN", payload: { ...student, role } });
 
-      navigate("/dashboard");
+      if (role === "professor") {
+        navigate("/teacher-dashboard");
+      } else {
+        // 3. Carrega progresso salvo no Firestore (só para alunos)
+        const progress = await loadProgress(student.uid);
+        dispatch({ type: "LOAD_PROGRESS", payload: progress });
+        navigate("/dashboard");
+      }
     } catch (err) {
       setError(firebaseErrorMsg(err));
     } finally {
