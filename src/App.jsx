@@ -2,22 +2,22 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useApp } from "./context/AppContext";
 
 // ── Public pages ──────────────────────────────────────────────────────────────
-import Home     from "./components/Home";
-import Login    from "./components/Login";
-import Register from "./components/Register";
-import Sobre    from "./components/Sobre";
+import Home     from "./pages/public/Home";
+import Login    from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import Sobre    from "./pages/public/Sobre";
 
 // ── Diagnostic flow ───────────────────────────────────────────────────────────
-import DiagnosticScreen       from "./components/DiagnosticScreen";       // RF16
-import ReviewScreen           from "./components/ReviewScreen";            // RF17
-import SecondDiagnosticScreen from "./components/SecondDiagnosticScreen";  // RF20
+import DiagnosticScreen       from "./pages/diagnostic/DiagnosticScreen";       // RF16
+import ReviewScreen           from "./pages/diagnostic/ReviewScreen";            // RF17
+import SecondDiagnosticScreen from "./pages/diagnostic/SecondDiagnosticScreen";  // RF20
 
 // ── Main app ──────────────────────────────────────────────────────────────────
-import Dashboard        from "./components/Dashboard";
-import TeacherDashboard from "./components/TeacherDashboard";
-import Navbar     from "./components/Navbar";      // RNF06
-import DemoScreen from "./components/DemoScreen";
-import QuizEngine from "./components/QuizEngine";
+import Dashboard        from "./pages/student/Dashboard";
+import TeacherDashboard from "./pages/teacher/TeacherDashboard";
+import Navbar     from "./components/shared/Navbar";      // RNF06
+import DemoScreen from "./pages/student/DemoScreen";
+import QuizEngine from "./pages/student/QuizEngine";
 
 // ─── Protected route ──────────────────────────────────────────────────────────
 

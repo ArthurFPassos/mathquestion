@@ -1,13 +1,13 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase/config";
-import { loadProgress } from "../firebase/firebaseService";
+import { auth } from "../services/firebaseConfig";
+import { loadProgress } from "../services/firebaseService";
 
 // ─── Initial State ────────────────────────────────────────────────────────────
 
 const initialState = {
   // Auth
-  user:            null,   // { uid, name, email, grade }
+  user:            null,   // { uid, name, email, grade, school, role }
   isAuthenticated: false,
   authLoading:     true,   // true enquanto Firebase verifica sessão salva
 
@@ -27,6 +27,7 @@ const initialState = {
   scratchpadOpen:     false,
   demoWatched:        {},
   demoCompleted:      {},
+  extraModule:        null,   // módulo criado por professor (não está em UNITS)
 };
 
 // ─── Reducer ──────────────────────────────────────────────────────────────────
@@ -120,6 +121,9 @@ function reducer(state, action) {
       };
     }
 
+    case "SET_EXTRA_MODULE":
+      return { ...state, extraModule: action.payload };
+
     case "USE_HINT":
       return { ...state, hintsUsedInBattery: state.hintsUsedInBattery + 1 };
 
@@ -149,18 +153,37 @@ export function AppProvider({ children }) {
         // Busca perfil completo do Firestore
         try {
           const { getDoc, doc } = await import("firebase/firestore");
-          const { db } = await import("../firebase/config");
-          const snap = await getDoc(doc(db, "students", uid));
-          const profile = snap.exists() ? snap.data() : {};
+          const { db } = await import("../services/firebaseConfig");
+          
+          // Tenta buscar como aluno primeiro
+          let snap = await getDoc(doc(db, "students", uid));
+          let profile = snap.exists() ? snap.data() : {};
+          let role = "aluno";
+          
+          // Se não for aluno, tenta como professor
+          if (!snap.exists()) {
+            snap = await getDoc(doc(db, "users", uid));
+            profile = snap.exists() ? snap.data() : {};
+            role = profile.role || "aluno";
+          }
 
           dispatch({
             type:    "LOGIN",
-            payload: { uid, name: displayName || profile.name || "Aluno", email, grade: profile.grade || "" },
+            payload: { 
+              uid, 
+              name: displayName || profile.name || "Aluno", 
+              email, 
+              grade: profile.grade || "",
+              school: profile.school || "",
+              role 
+            },
           });
 
-          // Carrega progresso salvo
-          const progress = await loadProgress(uid);
-          dispatch({ type: "LOAD_PROGRESS", payload: progress });
+          // Carrega progresso salvo (apenas para alunos)
+          if (role === "aluno") {
+            const progress = await loadProgress(uid);
+            dispatch({ type: "LOAD_PROGRESS", payload: progress });
+          }
         } catch {
           dispatch({ type: "AUTH_READY" });
         }

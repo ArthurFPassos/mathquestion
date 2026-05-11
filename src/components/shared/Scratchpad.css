@@ -1,0 +1,89 @@
+/* ─── Scratchpad ─────────────────────────────────────────────────────────────── */
+
+.sp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.sp-panel {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  width: 100%;
+  max-width: 620px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+}
+
+.sp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.sp-title { font-weight: 700; font-size: 15px; color: #1e293b; }
+
+.sp-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sp-label { font-size: 12px; color: #64748b; }
+
+.sp-color-picker {
+  width: 30px; height: 30px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 6px;
+  background: transparent;
+}
+
+.sp-select {
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.sp-btn {
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+.sp-btn:hover       { background: #f1f5f9; }
+.sp-btn--clear      { background: #fee2e2; color: #ef4444; border-color: #fca5a5; }
+.sp-btn--clear:hover { background: #fecaca; }
+
+.sp-canvas {
+  background: #fffef0;
+  display: block;
+  cursor: crosshair;
+  touch-action: none;
+  border-radius: 10px;
+  border: 1.5px dashed #e2e8f0;
+  width: 100%;
+  max-width: 560px;
+}
+
+.sp-hint { font-size: 11px; color: #94a3b8; text-align: center; margin-top: 6px; }

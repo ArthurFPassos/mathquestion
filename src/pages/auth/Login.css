@@ -1,0 +1,90 @@
+/* ─── Login ──────────────────────────────────────────────────────────────────── */
+
+/* Two-column layout inherited from .auth-layout in index.css */
+
+.login-error-box {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.login-switch-text {
+  text-align: center;
+  font-size: 14px;
+  color: #475569;
+  margin-bottom: 20px;
+}
+
+.login-switch-link {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.login-divider {
+  text-align: center;
+  position: relative;
+  margin: 0 0 16px;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+/* Visual panel */
+.login-visual-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 320px;
+}
+
+.login-visual-icon  { font-size: 56px; margin-bottom: 20px; }
+.login-visual-title { font-size: 28px; font-weight: 800; color: #fff; margin: 0 0 12px; }
+.login-visual-desc  { font-size: 15px; color: rgba(255, 255, 255, 0.75); line-height: 1.65; margin: 0 0 36px; }
+
+/* Flat benefits list — no white cards, text directly on blue bg */
+.login-benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.login-benefits-list li {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.login-benefits-list li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 700;
+}
+
+/* ── Calculadora.png images ──────────────────────────────────────────────────── */
+
+.login-brand-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+}
+
+.login-visual-img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin-bottom: 20px;
+  filter: brightness(0) invert(1); /* white tint on blue bg */
+}

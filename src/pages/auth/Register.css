@@ -1,0 +1,126 @@
+/* ─── Register ───────────────────────────────────────────────────────────────── */
+
+.reg-field-error {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.reg-switch-text {
+  text-align: center;
+  font-size: 14px;
+  color: #475569;
+  margin-bottom: 12px;
+}
+
+.reg-switch-link { color: #2563eb; font-weight: 600; }
+
+.reg-terms {
+  text-align: center;
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.reg-terms-link { color: #2563eb; cursor: pointer; }
+
+/* Visual panel */
+.reg-visual-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 340px;
+}
+
+.reg-visual-icon  { font-size: 56px; margin-bottom: 20px; }
+.reg-visual-title { font-size: 28px; font-weight: 800; color: #fff; margin: 0 0 12px; }
+.reg-visual-desc  { font-size: 15px; color: rgba(255, 255, 255, 0.75); line-height: 1.65; margin: 0 0 36px; }
+
+/* Flat numbered list — no white cards */
+.reg-benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  counter-reset: steps;
+}
+
+.reg-benefits-list li {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  padding-left: 32px;
+  position: relative;
+  line-height: 1.5;
+  counter-increment: steps;
+}
+
+.reg-benefits-list li::before {
+  content: counter(steps);
+  position: absolute;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  top: 1px;
+  text-align: center;
+  line-height: 22px;
+}
+
+/* Error border state — applied inline via style prop */
+.reg-field-input-error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+/* ── Calculadora.png inside form-logo-icon ──────────────────────────────────── */
+
+.reg-brand-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+}
+
+/* ── Seletor de perfil (RF23) ────────────────────────────────────────────── */
+.reg-role-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.reg-role-btn {
+  flex: 1;
+  padding: 10px 8px;
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.reg-role-btn:hover {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+}
+
+.reg-role-btn--active {
+  border-color: #6366f1;
+  background: #eef2ff;
+  color: #4f46e5;
+}
