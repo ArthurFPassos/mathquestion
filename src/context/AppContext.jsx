@@ -7,7 +7,7 @@ import { loadProgress } from "../services/firebaseService";
 
 const initialState = {
   // Auth
-  user:            null,   // { uid, name, email, grade, school, role }
+  user:            null,   // { uid, name, email, grade }
   isAuthenticated: false,
   authLoading:     true,   // true enquanto Firebase verifica sessão salva
 
@@ -154,36 +154,17 @@ export function AppProvider({ children }) {
         try {
           const { getDoc, doc } = await import("firebase/firestore");
           const { db } = await import("../services/firebaseConfig");
-          
-          // Tenta buscar como aluno primeiro
-          let snap = await getDoc(doc(db, "students", uid));
-          let profile = snap.exists() ? snap.data() : {};
-          let role = "aluno";
-          
-          // Se não for aluno, tenta como professor
-          if (!snap.exists()) {
-            snap = await getDoc(doc(db, "users", uid));
-            profile = snap.exists() ? snap.data() : {};
-            role = profile.role || "aluno";
-          }
+          const snap = await getDoc(doc(db, "students", uid));
+          const profile = snap.exists() ? snap.data() : {};
 
           dispatch({
             type:    "LOGIN",
-            payload: { 
-              uid, 
-              name: displayName || profile.name || "Aluno", 
-              email, 
-              grade: profile.grade || "",
-              school: profile.school || "",
-              role 
-            },
+            payload: { uid, name: displayName || profile.name || "Aluno", email, grade: profile.grade || "" },
           });
 
-          // Carrega progresso salvo (apenas para alunos)
-          if (role === "aluno") {
-            const progress = await loadProgress(uid);
-            dispatch({ type: "LOAD_PROGRESS", payload: progress });
-          }
+          // Carrega progresso salvo
+          const progress = await loadProgress(uid);
+          dispatch({ type: "LOAD_PROGRESS", payload: progress });
         } catch {
           dispatch({ type: "AUTH_READY" });
         }

@@ -53,22 +53,11 @@ export async function loginStudent({ email, password }) {
   const credential = await signInWithEmailAndPassword(auth, email, password);
   const { uid } = credential.user;
 
-  // Tenta aluno primeiro, depois professor
-  let snap = await getDoc(doc(db, "students", uid));
-  if (!snap.exists()) {
-    snap = await getDoc(doc(db, "users", uid));
-  }
-  if (!snap.exists()) throw new Error("Perfil não encontrado.");
+  const snap = await getDoc(doc(db, "students", uid));
+  if (!snap.exists()) throw new Error("Perfil de aluno não encontrado.");
 
   const data = snap.data();
-  return {
-    uid,
-    name:   data.name,
-    email:  data.email,
-    grade:  data.grade  || "",
-    school: data.school || "",
-    role:   data.role   || "aluno",
-  };
+  return { uid, name: data.name, email: data.email, grade: data.grade };
 }
 
 /**

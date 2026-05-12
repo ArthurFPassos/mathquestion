@@ -476,3 +476,152 @@
 }
 
 .qe-match-reset-btn:hover { background: #f1f5f9; }
+
+/* ── RF22: Tela de resultado do módulo ───────────────────────────────────── */
+.qe-result-card {
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 36px 32px;
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+
+.qe-result-emoji {
+  font-size: 52px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.qe-result-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1e293b;
+  text-align: center;
+  margin: 0 0 4px;
+}
+
+.qe-result-sub {
+  font-size: 13px;
+  color: #64748b;
+  text-align: center;
+  margin: 0 0 24px;
+}
+
+.qe-result-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 16px 0;
+  margin-bottom: 24px;
+}
+
+.qe-result-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.qe-result-stat-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.qe-result-stat-lbl {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.qe-result-divider {
+  width: 1px;
+  height: 36px;
+  background: #e2e8f0;
+  flex-shrink: 0;
+}
+
+/* Questões */
+.qe-result-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 24px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.qe-result-q-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.qe-result-q-row--correct { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.qe-result-q-row--wrong   { background: #fef2f2; border: 1px solid #fecaca; }
+.qe-result-q-row--skipped { background: #f8fafc; border: 1px solid #e2e8f0; }
+
+.qe-result-q-icon { font-size: 16px; flex-shrink: 0; }
+
+.qe-result-q-stmt {
+  flex: 1;
+  color: #1e293b;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.qe-result-q-meta {
+  font-size: 11px;
+  color: #94a3b8;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Botões */
+.qe-result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.qe-result-pdf-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: none;
+  background: #6366f1;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.qe-result-pdf-btn:hover { background: #4f46e5; }
+
+.qe-result-home-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  background: #fff;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.qe-result-home-btn:hover { background: #f8fafc; }
