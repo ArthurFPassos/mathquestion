@@ -128,6 +128,9 @@ export default function TeacherDashboard() {
         snap.forEach((d) => mods.push({ id: d.id, ...d.data() }));
         mods.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
         setMyModules(mods);
+      } catch (error) {
+        console.error("Erro ao carregar módulos:", error);
+        setFormError("Erro ao carregar módulos. Tente recarregar a página.");
       } finally {
         setLoadingMods(false);
       }
@@ -181,16 +184,24 @@ export default function TeacherDashboard() {
       setSavedCode(code);
       setView("success");
     } catch (e) {
-      setFormError("Erro ao salvar. Tente novamente.");
+      console.error("Erro ao salvar módulo:", e);
+      setFormError("Erro ao salvar. Verifique sua conexão e tente novamente.");
     } finally {
       setSaving(false);
     }
   };
 
   const handleLogout = async () => {
-    try { await logoutStudent(); } catch (_) {}
-    dispatch({ type: "LOGOUT" });
-    navigate("/");
+    try {
+      await logoutStudent();
+      dispatch({ type: "LOGOUT" });
+      navigate("/");
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+      // Mesmo com erro, faz logout local
+      dispatch({ type: "LOGOUT" });
+      navigate("/");
+    }
   };
 
   const resetForm = () => {
@@ -314,7 +325,19 @@ export default function TeacherDashboard() {
                   <span className="td-module-code">{mod.code}</span>
                   <button
                     className="td-copy-btn"
-                    onClick={() => navigator.clipboard.writeText(mod.code)}
+                    onClick={() => {
+                      if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(mod.code);
+                      } else {
+                        // Fallback para navegadores mais antigos
+                        const textArea = document.createElement("textarea");
+                        textArea.value = mod.code;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand("copy");
+                        document.body.removeChild(textArea);
+                      }
+                    }}
                     title="Copiar código"
                   >
                     📋

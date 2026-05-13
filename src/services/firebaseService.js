@@ -46,18 +46,26 @@ export async function registerStudent({ name, email, password, grade }) {
 }
 
 /**
- * Autentica aluno existente.
- * Retorna { uid, name, email, grade } ou lança erro.
+ * Autentica usuário existente (aluno ou professor).
+ * Retorna { uid, name, email, grade?, school?, role } ou lança erro.
  */
 export async function loginStudent({ email, password }) {
   const credential = await signInWithEmailAndPassword(auth, email, password);
   const { uid } = credential.user;
 
-  const snap = await getDoc(doc(db, "students", uid));
-  if (!snap.exists()) throw new Error("Perfil de aluno não encontrado.");
+  // Primeiro verifica se é professor (coleção "users")
+  const teacherSnap = await getDoc(doc(db, "users", uid));
+  if (teacherSnap.exists()) {
+    const data = teacherSnap.data();
+    return { uid, name: data.name, email: data.email, school: data.school, role: "professor" };
+  }
 
-  const data = snap.data();
-  return { uid, name: data.name, email: data.email, grade: data.grade };
+  // Se não é professor, busca como aluno (coleção "students")
+  const studentSnap = await getDoc(doc(db, "students", uid));
+  if (!studentSnap.exists()) throw new Error("Perfil de usuário não encontrado.");
+
+  const data = studentSnap.data();
+  return { uid, name: data.name, email: data.email, grade: data.grade, role: "aluno" };
 }
 
 /**

@@ -150,21 +150,38 @@ export function AppProvider({ children }) {
       if (firebaseUser) {
         const { uid, displayName, email } = firebaseUser;
 
-        // Busca perfil completo do Firestore
+        // Busca perfil completo do Firestore - verifica professor primeiro, depois aluno
         try {
           const { getDoc, doc } = await import("firebase/firestore");
           const { db } = await import("../services/firebaseConfig");
-          const snap = await getDoc(doc(db, "students", uid));
-          const profile = snap.exists() ? snap.data() : {};
+          
+          // Primeiro verifica se é professor (coleção "users")
+          const teacherSnap = await getDoc(doc(db, "users", uid));
+          if (teacherSnap.exists()) {
+            const profile = teacherSnap.data();
+            dispatch({
+              type:    "LOGIN",
+              payload: { uid, name: displayName || profile.name || "Professor", email, school: profile.school, role: "professor" },
+            });
+            return;
+          }
 
-          dispatch({
-            type:    "LOGIN",
-            payload: { uid, name: displayName || profile.name || "Aluno", email, grade: profile.grade || "" },
-          });
+          // Se não é professor, busca como aluno (coleção "students")
+          const studentSnap = await getDoc(doc(db, "students", uid));
+          if (studentSnap.exists()) {
+            const profile = studentSnap.data();
+            dispatch({
+              type:    "LOGIN",
+              payload: { uid, name: displayName || profile.name || "Aluno", email, grade: profile.grade, role: "aluno" },
+            });
 
-          // Carrega progresso salvo
-          const progress = await loadProgress(uid);
-          dispatch({ type: "LOAD_PROGRESS", payload: progress });
+            // Carrega progresso salvo
+            const progress = await loadProgress(uid);
+            dispatch({ type: "LOAD_PROGRESS", payload: progress });
+          } else {
+            // Usuário autenticado mas sem perfil no Firestore
+            dispatch({ type: "AUTH_READY" });
+          }
         } catch {
           dispatch({ type: "AUTH_READY" });
         }
