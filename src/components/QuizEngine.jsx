@@ -253,10 +253,9 @@ export default function QuizEngine() {
   const [scores, setScores] = useState([]);
   const [xpLog, setXpLog] = useState([]);
   const [startTime] = useState(Date.now());
-  const [showExit, setShowExit] = useState(false);
-  const [simplified, setSimplified] = useState(false);
-  // For drag-drop and matching we track if the sub-component confirmed
-  const [interactiveAnswered, setInteractiveAnswered] = useState(false);
+  const [questionLog, setQuestionLog]         = useState([]);
+  const [attemptCount, setAttemptCount]       = useState(0);
+  const [moduleReport, setModuleReport]       = useState(null);
 
   if (!module || !unit) return null;
 

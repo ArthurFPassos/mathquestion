@@ -16,6 +16,7 @@ import {
   formatTime,
   downloadReportPDF,
 } from "../../services/helpers";
+import { downloadModuleReportFromDashboard } from "../../services/moduleReportService";
 import Scratchpad from "../../components/shared/Scratchpad";
 import imgXP          from "../../assets/xp.png";
 import imgProgresso   from "../../assets/progresso.png";
@@ -353,19 +354,36 @@ export default function Dashboard() {
                           <span className="db-demo-required-badge">Demo obrigatória</span>
                         )}
                       </div>
-                      <button
-                        className={`db-btn-module${needsDemo ? " db-btn-module--demo" : ""}`}
-                        style={
-                          needsDemo
-                            ? { background: "#fffbeb", color: "#92400e", border: "1.5px solid #fde68a" }
-                            : passed
-                              ? { background: unit.light, color: unit.color, border: `1.5px solid ${unit.color}` }
-                              : { background: unit.color, color: "#fff", border: "none" }
-                        }
-                        onClick={handleModuleClick}
-                      >
-                        {needsDemo ? "Ver Demonstração" : done ? passed ? "Refazer" : "Tentar novamente" : "Iniciar"}
-                      </button>
+                      <div className="db-module-actions">
+                        {done && (
+                          <button
+                            className="db-btn-module-pdf"
+                            title="Baixar relatório do módulo"
+                            onClick={() => downloadModuleReportFromDashboard({
+                              moduleId:    mod.id,
+                              moduleName:  mod.title,
+                              unitName:    unit.title,
+                              studentName: state.user?.name || "Aluno",
+                              result,
+                            })}
+                          >
+                            📄
+                          </button>
+                        )}
+                        <button
+                          className={`db-btn-module${needsDemo ? " db-btn-module--demo" : ""}`}
+                          style={
+                            needsDemo
+                              ? { background: "#fffbeb", color: "#92400e", border: "1.5px solid #fde68a" }
+                              : passed
+                                ? { background: unit.light, color: unit.color, border: `1.5px solid ${unit.color}` }
+                                : { background: unit.color, color: "#fff", border: "none" }
+                          }
+                          onClick={handleModuleClick}
+                        >
+                          {needsDemo ? "Ver Demonstração" : done ? passed ? "Refazer" : "Tentar novamente" : "Iniciar"}
+                        </button>
+                      </div>
                     </div>
                   );
                 })}

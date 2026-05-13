@@ -527,3 +527,37 @@
   background: #6366f1;
   color: #fff;
 }
+
+/* ── Botão PDF por módulo (RF22) ─────────────────────────────────────────── */
+.db-module-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.db-btn-module-pdf {
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 15px;
+  cursor: pointer;
+  line-height: 1;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.db-btn-module-pdf:hover {
+  background: #eef2ff;
+  border-color: #6366f1;
+}
+
+.qe-result-scratchpad-note {
+  font-size: 12px;
+  color: #64748b;
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  text-align: center;
+}
