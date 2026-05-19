@@ -298,3 +298,90 @@ export async function loadExtraModules(studentUid) {
   );
   return modules.filter(Boolean);
 }
+
+// ── Novas funções do Professor ────────────────────────────────────────────────
+
+/**
+ * Atualiza um módulo existente no Firestore (edição).
+ * Atualiza tanto modules/{code} quanto users/{uid}/modules/{code}.
+ */
+export async function updateTeacherModule({ teacherUid, moduleCode, title, questions }) {
+  const { doc, setDoc, updateDoc, serverTimestamp: ts } = await import("firebase/firestore");
+  const { db: firestore } = await import("./firebaseConfig");
+
+  // Atualiza coleção principal
+  await updateDoc(doc(firestore, "modules", moduleCode), {
+    title,
+    questions,
+    updatedAt: ts(),
+  });
+
+  // Atualiza referência do professor
+  await updateDoc(doc(firestore, "users", teacherUid, "modules", moduleCode), {
+    title,
+    questionCount: questions.length,
+    updatedAt: ts(),
+  });
+}
+
+/**
+ * Deleta um módulo permanentemente do Firestore.
+ * Remove de modules/{code} e de users/{uid}/modules/{code}.
+ */
+export async function deleteTeacherModule({ teacherUid, moduleCode }) {
+  const { doc, deleteDoc } = await import("firebase/firestore");
+  const { db: firestore } = await import("./firebaseConfig");
+
+  await deleteDoc(doc(firestore, "modules", moduleCode));
+  await deleteDoc(doc(firestore, "users", teacherUid, "modules", moduleCode));
+}
+
+/**
+ * RF22 — Busca todas as tentativas de alunos para um módulo específico.
+ * Estrutura esperada no Firestore:
+ *   moduleAttempts/{moduleCode}/students/{studentUid} → { studentName, answers[], completedAt }
+ *   Cada answer: { statement, studentAnswer, correctAnswer, correct, attempts, usedHint, scratchpadImage? }
+ *
+ * Se a coleção ainda não existir, retorna array vazio sem erro.
+ */
+export async function getStudentAttemptsForModule(moduleCode) {
+  const { collection, getDocs } = await import("firebase/firestore");
+  const { db: firestore } = await import("./firebaseConfig");
+
+  try {
+    const snap = await getDocs(
+      collection(firestore, "moduleAttempts", moduleCode, "students")
+    );
+    const attempts = [];
+    snap.forEach((d) => attempts.push({ studentUid: d.id, ...d.data() }));
+    attempts.sort((a, b) => (b.completedAt?.seconds || 0) - (a.completedAt?.seconds || 0));
+    return attempts;
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * RF22 — Salva a tentativa de um aluno em um módulo do professor.
+ * Chamado pelo QuizEngine ao finalizar um módulo de professor.
+ * answers[]: { statement, studentAnswer, correctAnswer, correct, attempts, usedHint, scratchpadImage? }
+ */
+export async function saveStudentAttemptForModule({
+  moduleCode,
+  studentUid,
+  studentName,
+  answers,
+}) {
+  const { doc, setDoc, serverTimestamp: ts } = await import("firebase/firestore");
+  const { db: firestore } = await import("./firebaseConfig");
+
+  await setDoc(
+    doc(firestore, "moduleAttempts", moduleCode, "students", studentUid),
+    {
+      studentName,
+      answers,
+      completedAt: ts(),
+    },
+    { merge: true }
+  );
+}
