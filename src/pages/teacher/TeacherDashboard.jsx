@@ -227,7 +227,7 @@ function ModuleForm({ editingModule, onSaved, onCancel, teacherUid }) {
         <label>Título do módulo</label>
         <input type="text" placeholder="Ex: Frações para o 6.º ano" value={moduleTitle} onChange={(e) => { setTitle(e.target.value); setFormError(""); }} />
       </div>
-      <p className="td-create-hint">Cada questão deve ter uma <strong>dica</strong> que será exibida ao aluno na 2ª tentativa (RF06).</p>
+      <p className="td-create-hint">Cada questão deve ter uma <strong>dica</strong> que será exibida ao aluno na 2ª tentativa.</p>
       {questions.map((q, i) => (
         <QuestionForm key={i} index={i} q={q} onChange={updateQuestion} onRemove={removeQuestion} total={questions.length} />
       ))}
