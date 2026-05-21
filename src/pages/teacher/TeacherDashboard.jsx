@@ -6,7 +6,7 @@ import {
   updateTeacherModule,
   deleteTeacherModule,
   logoutStudent,
-  getStudentAttemptsForModule,
+  subscribeToTeacherAttempts,
 } from "../../services/firebaseService";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../../services/firebaseConfig";
@@ -87,6 +87,14 @@ function CopyIcon({ size = 16 }) {
     </svg>
   );
 }
+function WifiIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12.55a11 11 0 0114.08 0" /><path d="M1.42 9a16 16 0 0121.16 0" />
+      <path d="M8.53 16.11a6 6 0 016.95 0" /><line x1="12" y1="20" x2="12.01" y2="20" />
+    </svg>
+  );
+}
 
 // ─── QuestionForm ─────────────────────────────────────────────────────────────
 
@@ -162,11 +170,11 @@ function ModuleForm({ editingModule, onSaved, onCancel, teacherUid }) {
     }
     return Array.from({ length: 5 }, EMPTY_QUESTION);
   });
-  const [saving, setSaving] = useState(false);
+  const [saving, setSaving]       = useState(false);
   const [formError, setFormError] = useState("");
 
   const updateQuestion = (index, updated) => { setQuestions((qs) => qs.map((q, i) => (i === index ? updated : q))); setFormError(""); };
-  const addQuestion = () => setQuestions((qs) => [...qs, EMPTY_QUESTION()]);
+  const addQuestion    = () => setQuestions((qs) => [...qs, EMPTY_QUESTION()]);
   const removeQuestion = (index) => setQuestions((qs) => qs.filter((_, i) => i !== index));
 
   const validate = () => {
@@ -236,30 +244,41 @@ function ModuleForm({ editingModule, onSaved, onCancel, teacherUid }) {
 
 function StudentAnalytics({ attempt, onBack }) {
   const { studentName, moduleName, answers = [] } = attempt;
-  const totalCorrect = answers.filter((a) => a.correct).length;
-  const totalWrong = answers.length - totalCorrect;
-  const usedHint = answers.some((a) => a.usedHint);
-  const usedScratchpad = answers.some((a) => a.scratchpadImage);
+  const totalCorrect   = answers.filter((a) => a.correct).length;
+  const totalWrong     = answers.length - totalCorrect;
+  const usedHint       = answers.some((a) => a.usedHint);
+  const usedScratchpad = answers.some(
+    (a) => a.scratchpadImage && typeof a.scratchpadImage === "string" && a.scratchpadImage.startsWith("data:image")
+  );
   const score = answers.length ? Math.round((totalCorrect / answers.length) * 100) : 0;
 
   return (
     <div className="td-analytics-container">
       <button className="td-btn-ghost td-btn-ghost--sm td-btn-icon" onClick={onBack}><ArrowLeftIcon size={14} /> Voltar</button>
+
       <div className="td-analytics-header">
         <div className="td-analytics-avatar">{studentName?.charAt(0) || "?"}</div>
         <div>
           <h2 className="td-analytics-name">{studentName}</h2>
           <p className="td-analytics-mod">Módulo: <strong>{moduleName}</strong></p>
         </div>
-        <div className={`td-score-badge${score >= 70 ? " td-score-badge--good" : score >= 40 ? " td-score-badge--mid" : " td-score-badge--low"}`}>{score}%</div>
+        <div className={`td-score-badge${score >= 70 ? " td-score-badge--good" : score >= 40 ? " td-score-badge--mid" : " td-score-badge--low"}`}>
+          {score}%
+        </div>
       </div>
 
       <div className="td-stats-row">
         <div className="td-stat-card td-stat-card--green"><span className="td-stat-num">{totalCorrect}</span><span className="td-stat-label">Acertos</span></div>
         <div className="td-stat-card td-stat-card--red"><span className="td-stat-num">{totalWrong}</span><span className="td-stat-label">Erros</span></div>
         <div className="td-stat-card"><span className="td-stat-num">{answers.length}</span><span className="td-stat-label">Questões</span></div>
-        <div className={`td-stat-card${usedHint ? " td-stat-card--blue" : ""}`}><span className="td-stat-num">{usedHint ? "Sim" : "Não"}</span><span className="td-stat-label">Usou dica</span></div>
-        <div className={`td-stat-card${usedScratchpad ? " td-stat-card--blue" : ""}`}><span className="td-stat-num">{usedScratchpad ? "Sim" : "Não"}</span><span className="td-stat-label">Rascunho</span></div>
+        <div className={`td-stat-card${usedHint ? " td-stat-card--blue" : ""}`}>
+          <span className="td-stat-num">{usedHint ? "Sim" : "Não"}</span>
+          <span className="td-stat-label">Usou dica</span>
+        </div>
+        <div className={`td-stat-card${usedScratchpad ? " td-stat-card--blue" : ""}`}>
+          <span className="td-stat-num">{usedScratchpad ? "Sim" : "Não"}</span>
+          <span className="td-stat-label">Rascunho</span>
+        </div>
       </div>
 
       <h3 className="td-section-title" style={{ marginTop: "28px" }}>Questão a questão</h3>
@@ -268,7 +287,9 @@ function StudentAnalytics({ attempt, onBack }) {
           <div key={i} className={`td-q-result-card${a.correct ? " td-q-result-card--correct" : " td-q-result-card--wrong"}`}>
             <div className="td-q-result-top">
               <span className="td-q-result-num">Q{i + 1}</span>
-              <span className={`td-q-result-badge${a.correct ? " td-q-result-badge--correct" : " td-q-result-badge--wrong"}`}>{a.correct ? "✓ Acerto" : "✗ Erro"}</span>
+              <span className={`td-q-result-badge${a.correct ? " td-q-result-badge--correct" : " td-q-result-badge--wrong"}`}>
+                {a.correct ? "✓ Acerto" : "✗ Erro"}
+              </span>
               <span className="td-q-result-attempts">{a.attempts || 1} tentativa{(a.attempts || 1) !== 1 ? "s" : ""}</span>
               {a.usedHint && <span className="td-q-result-hint-badge"><LightbulbIcon size={11} /> Dica usada</span>}
             </div>
@@ -277,10 +298,18 @@ function StudentAnalytics({ attempt, onBack }) {
               {a.studentAnswer && <span className="td-q-answer">Resposta: <strong>{a.studentAnswer}</strong></span>}
               {!a.correct && a.correctAnswer && <span className="td-q-correct-answer">Correta: <strong>{a.correctAnswer}</strong></span>}
             </div>
-            {a.scratchpadImage && (
+
+            {/* FIX — Rascunho: valida que é realmente uma imagem Base64 antes de renderizar */}
+            {a.scratchpadImage &&
+             typeof a.scratchpadImage === "string" &&
+             a.scratchpadImage.startsWith("data:image") && (
               <div className="td-scratchpad-section">
                 <p className="td-scratchpad-label">✏️ Rascunho do aluno:</p>
-                <img src={a.scratchpadImage} alt={`Rascunho Q${i + 1}`} className="td-scratchpad-img" />
+                <img
+                  src={a.scratchpadImage}
+                  alt={`Rascunho Q${i + 1}`}
+                  className="td-scratchpad-img"
+                />
               </div>
             )}
           </div>
@@ -292,70 +321,116 @@ function StudentAnalytics({ attempt, onBack }) {
 
 // ─── StudentMonitor ───────────────────────────────────────────────────────────
 
-function StudentMonitor({ myModules }) {
-  const [selectedModule, setSelectedModule] = useState(null);
-  const [students, setStudents] = useState([]);
-  const [loadingStudents, setLoadingStudents] = useState(false);
+/**
+ * FIX — StudentMonitor recebe `attemptsMap` (de onSnapshot) diretamente
+ * em vez de fazer fetch por módulo. Isso resolve o problema de dados
+ * não aparecendo: o mapa é atualizado em tempo real pelo subscribeToTeacherAttempts.
+ */
+function StudentMonitor({ myModules, attemptsMap }) {
+  const [selectedModule,  setSelectedModule]  = useState(null);
   const [selectedAttempt, setSelectedAttempt] = useState(null);
 
-  const loadStudents = async (mod) => {
-    setSelectedModule(mod);
-    setLoadingStudents(true);
-    setStudents([]);
-    setSelectedAttempt(null);
-    try {
-      const attempts = await getStudentAttemptsForModule(mod.code);
-      setStudents(attempts);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoadingStudents(false);
-    }
-  };
-
   if (selectedAttempt) {
-    return <StudentAnalytics attempt={selectedAttempt} onBack={() => setSelectedAttempt(null)} />;
+    return (
+      <StudentAnalytics
+        attempt={selectedAttempt}
+        onBack={() => setSelectedAttempt(null)}
+      />
+    );
   }
+
+  const studentsForSelected = selectedModule
+    ? (attemptsMap[selectedModule.code] || [])
+    : [];
+
+  // Badge de total de alunos por módulo
+  const totalStudents = myModules.reduce((sum, mod) => {
+    return sum + (attemptsMap[mod.code]?.length || 0);
+  }, 0);
 
   return (
     <div className="td-monitor-container">
-      <h2 className="td-main-title">Desempenho dos Alunos</h2>
-      <p className="td-main-sub">Selecione um módulo para ver o progresso dos alunos.</p>
+      <div className="td-main-header" style={{ marginBottom: "6px" }}>
+        <div>
+          <h2 className="td-main-title">Desempenho dos Alunos</h2>
+          <p className="td-main-sub">
+            {totalStudents > 0
+              ? `${totalStudents} tentativa${totalStudents !== 1 ? "s" : ""} registrada${totalStudents !== 1 ? "s" : ""} nos seus módulos`
+              : "Selecione um módulo para ver o progresso dos alunos."}
+          </p>
+        </div>
+        {/* Indicador de tempo real */}
+        <div className="td-realtime-badge">
+          <WifiIcon size={13} /> Tempo real
+        </div>
+      </div>
 
       {myModules.length === 0 ? (
-        <div className="td-empty-state"><div className="td-empty-icon">👥</div><p className="td-empty-title">Nenhum módulo criado</p><p className="td-empty-sub">Crie módulos para monitorar o desempenho dos alunos.</p></div>
+        <div className="td-empty-state">
+          <div className="td-empty-icon">👥</div>
+          <p className="td-empty-title">Nenhum módulo criado</p>
+          <p className="td-empty-sub">Crie módulos para monitorar o desempenho dos alunos.</p>
+        </div>
       ) : (
         <>
           <div className="td-monitor-module-list">
-            {myModules.map((mod) => (
-              <button key={mod.id} className={`td-monitor-mod-btn${selectedModule?.code === mod.code ? " td-monitor-mod-btn--active" : ""}`} onClick={() => loadStudents(mod)}>
-                <BookIcon size={14} />
-                <span>{mod.title}</span>
-                <span className="td-monitor-mod-code">{mod.code}</span>
-              </button>
-            ))}
+            {myModules.map((mod) => {
+              const count = attemptsMap[mod.code]?.length || 0;
+              return (
+                <button
+                  key={mod.id}
+                  className={`td-monitor-mod-btn${selectedModule?.code === mod.code ? " td-monitor-mod-btn--active" : ""}`}
+                  onClick={() => { setSelectedModule(mod); setSelectedAttempt(null); }}
+                >
+                  <BookIcon size={14} />
+                  <span>{mod.title}</span>
+                  <span className="td-monitor-mod-code">{mod.code}</span>
+                  {count > 0 && (
+                    <span className="td-monitor-mod-count">{count}</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           {selectedModule && (
             <div className="td-students-section">
-              <h3 className="td-section-title">Alunos — {selectedModule.title}</h3>
-              {loadingStudents ? (
-                <p className="td-loading">Carregando alunos...</p>
-              ) : students.length === 0 ? (
-                <div className="td-empty"><p>Nenhum aluno realizou este módulo ainda.</p></div>
+              <h3 className="td-section-title">
+                Alunos — {selectedModule.title}
+              </h3>
+
+              {studentsForSelected.length === 0 ? (
+                <div className="td-empty">
+                  <p>Nenhum aluno completou este módulo ainda.</p>
+                  <p style={{ fontSize: "12px", marginTop: "4px" }}>
+                    O painel atualiza automaticamente assim que um aluno finalizar.
+                  </p>
+                </div>
               ) : (
                 <div className="td-students-list">
-                  {students.map((s, i) => {
-                    const score = s.answers?.length ? Math.round((s.answers.filter((a) => a.correct).length / s.answers.length) * 100) : 0;
+                  {studentsForSelected.map((s, i) => {
+                    const score = s.answers?.length
+                      ? Math.round((s.answers.filter((a) => a.correct).length / s.answers.length) * 100)
+                      : Math.round((s.totalCorrect / s.total) * 100) || 0;
+                    const acertos = s.answers?.filter((a) => a.correct).length ?? s.totalCorrect ?? 0;
+                    const total   = s.answers?.length ?? s.total ?? 0;
+
                     return (
                       <div key={i} className="td-student-row">
                         <div className="td-student-avatar">{s.studentName?.charAt(0) || "?"}</div>
                         <div className="td-student-info">
                           <span className="td-student-name">{s.studentName || "Aluno sem nome"}</span>
-                          <span className="td-student-sub">{s.answers?.length || 0} questões • {s.answers?.filter((a) => a.correct).length || 0} acertos</span>
+                          <span className="td-student-sub">
+                            {total} questões · {acertos} acertos
+                          </span>
                         </div>
-                        <div className={`td-student-score${score >= 70 ? " td-student-score--good" : score >= 40 ? " td-student-score--mid" : " td-student-score--low"}`}>{score}%</div>
-                        <button className="td-btn-ghost td-btn-ghost--sm td-btn-icon" onClick={() => setSelectedAttempt({ ...s, moduleName: selectedModule.title })}>
+                        <div className={`td-student-score${score >= 70 ? " td-student-score--good" : score >= 40 ? " td-student-score--mid" : " td-student-score--low"}`}>
+                          {score}%
+                        </div>
+                        <button
+                          className="td-btn-ghost td-btn-ghost--sm td-btn-icon"
+                          onClick={() => setSelectedAttempt({ ...s, moduleName: selectedModule.title })}
+                        >
                           <EyeIcon size={13} /> Ver detalhes
                         </button>
                       </div>
@@ -377,20 +452,28 @@ export default function TeacherDashboard() {
   const { state, dispatch } = useApp();
   const navigate = useNavigate();
 
-  const [view, setView] = useState("home");
-  const [activeTab, setActiveTab] = useState("modules");
-  const [myModules, setMyModules] = useState([]);
-  const [loadingMods, setLoadingMods] = useState(true);
-  const [savedCode, setSavedCode] = useState(null);
+  const [view,          setView]          = useState("home");
+  const [activeTab,     setActiveTab]     = useState("modules");
+  const [myModules,     setMyModules]     = useState([]);
+  const [loadingMods,   setLoadingMods]   = useState(true);
+  const [savedCode,     setSavedCode]     = useState(null);
   const [editingModule, setEditingModule] = useState(null);
-  const [deletingCode, setDeletingCode] = useState(null);
+  const [deletingCode,  setDeletingCode]  = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
-  const [copyFeedback, setCopyFeedback] = useState(null);
-  const [actionError, setActionError] = useState("");
+  const [copyFeedback,  setCopyFeedback]  = useState(null);
+  const [actionError,   setActionError]   = useState("");
 
-  const teacherUid = state.user?.uid;
+  /**
+   * FIX — attemptsMap é o estado central para todos os dados de alunos.
+   * Populado pelo onSnapshot em tempo real via subscribeToTeacherAttempts.
+   * Estrutura: { [moduleCode]: attempt[] }
+   */
+  const [attemptsMap, setAttemptsMap] = useState({});
+
+  const teacherUid  = state.user?.uid;
   const teacherName = state.user?.name || "Professor";
 
+  // ── Carrega módulos do professor ──────────────────────────────────────────
   const loadModules = useCallback(async () => {
     if (!teacherUid) return;
     setLoadingMods(true);
@@ -401,7 +484,7 @@ export default function TeacherDashboard() {
       mods.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
       setMyModules(mods);
     } catch (error) {
-      console.error(error);
+      console.error("loadModules:", error);
     } finally {
       setLoadingMods(false);
     }
@@ -409,6 +492,25 @@ export default function TeacherDashboard() {
 
   useEffect(() => { loadModules(); }, [loadModules]);
 
+  /**
+   * FIX — Subscrição em tempo real às tentativas dos alunos.
+   *
+   * subscribeToTeacherAttempts usa onSnapshot internamente.
+   * Sempre que um aluno finaliza um módulo deste professor, o Firestore
+   * dispara um evento e attemptsMap é atualizado automaticamente —
+   * sem que o professor precise recarregar a página.
+   *
+   * O cleanup (unsub) cancela o listener ao desmontar o componente.
+   */
+  useEffect(() => {
+    if (!teacherUid) return;
+    const unsub = subscribeToTeacherAttempts(teacherUid, (byModule) => {
+      setAttemptsMap(byModule);
+    });
+    return unsub; // cleanup: cancela o onSnapshot ao desmontar
+  }, [teacherUid]);
+
+  // ── Handlers ───────────────────────────────────────────────────────────────
   const handleLogout = async () => {
     try { await logoutStudent(); } catch (_) {}
     dispatch({ type: "LOGOUT" });
@@ -417,7 +519,9 @@ export default function TeacherDashboard() {
 
   const handleSaved = (code, title, questions) => {
     if (editingModule) {
-      setMyModules((prev) => prev.map((m) => m.code === editingModule.code ? { ...m, title, questionCount: questions.length } : m));
+      setMyModules((prev) =>
+        prev.map((m) => m.code === editingModule.code ? { ...m, title, questionCount: questions.length } : m)
+      );
       setEditingModule(null);
       setView("home");
     } else {
@@ -483,7 +587,12 @@ export default function TeacherDashboard() {
   if (view === "create" || view === "edit") {
     return (
       <div className="td-wrapper">
-        <ModuleForm editingModule={view === "edit" ? editingModule : null} onSaved={handleSaved} onCancel={() => { setView("home"); setEditingModule(null); }} teacherUid={teacherUid} />
+        <ModuleForm
+          editingModule={view === "edit" ? editingModule : null}
+          onSaved={handleSaved}
+          onCancel={() => { setView("home"); setEditingModule(null); }}
+          teacherUid={teacherUid}
+        />
       </div>
     );
   }
@@ -518,6 +627,8 @@ export default function TeacherDashboard() {
 
         {/* Main */}
         <main className="td-main">
+
+          {/* Aba: Módulos */}
           {activeTab === "modules" && (
             <div>
               <div className="td-main-header">
@@ -541,33 +652,51 @@ export default function TeacherDashboard() {
                 </div>
               ) : (
                 <div className="td-modules-grid">
-                  {myModules.map((mod) => (
-                    <div key={mod.id} className="td-module-card">
-                      <div className="td-module-card-main">
-                        <div className="td-module-card-info">
-                          <span className="td-module-title">{mod.title}</span>
-                          <div className="td-module-meta">
-                            <span className="td-module-count">{mod.questionCount} questões</span>
-                            <span className="td-module-code-label">Código:</span>
-                            <span className="td-module-code">{mod.code}</span>
-                            <button className={`td-copy-btn${copyFeedback === mod.code ? " td-copy-btn--copied" : ""}`} onClick={() => handleCopy(mod.code)} title="Copiar código">
-                              {copyFeedback === mod.code ? "✓" : <CopyIcon size={14} />}
-                            </button>
+                  {myModules.map((mod) => {
+                    const studentCount = attemptsMap[mod.code]?.length || 0;
+                    return (
+                      <div key={mod.id} className="td-module-card">
+                        <div className="td-module-card-main">
+                          <div className="td-module-card-info">
+                            <span className="td-module-title">{mod.title}</span>
+                            <div className="td-module-meta">
+                              <span className="td-module-count">{mod.questionCount} questões</span>
+                              {studentCount > 0 && (
+                                <span className="td-module-students-badge">
+                                  👥 {studentCount} aluno{studentCount !== 1 ? "s" : ""}
+                                </span>
+                              )}
+                              <span className="td-module-code-label">Código:</span>
+                              <span className="td-module-code">{mod.code}</span>
+                              <button
+                                className={`td-copy-btn${copyFeedback === mod.code ? " td-copy-btn--copied" : ""}`}
+                                onClick={() => handleCopy(mod.code)}
+                                title="Copiar código"
+                              >
+                                {copyFeedback === mod.code ? "✓" : <CopyIcon size={14} />}
+                              </button>
+                            </div>
+                          </div>
+                          <div className="td-module-actions">
+                            <button className="td-action-btn td-action-btn--edit" onClick={() => handleEdit(mod)}><EditIcon size={14} /> Editar</button>
+                            <button className="td-action-btn td-action-btn--delete" onClick={() => handleDeleteClick(mod.code)}><TrashIcon size={14} /> Excluir</button>
                           </div>
                         </div>
-                        <div className="td-module-actions">
-                          <button className="td-action-btn td-action-btn--edit" onClick={() => handleEdit(mod)}><EditIcon size={14} /> Editar</button>
-                          <button className="td-action-btn td-action-btn--delete" onClick={() => handleDeleteClick(mod.code)}><TrashIcon size={14} /> Excluir</button>
-                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
           )}
 
-          {activeTab === "performance" && <StudentMonitor myModules={myModules} />}
+          {/* Aba: Desempenho */}
+          {activeTab === "performance" && (
+            <StudentMonitor
+              myModules={myModules}
+              attemptsMap={attemptsMap}
+            />
+          )}
         </main>
       </div>
 

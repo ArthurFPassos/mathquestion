@@ -13,8 +13,13 @@ import {
   doc,
   setDoc,
   getDoc,
+  updateDoc,
+  deleteDoc,
   collection,
   getDocs,
+  query,
+  where,
+  onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
 
@@ -22,85 +27,51 @@ import { auth, db } from "./firebaseConfig";
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
 
-/**
- * Cadastra novo aluno.
- * Cria conta no Firebase Auth e salva perfil no Firestore.
- * Retorna objeto { uid, name, email, grade } ou lança erro.
- */
 export async function registerStudent({ name, email, password, grade }) {
   const credential = await createUserWithEmailAndPassword(auth, email, password);
   const { uid } = credential.user;
-
-  // Atualiza displayName no Auth
   await updateProfile(credential.user, { displayName: name });
-
-  // Salva perfil completo no Firestore
   await setDoc(doc(db, "students", uid), {
-    name,
-    email,
-    grade,
-    createdAt: serverTimestamp(),
+    name, email, grade, createdAt: serverTimestamp(),
   });
-
   return { uid, name, email, grade };
 }
 
-/**
- * Autentica usuário existente (aluno ou professor).
- * Retorna { uid, name, email, grade?, school?, role } ou lança erro.
- */
 export async function loginStudent({ email, password }) {
   const credential = await signInWithEmailAndPassword(auth, email, password);
   const { uid } = credential.user;
 
-  // Primeiro verifica se é professor (coleção "users")
   const teacherSnap = await getDoc(doc(db, "users", uid));
   if (teacherSnap.exists()) {
     const data = teacherSnap.data();
     return { uid, name: data.name, email: data.email, school: data.school, role: "professor" };
   }
 
-  // Se não é professor, busca como aluno (coleção "students")
   const studentSnap = await getDoc(doc(db, "students", uid));
   if (!studentSnap.exists()) throw new Error("Perfil de usuário não encontrado.");
-
   const data = studentSnap.data();
   return { uid, name: data.name, email: data.email, grade: data.grade, role: "aluno" };
 }
 
-/**
- * Encerra sessão do aluno.
- */
 export async function logoutStudent() {
   await signOut(auth);
 }
 
 // ── Progresso ─────────────────────────────────────────────────────────────────
 
-/**
- * Carrega todo o progresso do aluno (módulos + diagnósticos) do Firestore.
- * Retorna { moduleResults, totalXP, diagnostics }
- */
 export async function loadProgress(uid) {
-  // Módulos
   const modulesSnap = await getDocs(collection(db, "students", uid, "modules"));
   const moduleResults = {};
   let totalXP = 0;
-
   modulesSnap.forEach((d) => {
     const data = d.data();
     moduleResults[d.id] = {
-      score:     data.score,
-      xp:        data.xp,
-      correct:   data.correct,
-      total:     data.total,
-      timeMs:    data.timeMs,
-      completed: data.completed,
+      score: data.score, xp: data.xp, correct: data.correct,
+      total: data.total, timeMs: data.timeMs, completed: data.completed,
     };
     totalXP += data.xp || 0;
   });
 
-  // Diagnósticos
   const diagSnap = await getDocs(collection(db, "students", uid, "diagnostics"));
   const diagnostics = [];
   diagSnap.forEach((d) => diagnostics.push({ id: d.id, ...d.data() }));
@@ -109,47 +80,23 @@ export async function loadProgress(uid) {
   return { moduleResults, totalXP, diagnostics };
 }
 
-/**
- * Salva (ou atualiza se melhorou) o resultado de um módulo.
- */
 export async function saveModuleResult(uid, moduleId, result) {
   const ref  = doc(db, "students", uid, "modules", moduleId);
   const snap = await getDoc(ref);
-
-  // Só sobrescreve se for uma pontuação melhor
   if (snap.exists() && snap.data().score >= result.score) return;
-
-  await setDoc(ref, {
-    ...result,
-    completedAt: serverTimestamp(),
-  });
+  await setDoc(ref, { ...result, completedAt: serverTimestamp() });
 }
 
-/**
- * Salva resultado de diagnóstico (1º ou 2º).
- * attempt: 1 | 2
- */
 export async function saveDiagnostic(uid, attempt, score, correct, total) {
   await setDoc(doc(db, "students", uid, "diagnostics", `attempt_${attempt}`), {
-    attempt,
-    score,
-    correct,
-    total,
-    completedAt: serverTimestamp(),
+    attempt, score, correct, total, completedAt: serverTimestamp(),
   });
 }
 
-/**
- * Salva flag de demo concluída por unidade.
- */
 export async function saveDemoCompleted(uid, unitId) {
-  const ref = doc(db, "students", uid);
-  await setDoc(ref, { [`demoCompleted_${unitId}`]: true }, { merge: true });
+  await setDoc(doc(db, "students", uid), { [`demoCompleted_${unitId}`]: true }, { merge: true });
 }
 
-/**
- * Traduz erro do Firebase para mensagem amigável em português.
- */
 export function firebaseErrorMsg(error) {
   const code = error?.code || "";
   const map = {
@@ -167,28 +114,16 @@ export function firebaseErrorMsg(error) {
 
 // ── Professor Auth ────────────────────────────────────────────────────────────
 
-/**
- * Cadastra novo professor.
- */
 export async function registerTeacher({ name, email, password, school }) {
   const credential = await createUserWithEmailAndPassword(auth, email, password);
   const { uid } = credential.user;
-
   await updateProfile(credential.user, { displayName: name });
-
   await setDoc(doc(db, "users", uid), {
-    name, email, school,
-    role: "professor",
-    createdAt: serverTimestamp(),
+    name, email, school, role: "professor", createdAt: serverTimestamp(),
   });
-
   return { uid, name, email, school, role: "professor" };
 }
 
-/**
- * Busca o role do usuário no Firestore após login.
- * Retorna "aluno" | "professor"
- */
 export async function getUserRole(uid) {
   const snap = await getDoc(doc(db, "users", uid));
   if (!snap.exists()) return "aluno";
@@ -197,83 +132,59 @@ export async function getUserRole(uid) {
 
 // ── Módulos do Professor ──────────────────────────────────────────────────────
 
-/**
- * RF25 — Gera código único: 2 números + 3 letras em posições aleatórias.
- * Exemplo: A4X9B, 3BK7R
- */
 export function generateModuleCode() {
-  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // sem I e O (confusos)
-  const digits  = "23456789";                  // sem 0 e 1 (confusos)
-
-  // Posições 0-4 → escolhe aleatoriamente 2 para dígitos, 3 para letras
+  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  const digits  = "23456789";
   const positions = [0, 1, 2, 3, 4];
   const digitPositions = [];
   while (digitPositions.length < 2) {
     const idx = Math.floor(Math.random() * positions.length);
     digitPositions.push(positions.splice(idx, 1)[0]);
   }
-  const letterPositions = positions;
-
   const code = Array(5).fill(null);
-  digitPositions.forEach((p) => {
-    code[p] = digits[Math.floor(Math.random() * digits.length)];
-  });
-  letterPositions.forEach((p) => {
-    code[p] = letters[Math.floor(Math.random() * letters.length)];
-  });
-
+  digitPositions.forEach((p) => { code[p] = digits[Math.floor(Math.random() * digits.length)]; });
+  positions.forEach((p)      => { code[p] = letters[Math.floor(Math.random() * letters.length)]; });
   return code.join("");
 }
 
-/**
- * RF26 + RNF07 — Salva módulo do professor no Firestore.
- * Estrutura: modules/{code} → { title, teacherUid, questions[], createdAt }
- */
 export async function saveTeacherModule({ teacherUid, title, questions }) {
-  const code = generateModuleCode();
-
-  // Garante unicidade: se o código já existe, gera outro
-  let ref  = doc(db, "modules", code);
+  let finalCode = generateModuleCode();
+  let ref  = doc(db, "modules", finalCode);
   let snap = await getDoc(ref);
-  let finalCode = code;
   while (snap.exists()) {
     finalCode = generateModuleCode();
     ref  = doc(db, "modules", finalCode);
     snap = await getDoc(ref);
   }
-
   await setDoc(ref, {
-    title,
-    teacherUid,
-    code: finalCode,
-    questions,
-    createdAt: serverTimestamp(),
+    title, teacherUid, code: finalCode, questions, createdAt: serverTimestamp(),
   });
-
-  // Também salva referência na subcoleção do professor
   await setDoc(doc(db, "users", teacherUid, "modules", finalCode), {
-    title,
-    code: finalCode,
-    questionCount: questions.length,
-    createdAt: serverTimestamp(),
+    title, code: finalCode, questionCount: questions.length, createdAt: serverTimestamp(),
   });
-
   return finalCode;
 }
 
-/**
- * RF28 — Busca módulo por código.
- * Retorna o módulo ou null se não encontrado.
- */
+export async function updateTeacherModule({ teacherUid, moduleCode, title, questions }) {
+  await updateDoc(doc(db, "modules", moduleCode), {
+    title, questions, updatedAt: serverTimestamp(),
+  });
+  await updateDoc(doc(db, "users", teacherUid, "modules", moduleCode), {
+    title, questionCount: questions.length, updatedAt: serverTimestamp(),
+  });
+}
+
+export async function deleteTeacherModule({ teacherUid, moduleCode }) {
+  await deleteDoc(doc(db, "modules", moduleCode));
+  await deleteDoc(doc(db, "users", teacherUid, "modules", moduleCode));
+}
+
 export async function findModuleByCode(code) {
   const snap = await getDoc(doc(db, "modules", code.toUpperCase()));
   if (!snap.exists()) return null;
   return { id: snap.id, ...snap.data() };
 }
 
-/**
- * RF28 — Adiciona módulo extra ao perfil do aluno.
- */
 export async function addExtraModuleToStudent(studentUid, moduleCode) {
   await setDoc(
     doc(db, "users", studentUid, "extraModules", moduleCode),
@@ -281,107 +192,159 @@ export async function addExtraModuleToStudent(studentUid, moduleCode) {
   );
 }
 
-/**
- * Carrega módulos extras do aluno.
- */
 export async function loadExtraModules(studentUid) {
   const snap = await getDocs(collection(db, "users", studentUid, "extraModules"));
   const codes = [];
   snap.forEach((d) => codes.push(d.data().code));
-
-  // Busca os dados de cada módulo
-  const modules = await Promise.all(
-    codes.map(async (code) => {
-      const m = await findModuleByCode(code);
-      return m;
-    })
-  );
+  const modules = await Promise.all(codes.map((code) => findModuleByCode(code)));
   return modules.filter(Boolean);
 }
 
-// ── Novas funções do Professor ────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// RF22 — Tentativas dos alunos em módulos do professor
+// ══════════════════════════════════════════════════════════════════════════════
 
 /**
- * Atualiza um módulo existente no Firestore (edição).
- * Atualiza tanto modules/{code} quanto users/{uid}/modules/{code}.
- */
-export async function updateTeacherModule({ teacherUid, moduleCode, title, questions }) {
-  const { doc, setDoc, updateDoc, serverTimestamp: ts } = await import("firebase/firestore");
-  const { db: firestore } = await import("./firebaseConfig");
-
-  // Atualiza coleção principal
-  await updateDoc(doc(firestore, "modules", moduleCode), {
-    title,
-    questions,
-    updatedAt: ts(),
-  });
-
-  // Atualiza referência do professor
-  await updateDoc(doc(firestore, "users", teacherUid, "modules", moduleCode), {
-    title,
-    questionCount: questions.length,
-    updatedAt: ts(),
-  });
-}
-
-/**
- * Deleta um módulo permanentemente do Firestore.
- * Remove de modules/{code} e de users/{uid}/modules/{code}.
- */
-export async function deleteTeacherModule({ teacherUid, moduleCode }) {
-  const { doc, deleteDoc } = await import("firebase/firestore");
-  const { db: firestore } = await import("./firebaseConfig");
-
-  await deleteDoc(doc(firestore, "modules", moduleCode));
-  await deleteDoc(doc(firestore, "users", teacherUid, "modules", moduleCode));
-}
-
-/**
- * RF22 — Busca todas as tentativas de alunos para um módulo específico.
- * Estrutura esperada no Firestore:
- *   moduleAttempts/{moduleCode}/students/{studentUid} → { studentName, answers[], completedAt }
- *   Cada answer: { statement, studentAnswer, correctAnswer, correct, attempts, usedHint, scratchpadImage? }
+ * Salva a tentativa completa do aluno ao concluir um módulo do professor.
  *
- * Se a coleção ainda não existir, retorna array vazio sem erro.
+ * Coleção: student_attempts
+ * DocId:   {moduleCode}_{studentUid}   ← único por (módulo + aluno)
+ *
+ * Campos obrigatórios para as queries do professor:
+ *   moduleCode  → filtro por módulo específico
+ *   teacherUid  → filtro por todos os módulos do professor
+ *
+ * Cada item de answers inclui:
+ *   { index, statement, type, correct, skipped, attempts, usedHint,
+ *     xpEarned, scratchpadImage (PNG Base64 | null),
+ *     studentAnswer, correctAnswer }
+ *
+ * NOTA sobre índices Firestore:
+ *   As queries por "moduleCode" e "teacherUid" são simples (campo único),
+ *   não requerem índice composto. Se o Firestore pedir criação de índice,
+ *   siga o link no erro do console — é criado em ~1 minuto.
+ */
+export async function saveStudentAttempt({
+  moduleCode,
+  teacherUid,
+  studentUid,
+  studentName,
+  answers,
+  score,
+  totalCorrect,
+  total,
+  timeMs,
+}) {
+  // DocId fixo por (aluno + módulo): retentativas sobrescrevem sem duplicar
+  const docId = `${moduleCode}_${studentUid}`;
+
+  await setDoc(doc(db, "student_attempts", docId), {
+    moduleCode,
+    teacherUid:  teacherUid || "",
+    studentUid,
+    studentName,
+    answers,          // array com scratchpadImage por questão
+    score,
+    totalCorrect,
+    total,
+    timeMs,
+    completedAt: serverTimestamp(),
+  });
+}
+
+/**
+ * FIX — Busca tentativas de UM módulo específico (getDocs, one-shot).
+ * Usado pelo TeacherDashboard quando o professor seleciona um módulo.
+ *
+ * Query: student_attempts WHERE moduleCode == moduleCode
+ * Índice: não é necessário (campo único, coleção simples).
  */
 export async function getStudentAttemptsForModule(moduleCode) {
-  const { collection, getDocs } = await import("firebase/firestore");
-  const { db: firestore } = await import("./firebaseConfig");
-
   try {
-    const snap = await getDocs(
-      collection(firestore, "moduleAttempts", moduleCode, "students")
+    const q    = query(
+      collection(db, "student_attempts"),
+      where("moduleCode", "==", moduleCode)
     );
+    const snap = await getDocs(q);
     const attempts = [];
-    snap.forEach((d) => attempts.push({ studentUid: d.id, ...d.data() }));
+    snap.forEach((d) => attempts.push({ id: d.id, ...d.data() }));
     attempts.sort((a, b) => (b.completedAt?.seconds || 0) - (a.completedAt?.seconds || 0));
     return attempts;
-  } catch {
+  } catch (e) {
+    console.error("getStudentAttemptsForModule:", e);
     return [];
   }
 }
 
 /**
- * RF22 — Salva a tentativa de um aluno em um módulo do professor.
- * Chamado pelo QuizEngine ao finalizar um módulo de professor.
- * answers[]: { statement, studentAnswer, correctAnswer, correct, attempts, usedHint, scratchpadImage? }
+ * FIX — Busca tentativas de TODOS os módulos de um professor (getDocs, one-shot).
+ * Query: student_attempts WHERE teacherUid == teacherUid
+ *
+ * Retorna um Map: { [moduleCode]: attempt[] } para fácil lookup por módulo.
  */
-export async function saveStudentAttemptForModule({
-  moduleCode,
-  studentUid,
-  studentName,
-  answers,
-}) {
-  const { doc, setDoc, serverTimestamp: ts } = await import("firebase/firestore");
-  const { db: firestore } = await import("./firebaseConfig");
+export async function getAllAttemptsForTeacher(teacherUid) {
+  try {
+    const q    = query(
+      collection(db, "student_attempts"),
+      where("teacherUid", "==", teacherUid)
+    );
+    const snap = await getDocs(q);
+    const byModule = {};
+    snap.forEach((d) => {
+      const data = { id: d.id, ...d.data() };
+      if (!byModule[data.moduleCode]) byModule[data.moduleCode] = [];
+      byModule[data.moduleCode].push(data);
+    });
+    return byModule;
+  } catch (e) {
+    console.error("getAllAttemptsForTeacher:", e);
+    return {};
+  }
+}
 
-  await setDoc(
-    doc(firestore, "moduleAttempts", moduleCode, "students", studentUid),
-    {
-      studentName,
-      answers,
-      completedAt: ts(),
-    },
-    { merge: true }
+/**
+ * FIX — Versão em tempo real com onSnapshot.
+ * Subscreve todas as tentativas do professor e chama callback sempre
+ * que o Firestore atualiza (novo aluno completa um módulo).
+ *
+ * Retorna a função de unsubscribe — chame-a no useEffect cleanup.
+ *
+ * Uso no TeacherDashboard:
+ *   useEffect(() => {
+ *     const unsub = subscribeToTeacherAttempts(teacherUid, (byModule) => {
+ *       setAttemptsMap(byModule);
+ *     });
+ *     return unsub;
+ *   }, [teacherUid]);
+ */
+export function subscribeToTeacherAttempts(teacherUid, callback) {
+  if (!teacherUid) return () => {};
+
+  const q = query(
+    collection(db, "student_attempts"),
+    where("teacherUid", "==", teacherUid)
   );
+
+  const unsubscribe = onSnapshot(
+    q,
+    (snap) => {
+      const byModule = {};
+      snap.forEach((d) => {
+        const data = { id: d.id, ...d.data() };
+        if (!byModule[data.moduleCode]) byModule[data.moduleCode] = [];
+        byModule[data.moduleCode].push(data);
+      });
+      // Ordena cada lista por data (mais recente primeiro)
+      Object.keys(byModule).forEach((code) => {
+        byModule[code].sort((a, b) => (b.completedAt?.seconds || 0) - (a.completedAt?.seconds || 0));
+      });
+      callback(byModule);
+    },
+    (error) => {
+      console.error("subscribeToTeacherAttempts:", error);
+      callback({});
+    }
+  );
+
+  return unsubscribe;
 }
