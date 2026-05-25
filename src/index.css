@@ -42,8 +42,6 @@ input   { font-family: inherit; }
 select  { font-family: inherit; }
 a       { color: inherit; text-decoration: none; }
 
-/* ── Auth two-column layout ──────────────────────────────────────── */
-
 .auth-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -90,8 +88,6 @@ a       { color: inherit; text-decoration: none; }
   bottom: -90px;
   left: -70px;
 }
-
-/* ── Shared form box ─────────────────────────────────────────────── */
 
 .form-box {
   width: 100%;
@@ -173,8 +169,6 @@ a       { color: inherit; text-decoration: none; }
 
 .field input::placeholder { color: var(--text-muted); }
 
-/* ── Buttons ─────────────────────────────────────────────────────── */
-
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -229,8 +223,6 @@ a       { color: inherit; text-decoration: none; }
 
 .btn-ghost:hover { background: var(--bg); }
 
-/* ── Responsive ──────────────────────────────────────────────────── */
-
 @media (max-width: 768px) {
   .auth-layout {
     grid-template-columns: 1fr;
@@ -239,62 +231,40 @@ a       { color: inherit; text-decoration: none; }
   .auth-panel  { padding: 32px 24px; }
 }
 
-/* ══════════════════════════════════════════════════════════════════════════════
-   RNF04 — Interface Acessível
-   Ajustes de acessibilidade cognitiva (TDAH e necessidades similares):
-   • Paleta suavizada para reduzir sobrecarga visual
-   • Espaçamento generoso para facilitar rastreamento visual
-   • Foco visível nítido para navegação por teclado
-   • Animações reduzidas via prefers-reduced-motion
-   • Modo de alto contraste opcional via classe .hc-mode no <body>
-   ══════════════════════════════════════════════════════════════════════════════ */
-
-/* ── Variáveis de acessibilidade (sobrescrevem as padrão quando necessário) ── */
-
 :root {
-  /* Azul primário ligeiramente menos saturado — menos estimulante */
+  
   --blue-primary:   #2563EB;
   --blue-hover:     #1D4ED8;
   --blue-light:     #EFF6FF;
 
-  /* Fundo levemente mais quente — menos "branco frio" clínico */
   --bg:             #F9FAFB;
   --surface:        #FFFFFF;
 
-  /* Textos com menos contraste extremo (preto puro é mais cansativo) */
-  --text-primary:   #1E293B;   /* era #0F172A */
+  --text-primary:   #1E293B;   
   --text-secondary: #4B5563;
   --text-muted:     #9CA3AF;
 
-  /* Borda mais suave */
   --border:         #E5E7EB;
 
-  /* Tipografia base maior para leitura mais fácil */
   --font-size-base: 16px;
-  --line-height-base: 1.75;    /* espaçamento entre linhas generoso */
+  --line-height-base: 1.75;    
 
-  /* Raios arredondados maiores = aspecto mais suave, menos "agressivo" */
   --radius-sm:      10px;
   --radius-md:      14px;
   --radius-lg:      18px;
   --radius-xl:      24px;
 
-  /* Sombras muito suaves — não competem com conteúdo */
   --shadow-sm:      0 1px 2px rgba(0,0,0,0.05);
   --shadow-md:      0 2px 8px rgba(0,0,0,0.06);
   --shadow-lg:      0 8px 24px rgba(0,0,0,0.08);
 }
 
-/* ── Tipografia base acessível ───────────────────────────────────────────── */
-
 body {
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
-  /* letter-spacing ligeiramente maior facilita leitura para dislexia/TDAH */
+  
   letter-spacing: 0.01em;
 }
-
-/* ── Foco visível nítido (essencial para navegação por teclado) ─────────── */
 
 :focus-visible {
   outline: 3px solid var(--blue-primary);
@@ -302,10 +272,7 @@ body {
   border-radius: var(--radius-sm);
 }
 
-/* Remove outline padrão feio apenas quando :focus-visible está disponível */
 :focus:not(:focus-visible) { outline: none; }
-
-/* ── Redução de animações (respeita preferência do sistema) ─────────────── */
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -318,19 +285,7 @@ body {
   }
 }
 
-/* ── Espaçamento aumentado para reduzir densidade visual ───────────────── */
-
 p, li { line-height: var(--line-height-base); }
-
-/* ── Modo simplificado (RNF05 — aplicado via classe .simplified-mode) ──── */
-
-.simplified-mode {
-  --font-size-base:    18px;
-  --line-height-base:  1.9;
-  letter-spacing:      0.02em;
-}
-
-/* ── Alto contraste opcional (.hc-mode no <body> via toggle futuro) ─────── */
 
 .hc-mode {
   --text-primary:   #000000;

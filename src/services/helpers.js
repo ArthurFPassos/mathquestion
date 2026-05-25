@@ -1,8 +1,5 @@
 import { UNITS } from "../data/units";
 
-/**
- * RF08 — Unit progress as the arithmetic mean of each module's score (0–1).
- */
 export function getUnitProgress(unitId, moduleResults) {
   const unit = UNITS.find((u) => u.id === unitId);
   if (!unit || !unit.modules.length) return 0;
@@ -15,26 +12,17 @@ export function getUnitProgress(unitId, moduleResults) {
   return sum / unit.modules.length;
 }
 
-/**
- * RF08 — A unit is unlocked when the previous unit's progress >= 80%.
- */
 export function isUnitUnlocked(unitId, moduleResults) {
   if (unitId === 1) return true;
   return getUnitProgress(unitId - 1, moduleResults) >= 0.8;
 }
 
-/**
- * Returns the average score (0–1) across all completed modules globally.
- */
 export function getOverallAvg(moduleResults) {
   const vals = Object.values(moduleResults).filter((r) => r.completed);
   if (!vals.length) return 0;
   return vals.reduce((sum, r) => sum + r.score, 0) / vals.length;
 }
 
-/**
- * Returns the average quiz time in milliseconds across completed modules.
- */
 export function getAvgTimeMs(moduleResults) {
   const times = Object.values(moduleResults)
     .filter((r) => r.timeMs)
@@ -43,9 +31,6 @@ export function getAvgTimeMs(moduleResults) {
   return times.reduce((a, b) => a + b, 0) / times.length;
 }
 
-/**
- * Formats milliseconds to a readable "Xm Ys" or "Ys" string.
- */
 export function formatTime(ms) {
   if (!ms) return "—";
   const totalSeconds = Math.round(ms / 1000);
@@ -54,12 +39,8 @@ export function formatTime(ms) {
   return m > 0 ? `${m}m ${s}s` : `${s}s`;
 }
 
-/**
- * Generates and downloads a PDF report of the student's performance.
- * Uses jsPDF + jspdf-autotable.
- */
 export async function downloadReportPDF(state) {
-  // Lazy-load jsPDF so it's only bundled when needed
+  
   const { default: jsPDF } = await import("jspdf");
   const { default: autoTable } = await import("jspdf-autotable");
 
@@ -78,15 +59,14 @@ export async function downloadReportPDF(state) {
   );
   const generatedAt = new Date().toLocaleString("pt-BR");
 
-  const PRIMARY = [99, 102, 241];   // #6366f1
-  const DARK    = [30, 41, 59];     // #1e293b
-  const LIGHT   = [248, 250, 252];  // #f8fafc
-  const GRAY    = [100, 116, 139];  // #64748b
+  const PRIMARY = [99, 102, 241];   
+  const DARK    = [30, 41, 59];     
+  const LIGHT   = [248, 250, 252];  
+  const GRAY    = [100, 116, 139];  
 
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
 
-  // ── Header band ──────────────────────────────────────────────────────────
   doc.setFillColor(...PRIMARY);
   doc.rect(0, 0, pageW, 36, "F");
 
@@ -102,7 +82,6 @@ export async function downloadReportPDF(state) {
   doc.setFontSize(8);
   doc.text(`Gerado em: ${generatedAt}`, 14, 29);
 
-  // ── Student info box ─────────────────────────────────────────────────────
   let y = 44;
   doc.setFillColor(...LIGHT);
   doc.roundedRect(12, y, pageW - 24, 36, 3, 3, "F");
@@ -117,7 +96,6 @@ export async function downloadReportPDF(state) {
   doc.setTextColor(...GRAY);
   doc.text(`Série: ${state.user?.grade || "—"}`, 18, y + 18);
 
-  // ── Summary cards (4 cols) ───────────────────────────────────────────────
   y += 44;
   const cardW = (pageW - 28) / 4;
   const cards = [
@@ -141,7 +119,6 @@ export async function downloadReportPDF(state) {
     doc.text(card.label, cx + cardW / 2, y + 17, { align: "center" });
   });
 
-  // ── Diagnostic score ─────────────────────────────────────────────────────
   y += 30;
   if (state.firstDiagnosticDone ?? state.diagnosticDone) {
     doc.setTextColor(...DARK);
@@ -171,7 +148,6 @@ export async function downloadReportPDF(state) {
     y += 14;
   }
 
-  // ── Module results table ──────────────────────────────────────────────────
   y += 4;
   doc.setTextColor(...DARK);
   doc.setFontSize(11);
@@ -243,7 +219,6 @@ export async function downloadReportPDF(state) {
     },
   });
 
-  // ── Footer ────────────────────────────────────────────────────────────────
   const finalY = doc.lastAutoTable?.finalY ?? pageH - 20;
   if (finalY + 20 < pageH) {
     doc.setDrawColor(226, 232, 240);
@@ -261,9 +236,6 @@ export async function downloadReportPDF(state) {
   doc.save(`relatorio_${studentName.replace(/\s+/g, "_")}.pdf`);
 }
 
-/**
- * @deprecated — kept for compatibility; use downloadReportPDF instead.
- */
 export function downloadReport(state) {
   downloadReportPDF(state);
 }

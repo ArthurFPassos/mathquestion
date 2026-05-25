@@ -3,22 +3,18 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../services/firebaseConfig";
 import { loadProgress } from "../services/firebaseService";
 
-// ─── Initial State ────────────────────────────────────────────────────────────
-
 const initialState = {
-  // Auth
-  user:            null,   // { uid, name, email, grade }
+  
+  user:            null,   
   isAuthenticated: false,
-  authLoading:     true,   // true enquanto Firebase verifica sessão salva
+  authLoading:     true,   
 
-  // Diagnostic flow
   firstDiagnosticDone:   false,
   firstDiagnosticScore:  0,
   wentToReview:          false,
   secondDiagnosticDone:  false,
   secondDiagnosticScore: 0,
 
-  // Quiz flow
   screen:             "dashboard",
   currentModule:      null,
   moduleResults:      {},
@@ -27,15 +23,12 @@ const initialState = {
   scratchpadOpen:     false,
   demoWatched:        {},
   demoCompleted:      {},
-  extraModule:        null,   // módulo criado por professor (não está em UNITS)
+  extraModule:        null,   
 };
-
-// ─── Reducer ──────────────────────────────────────────────────────────────────
 
 function reducer(state, action) {
   switch (action.type) {
 
-    // Auth
     case "LOGIN":
     case "REGISTER":
       return {
@@ -49,10 +42,9 @@ function reducer(state, action) {
       return { ...initialState, authLoading: false };
 
     case "AUTH_READY":
-      // Firebase confirmou que não há sessão salva
+      
       return { ...state, authLoading: false };
 
-    // Carrega progresso salvo no Firestore após login
     case "LOAD_PROGRESS": {
       const { moduleResults, totalXP, diagnostics } = action.payload;
       const diag1 = diagnostics.find((d) => d.attempt === 1);
@@ -69,7 +61,6 @@ function reducer(state, action) {
       };
     }
 
-    // Diagnostic
     case "FIRST_DIAGNOSTIC_DONE":
       return {
         ...state,
@@ -85,7 +76,6 @@ function reducer(state, action) {
         secondDiagnosticScore: action.payload,
       };
 
-    // Quiz flow
     case "SET_SCREEN":
       return { ...state, screen: action.payload };
 
@@ -96,7 +86,7 @@ function reducer(state, action) {
       return {
         ...state,
         screen:         "quiz",
-        currentModule:  action.payload,   // garante que o módulo está definido mesmo pulando a demo
+        currentModule:  action.payload,   
         hintsUsedInBattery: 0,
         demoWatched:    { ...state.demoWatched, [action.payload]: true },
       };
@@ -135,27 +125,20 @@ function reducer(state, action) {
   }
 }
 
-// ─── Context & Provider ───────────────────────────────────────────────────────
-
 export const AppContext = createContext(null);
 
 export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Observa estado de autenticação do Firebase.
-  // Se o aluno já fez login antes (sessão salva no navegador),
-  // ele é restaurado automaticamente aqui — sem precisar logar de novo.
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const { uid, displayName, email } = firebaseUser;
 
-        // Busca perfil completo do Firestore - verifica professor primeiro, depois aluno
         try {
           const { getDoc, doc } = await import("firebase/firestore");
           const { db } = await import("../services/firebaseConfig");
           
-          // Primeiro verifica se é professor (coleção "users")
           const teacherSnap = await getDoc(doc(db, "users", uid));
           if (teacherSnap.exists()) {
             const profile = teacherSnap.data();
@@ -166,7 +149,6 @@ export function AppProvider({ children }) {
             return;
           }
 
-          // Se não é professor, busca como aluno (coleção "students")
           const studentSnap = await getDoc(doc(db, "students", uid));
           if (studentSnap.exists()) {
             const profile = studentSnap.data();
@@ -175,23 +157,22 @@ export function AppProvider({ children }) {
               payload: { uid, name: displayName || profile.name || "Aluno", email, grade: profile.grade, role: "aluno" },
             });
 
-            // Carrega progresso salvo
             const progress = await loadProgress(uid);
             dispatch({ type: "LOAD_PROGRESS", payload: progress });
           } else {
-            // Usuário autenticado mas sem perfil no Firestore
+            
             dispatch({ type: "AUTH_READY" });
           }
         } catch {
           dispatch({ type: "AUTH_READY" });
         }
       } else {
-        // Nenhum usuário autenticado
+        
         dispatch({ type: "AUTH_READY" });
       }
     });
 
-    return unsubscribe; // cleanup ao desmontar
+    return unsubscribe; 
   }, []);
 
   return (

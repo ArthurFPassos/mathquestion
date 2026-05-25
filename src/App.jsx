@@ -1,29 +1,21 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useApp } from "./context/AppContext";
 
-// ── Public pages ──────────────────────────────────────────────────────────────
 import Home     from "./pages/public/Home";
 import Login    from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Sobre    from "./pages/public/Sobre";
 
-// ── Diagnostic flow ───────────────────────────────────────────────────────────
-import DiagnosticScreen       from "./pages/diagnostic/DiagnosticScreen";       // RF16
-import ReviewScreen           from "./pages/diagnostic/ReviewScreen";            // RF17
-import SecondDiagnosticScreen from "./pages/diagnostic/SecondDiagnosticScreen";  // RF20
+import DiagnosticScreen       from "./pages/diagnostic/DiagnosticScreen";       
+import ReviewScreen           from "./pages/diagnostic/ReviewScreen";            
+import SecondDiagnosticScreen from "./pages/diagnostic/SecondDiagnosticScreen";  
 
-// ── Main app ──────────────────────────────────────────────────────────────────
 import Dashboard        from "./pages/student/Dashboard";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
-import Navbar     from "./components/shared/Navbar";      // RNF06
+import Navbar     from "./components/shared/Navbar";      
 import DemoScreen from "./pages/student/DemoScreen";
 import QuizEngine from "./pages/student/QuizEngine";
 
-// ─── Protected route ──────────────────────────────────────────────────────────
-
-// Enquanto o Firebase verifica a sessão salva, mostra spinner
-// Evita redirecionar para /login um aluno que já estava autenticado
-// Rota exclusiva para professores
 function TeacherRoute({ children }) {
   const { state } = useApp();
   if (state.authLoading) return null;
@@ -56,11 +48,6 @@ function PrivateRoute({ children }) {
   return state.isAuthenticated ? children : <Navigate to="/login" replace />;
 }
 
-// ─── Module-1 placeholder (entry point after diagnostics) ─────────────────────
-// Replace this with your real Módulo 1 component when ready.
-
-// ─── Internal layout — wraps every protected screen with Navbar (RNF06) ──────
-
 function InternalLayout({ children }) {
   return (
     <>
@@ -79,20 +66,18 @@ function Module1() {
   return <InternalLayout><Dashboard /></InternalLayout>;
 }
 
-// ─── Root ─────────────────────────────────────────────────────────────────────
-
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* ── Public ── */}
+        {}
         <Route path="/"         element={<Home />} />
         <Route path="/login"    element={<Login />} />
         <Route path="/cadastro" element={<Register />} />
         <Route path="/sobre"    element={<Sobre />} />
 
-        {/* ── /diagnostico: entry for NEW users (after Register) ── */}
+        {}
         <Route
           path="/diagnostico"
           element={
@@ -102,7 +87,7 @@ export default function App() {
           }
         />
 
-        {/* ── /dashboard: entry for RETURNING users (after Login) ── */}
+        {}
         <Route
           path="/dashboard"
           element={
@@ -112,13 +97,13 @@ export default function App() {
           }
         />
 
-        {/* ── /app: legacy redirect — keeps old bookmarks working ── */}
+        {}
         <Route
           path="/app"
           element={<Navigate to="/dashboard" replace />}
         />
 
-        {/* ── RF16: low score → review page ── */}
+        {}
         <Route
           path="/revisao"
           element={
@@ -128,7 +113,7 @@ export default function App() {
           }
         />
 
-        {/* ── RF20: second diagnostic after review ── */}
+        {}
         <Route
           path="/segundo-diagnostico"
           element={
@@ -138,7 +123,7 @@ export default function App() {
           }
         />
 
-        {/* ── RF20: entry into modules (after either diagnostic path) ── */}
+        {}
         <Route
           path="/modulo-1"
           element={
@@ -148,7 +133,7 @@ export default function App() {
           }
         />
 
-        {/* ── RF23: Painel do professor ── */}
+        {}
         <Route
           path="/teacher-dashboard"
           element={
@@ -158,7 +143,7 @@ export default function App() {
           }
         />
 
-        {/* Fallback */}
+        {}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

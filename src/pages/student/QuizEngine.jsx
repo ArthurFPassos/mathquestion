@@ -16,8 +16,6 @@ import Scratchpad from "../../components/shared/Scratchpad";
 import ExitModal from "../../components/shared/ExitModal";
 import "./QuizEngine.css";
 
-// ── Drag & Drop ───────────────────────────────────────────────────────────────
-
 function SortableItem({ id, label, disabled }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id, disabled });
@@ -131,8 +129,6 @@ function MatchingQuestion({ question, onAnswer, disabled }) {
   );
 }
 
-// ── RF22: PDF detalhado ────────────────────────────────────────────────────────
-
 async function downloadModuleReportPDF(report) {
   const { default: jsPDF }     = await import("jspdf");
   const { default: autoTable } = await import("jspdf-autotable");
@@ -150,7 +146,6 @@ async function downloadModuleReportPDF(report) {
   const timeStr = (() => { const s = Math.round((report.timeMs || 0) / 1000); const m = Math.floor(s / 60); return m > 0 ? `${m}m ${s % 60}s` : `${s}s`; })();
   const dateStr = report.completedAt?.toLocaleString("pt-BR") || new Date().toLocaleString("pt-BR");
 
-  // Cabeçalho
   doc.setFillColor(...PRIMARY);
   doc.rect(0, 0, pageW, 36, "F");
   doc.setTextColor(255, 255, 255);
@@ -161,7 +156,6 @@ async function downloadModuleReportPDF(report) {
   doc.setFontSize(8);
   doc.text(`Gerado em: ${dateStr}`, 14, 29);
 
-  // Info
   let y = 44;
   doc.setTextColor(...DARK); doc.setFontSize(13); doc.setFont("helvetica", "bold");
   doc.text(report.moduleName, 14, y);
@@ -169,7 +163,6 @@ async function downloadModuleReportPDF(report) {
   doc.text(`Unidade: ${report.unitName}`, 14, y + 6);
   doc.text(`Aluno: ${report.studentName}`, 14, y + 12);
 
-  // Cards de resumo
   y += 22;
   const cards = [
     { label: "Resultado",   value: `${pct}%` },
@@ -188,7 +181,6 @@ async function downloadModuleReportPDF(report) {
     doc.text(c.label, cx + cw / 2, y + 16, { align: "center" });
   });
 
-  // Tabela de questões
   y += 28;
   doc.setTextColor(...DARK); doc.setFontSize(10); doc.setFont("helvetica", "bold");
   doc.text("Detalhamento por questão", 14, y);
@@ -230,8 +222,6 @@ async function downloadModuleReportPDF(report) {
     },
   });
 
-  // ── Seção de rascunhos ─────────────────────────────────────────────────────
-  // Filtra apenas questões que têm imagem de rascunho válida
   const questionsWithScratchpad = (report.questions || []).filter(
     (q) => q.scratchpadImage && typeof q.scratchpadImage === "string" && q.scratchpadImage.startsWith("data:image")
   );
@@ -256,9 +246,9 @@ async function downloadModuleReportPDF(report) {
       curY += 5;
 
       try {
-        // Calcula proporção real do canvas (560×280) para caber no A4
+        
         const IMG_W = 130;
-        const IMG_H = IMG_W * (280 / 560); // mantém aspecto 2:1 → 65mm
+        const IMG_H = IMG_W * (280 / 560); 
         doc.addImage(q.scratchpadImage, "PNG", 14, curY, IMG_W, IMG_H);
         curY += IMG_H + 6;
       } catch (err) {
@@ -271,7 +261,6 @@ async function downloadModuleReportPDF(report) {
     }
   }
 
-  // Rodapé
   const finalY = doc.lastAutoTable?.finalY ?? pageH - 20;
   if (questionsWithScratchpad.length === 0) {
     doc.setDrawColor(226, 232, 240);
@@ -283,8 +272,6 @@ async function downloadModuleReportPDF(report) {
   doc.save(`relatorio_modulo_${report.moduleName.replace(/\s+/g, "_")}.pdf`);
 }
 
-// ── Main QuizEngine ───────────────────────────────────────────────────────────
-
 export default function QuizEngine() {
   const { state, dispatch } = useApp();
   const navigate            = useNavigate();
@@ -295,7 +282,6 @@ export default function QuizEngine() {
   const unit            = UNITS.find((u) => u.modules.some((m) => m.id === state.currentModule))
     || (isExtraModule ? { id: "extra", title: "Módulo Extra", emoji: "🎓", color: "#6366f1", light: "#eef2ff" } : null);
 
-  // ── State ──────────────────────────────────────────────────────────────────
   const [qIndex,              setQIndex]              = useState(0);
   const [textAnswer,          setTextAnswer]          = useState("");
   const [selected,            setSelected]            = useState(null);
@@ -309,18 +295,10 @@ export default function QuizEngine() {
   const [interactiveAnswered, setInteractiveAnswered] = useState(false);
   const [moduleReport,        setModuleReport]        = useState(null);
 
-  // ── Refs ───────────────────────────────────────────────────────────────────
   const attemptsRef    = useRef(0);
   const showHintRef    = useRef(false);
   const questionLogRef = useRef([]);
 
-  /**
-   * FIX — O ref do Scratchpad precisa existir SEMPRE, independente de
-   * state.scratchpadOpen, para que getSnapshot() funcione mesmo quando
-   * o painel está fechado mas o aluno já desenhou algo.
-   * O componente <Scratchpad> renderiza sempre (sem condicional), mas
-   * a classe CSS controla se ele está visível ou não.
-   */
   const scratchpadRef = useRef(null);
 
   const setShowHintSync = (val) => {
@@ -340,8 +318,6 @@ export default function QuizEngine() {
   const isWrong      = feedback === "wrong";
   const canShowHint  = isWrong && !showHint && hintsLeft > 0;
   const isInteractive = q.type === "drag-drop" || q.type === "matching";
-
-  // ── Handlers ───────────────────────────────────────────────────────────────
 
   const handleInteractiveAnswer = (correct) => {
     attemptsRef.current += 1;
@@ -368,16 +344,8 @@ export default function QuizEngine() {
     setFeedback(null); setSelected(null); setTextAnswer(""); setInteractiveAnswered(false);
   };
 
-  /**
-   * FIX — Captura o snapshot do rascunho ANTES de avançar a questão.
-   *
-   * scratchpadRef.current sempre existe (Scratchpad renderiza sempre).
-   * Se o aluno não desenhou nada, getSnapshot() devolve null.
-   * A imagem Base64 é guardada no log da questão e depois serializada
-   * no Firestore (saveStudentAttempt) para o professor visualizar.
-   */
   const logAndAdvance = (correct, skipped = false) => {
-    // Captura snapshot do canvas AGORA, antes de trocar de questão
+    
     let scratchpadImage = null;
     try {
       scratchpadImage = scratchpadRef.current?.getSnapshot() ?? null;
@@ -395,7 +363,7 @@ export default function QuizEngine() {
       attemptsCount:  attemptsRef.current,
       hintUsed:       showHintRef.current,
       xpEarned:       correct ? currentXP : 0,
-      scratchpadImage,          // PNG Base64 ou null
+      scratchpadImage,          
     };
 
     questionLogRef.current = [...questionLogRef.current, entry];
@@ -407,7 +375,7 @@ export default function QuizEngine() {
       setQIndex((i) => i + 1);
       setTextAnswer(""); setSelected(null); setFeedback(null);
       setShowHintSync(false); setInteractiveAnswered(false);
-      // Limpa o canvas ao passar para a próxima questão (cada questão tem seu próprio rascunho)
+      
       try { scratchpadRef.current?.clear(); } catch (_) {}
     }
   };
@@ -451,28 +419,12 @@ export default function QuizEngine() {
     if (!state.user?.uid) return;
     const uid = state.user.uid;
 
-    // Salva progresso básico na subcoleção do aluno
     saveModuleResult(uid, module.id, {
       score: result.score, xp: result.xp,
       correct: result.correct, total: result.total,
       timeMs: result.timeMs, completed: true,
     }).catch(console.error);
 
-    /**
-     * FIX — Sincronização do Professor:
-     *
-     * Salva tentativa detalhada na coleção global "student_attempts"
-     * com os campos obrigatórios: moduleCode, teacherUid, studentUid,
-     * studentName, answers (com scratchpadImage por questão).
-     *
-     * O teacherUid é lido de module.teacherUid (campo salvo pelo
-     * saveTeacherModule no Firestore). Se por algum motivo estiver
-     * ausente, a tentativa ainda é salva e o professor pode encontrá-la
-     * por moduleCode.
-     *
-     * O docId único "moduleCode_studentUid" garante que retentativas
-     * sobrescrevem o documento anterior sem duplicar.
-     */
     if (isExtraModule && module.code) {
       const answersPayload = finalLog.map((e) => ({
         index:          e.index,
@@ -483,16 +435,16 @@ export default function QuizEngine() {
         attempts:       e.attemptsCount,
         usedHint:       !!e.hintUsed,
         xpEarned:       e.xpEarned || 0,
-        // FIX: inclui imagem do rascunho (Base64 PNG) se existir
+        
         scratchpadImage: e.scratchpadImage || null,
-        // Mantém compatibilidade com TeacherDashboard que usa "studentAnswer" e "correctAnswer"
+        
         studentAnswer:  null,
         correctAnswer:  module.questions[e.index]?.answer || null,
       }));
 
       saveStudentAttempt({
         moduleCode:  module.code,
-        teacherUid:  module.teacherUid || "",   // vem do documento modules/{code}
+        teacherUid:  module.teacherUid || "",   
         studentUid:  uid,
         studentName: state.user.name || "Aluno",
         answers:     answersPayload,
@@ -518,8 +470,6 @@ export default function QuizEngine() {
   });
 
   const typeLabel = q.type === "drag-drop" ? "🧩 Arrastar e Soltar" : q.type === "matching" ? "🔗 Associação" : null;
-
-  // ── Tela de resultado ──────────────────────────────────────────────────────
 
   if (moduleReport) {
     const pct    = Math.round(moduleReport.score * 100);
@@ -552,7 +502,7 @@ export default function QuizEngine() {
             </div>
           </div>
 
-          {/* Detalhamento por questão */}
+          {}
           <div className="qe-result-questions">
             {moduleReport.questions.map((q, i) => (
               <div key={i} className={`qe-result-q-row ${q.correct ? "qe-result-q-row--correct" : q.skipped ? "qe-result-q-row--skipped" : "qe-result-q-row--wrong"}`}>
@@ -585,17 +535,11 @@ export default function QuizEngine() {
     );
   }
 
-  // ── Render principal ───────────────────────────────────────────────────────
-
   return (
     <div className="qe-wrapper">
       {showExit && <ExitModal onConfirm={handleExitConfirm} onCancel={() => setShowExit(false)} />}
 
-      {/*
-        FIX — Scratchpad renderiza SEMPRE (não condicional ao scratchpadOpen).
-        A prop "visible" controla o CSS. Isso garante que scratchpadRef.current
-        existe o tempo todo e getSnapshot() funciona mesmo com o painel fechado.
-      */}
+      {}
       <Scratchpad ref={scratchpadRef} visible={state.scratchpadOpen} />
 
       <div className={`qe-card${simplified ? " qe-card--simplified" : ""}`}>

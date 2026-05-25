@@ -14,8 +14,6 @@ const QUESTIONS = [
   { id:"sd6", statement:"Calcule: 3/8 + 2/8",  options:["4/8","5/8","6/8","1/8"], answer:"5/8" },
 ];
 
-// ─── Result screen ────────────────────────────────────────────────────────────
-
 function ResultScreen({ correctCount, total, onContinue }) {
   const pct    = Math.min(100, Math.round((correctCount / total) * 100));
   const passed = pct >= 60;
@@ -73,8 +71,6 @@ function ResultScreen({ correctCount, total, onContinue }) {
     </div>
   );
 }
-
-// ─── Main component ───────────────────────────────────────────────────────────
 
 export default function SecondDiagnosticScreen() {
   const { state, dispatch }             = useApp();

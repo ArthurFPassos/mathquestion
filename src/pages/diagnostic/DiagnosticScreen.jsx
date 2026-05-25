@@ -57,7 +57,7 @@ export default function DiagnosticScreen() {
 
   return (
     <div className="ds-wrapper">
-      {/* ── SCRATCHPAD ── */}
+      {}
       {state.scratchpadOpen && <Scratchpad />}
 
       <div className="ds-card">
@@ -67,7 +67,7 @@ export default function DiagnosticScreen() {
             <span className="ds-counter">
               {qIndex + 1} / {DIAGNOSTIC.length}
             </span>
-            {/* ── BOTÃO RASCUNHO ── */}
+            {}
             <button
               className="ds-scratchpad-btn"
               onClick={() => dispatch({ type: "TOGGLE_SCRATCHPAD" })}

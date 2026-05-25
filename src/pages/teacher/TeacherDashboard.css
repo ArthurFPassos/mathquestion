@@ -1,13 +1,8 @@
-/* ═══════════════════════════════════════════════════════════════════════════
-   TeacherDashboard.css — MathQuestion
-   Fundo azul pastel suave (RNF03 — acessibilidade TDAH/Autismo)
-   ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Design tokens ─────────────────────────────────────────────────────────── */
 :root {
-  --mq-page-bg:     #E8F4FD;   /* azul pastel suave, baixa estimulação       */
+  --mq-page-bg:     #E8F4FD;   
   --mq-card-bg:     #ffffff;
-  --mq-sidebar-bg:  #1a2e44;   /* azul-marinho fosco, sem brilho puro         */
+  --mq-sidebar-bg:  #1a2e44;   
   --mq-blue-600:    #2563eb;
   --mq-blue-500:    #3b82f6;
   --mq-blue-100:    #dbeafe;
@@ -33,10 +28,9 @@
   --mq-shadow-lg:   0 4px 28px rgba(0,0,0,.10);
 }
 
-/* ── Wrapper ────────────────────────────────────────────────────────────────── */
 .td-wrapper {
   min-height: 100vh;
-  background: var(--mq-page-bg);   /* fundo azul pastel — RNF03 */
+  background: var(--mq-page-bg);   
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -45,7 +39,6 @@
   box-sizing: border-box;
 }
 
-/* ── Dashboard layout (sidebar + conteúdo) ──────────────────────────────────── */
 .td-dashboard {
   display: flex;
   width: 100%;
@@ -57,9 +50,6 @@
   overflow: hidden;
 }
 
-/* ════════════════════════════════════════════════════════
-   SIDEBAR
-   ════════════════════════════════════════════════════════ */
 .td-sidebar {
   width: var(--mq-sidebar-w);
   flex-shrink: 0;
@@ -182,15 +172,12 @@
 }
 .td-sidebar-logout:hover { background: rgba(255,255,255,.07); color: #fff; }
 
-/* ════════════════════════════════════════════════════════
-   MAIN CONTENT
-   ════════════════════════════════════════════════════════ */
 .td-main {
   flex: 1;
   padding: 36px 40px;
   overflow-y: auto;
   min-width: 0;
-  background: var(--mq-page-bg);   /* mesma cor de fundo suave no interior */
+  background: var(--mq-page-bg);   
 }
 
 .td-main-header {
@@ -216,7 +203,6 @@
   margin: 0;
 }
 
-/* ─── Section title ────────────────────────────────────────────────────────── */
 .td-section-title {
   font-size: 15px;
   font-weight: 700;
@@ -224,9 +210,6 @@
   margin: 0 0 14px;
 }
 
-/* ═══════════════════════════════════════════════════════
-   CARDS DE MÓDULOS
-   ═══════════════════════════════════════════════════════ */
 .td-modules-grid {
   display: flex;
   flex-direction: column;
@@ -320,7 +303,6 @@
 .td-action-btn--delete { border-color: var(--mq-slate-200); background: #fff; color: var(--mq-slate-500); }
 .td-action-btn--delete:hover { border-color: var(--mq-red-500); color: var(--mq-red-500); background: var(--mq-red-100); }
 
-/* ─── Empty state ──────────────────────────────────────────────────────────── */
 .td-empty-state {
   text-align: center;
   padding: 60px 24px;
@@ -341,9 +323,6 @@
   line-height: 1.8;
 }
 
-/* ═══════════════════════════════════════════════════════
-   BOTÕES GERAIS
-   ═══════════════════════════════════════════════════════ */
 .td-btn-primary {
   padding: 10px 20px;
   border-radius: 10px;
@@ -395,7 +374,6 @@
 }
 .td-btn-danger:hover { background: #dc2626; }
 
-/* ─── Loading ──────────────────────────────────────────────────────────────── */
 .td-loading {
   text-align: center;
   color: var(--mq-slate-400);
@@ -403,9 +381,6 @@
   padding: 40px;
 }
 
-/* ═══════════════════════════════════════════════════════
-   FORMULÁRIO CRIAR / EDITAR MÓDULO
-   ═══════════════════════════════════════════════════════ */
 .td-create-container {
   width: 100%;
   max-width: 700px;
@@ -476,7 +451,6 @@
 }
 .td-field--title input { font-size: 16px; font-weight: 600; }
 
-/* Campo de dica */
 .td-hint-field {
   background: var(--mq-yellow-100);
   border-radius: 10px;
@@ -487,7 +461,6 @@
 .td-hint-textarea    { background: #fff !important; border-color: #fde68a !important; }
 .td-hint-textarea:focus { border-color: var(--mq-yellow-400) !important; box-shadow: 0 0 0 3px #fef9c3 !important; }
 
-/* ─── Question card ────────────────────────────────────────────────────────── */
 .td-question-card {
   background: var(--mq-card-bg);
   border: 1.5px solid var(--mq-slate-200);
@@ -600,9 +573,6 @@
   margin-bottom: 16px;
 }
 
-/* ═══════════════════════════════════════════════════════
-   MODAL DE EXCLUSÃO
-   ═══════════════════════════════════════════════════════ */
 .td-modal-overlay {
   position: fixed;
   inset: 0;
@@ -631,9 +601,6 @@
 
 .td-modal-actions { display: flex; gap: 10px; justify-content: center; }
 
-/* ═══════════════════════════════════════════════════════
-   MONITOR DE ALUNOS
-   ═══════════════════════════════════════════════════════ */
 .td-monitor-container { width: 100%; }
 
 .td-monitor-module-list {
@@ -713,9 +680,6 @@
 .td-student-score--mid  { background: var(--mq-yellow-100); color: #92400e; }
 .td-student-score--low  { background: var(--mq-red-100); color: #dc2626; }
 
-/* ═══════════════════════════════════════════════════════
-   ANALYTICS DE ALUNO
-   ═══════════════════════════════════════════════════════ */
 .td-analytics-container { width: 100%; }
 
 .td-analytics-header {
@@ -815,9 +779,6 @@
 .td-scratchpad-label   { font-size: 12px; font-weight: 600; color: var(--mq-slate-500); margin: 0 0 8px; }
 .td-scratchpad-img     { max-width: 100%; border-radius: 8px; border: 1px solid var(--mq-slate-200); background: #fff; }
 
-/* ═══════════════════════════════════════════════════════
-   TELA DE SUCESSO
-   ═══════════════════════════════════════════════════════ */
 .td-success-card {
   max-width: 440px; width: 100%;
   background: var(--mq-card-bg);
@@ -844,9 +805,6 @@
 .td-success-hint    { font-size: 12px; color: var(--mq-slate-400); margin: 0 0 28px; line-height: 1.6; }
 .td-success-actions { display: flex; flex-direction: column; gap: 10px; }
 
-/* ═══════════════════════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   .td-wrapper    { padding: 0; }
   .td-dashboard  { flex-direction: column; border-radius: 0; min-height: 100vh; }
@@ -863,7 +821,6 @@
   .td-score-badge { margin-left: 0; }
 }
 
-/* ── Badges novos ──────────────────────────────────────────────────────────── */
 .td-realtime-badge {
   display: inline-flex;
   align-items: center;
@@ -900,4 +857,129 @@
   border: 1px solid #86efac;
   padding: 2px 8px;
   border-radius: 99px;
+}
+
+.td-attempts-section {
+  background: #fff;
+  border: 1.5px solid var(--mq-slate-200);
+  border-radius: var(--mq-radius-lg);
+  padding: 18px 20px;
+  margin-bottom: 18px;
+}
+
+.td-attempts-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mq-slate-700);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.td-attempts-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.td-attempt-opt {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--mq-radius);
+  border: 1.5px solid var(--mq-slate-200);
+  background: var(--mq-slate-50);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.td-attempt-opt:hover {
+  border-color: var(--mq-blue-500);
+  background: var(--mq-blue-50);
+}
+.td-attempt-opt--active {
+  border-color: var(--mq-blue-600);
+  background: var(--mq-blue-50);
+  box-shadow: 0 0 0 3px var(--mq-blue-100);
+}
+
+.td-attempt-opt-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--mq-blue-100);
+  color: var(--mq-blue-600);
+  font-size: 14px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.td-attempt-opt--active .td-attempt-opt-icon {
+  background: var(--mq-blue-600);
+  color: #fff;
+}
+
+.td-attempt-opt-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.td-attempt-opt-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--mq-slate-800);
+  line-height: 1.2;
+}
+
+.td-attempt-opt-sub {
+  font-size: 11px;
+  color: var(--mq-slate-500);
+  line-height: 1.4;
+}
+
+.td-custom-attempts-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--mq-slate-100);
+  flex-wrap: wrap;
+}
+
+.td-custom-attempts-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mq-slate-700);
+}
+
+.td-custom-attempts-input {
+  width: 72px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1.5px solid var(--mq-slate-200);
+  font-size: 16px;
+  font-weight: 800;
+  font-family: inherit;
+  color: var(--mq-blue-600);
+  text-align: center;
+  transition: border-color 0.15s;
+}
+.td-custom-attempts-input:focus {
+  outline: none;
+  border-color: var(--mq-blue-500);
+  box-shadow: 0 0 0 3px var(--mq-blue-100);
+}
+
+.td-custom-attempts-hint {
+  font-size: 11px;
+  color: var(--mq-slate-400);
 }

@@ -1,10 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════════════
-   Dashboard.css — Painel do Aluno · MathQuestion
-   Alinhado visualmente ao TeacherDashboard (sidebar, cards, tokens)
-   Fundo azul pastel suave — RNF03 (acessibilidade TDAH/Autismo)
-   ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Tokens (espelha os do TeacherDashboard) ───────────────────────────────── */
 :root {
   --mq-page-bg:    #E8F4FD;
   --mq-card-bg:    #ffffff;
@@ -33,9 +27,6 @@
   --mq-sidebar-w:  240px;
 }
 
-/* ═══════════════════════════════════════════════════════
-   LAYOUT PRINCIPAL (sidebar + conteúdo)
-   ═══════════════════════════════════════════════════════ */
 .db-page {
   display: flex;
   min-height: 100vh;
@@ -43,9 +34,6 @@
   font-family: inherit;
 }
 
-/* ════════════════════════
-   SIDEBAR
-   ════════════════════════ */
 .db-sidebar {
   width: var(--mq-sidebar-w);
   flex-shrink: 0;
@@ -178,9 +166,6 @@
 }
 .db-sidebar-logout:hover { background: rgba(255,255,255,.07); color: #fff; }
 
-/* ════════════════════════
-   MAIN CONTENT
-   ════════════════════════ */
 .db-main {
   flex: 1;
   padding: 36px 40px;
@@ -212,8 +197,6 @@
   margin: 0;
 }
 
-/* Botões do header (Rascunho, PDF global) movidos para sidebar;
-   mantemos apenas os que precisam ficar no topo */
 .db-header-actions {
   display: flex;
   gap: 8px;
@@ -221,9 +204,6 @@
   align-items: center;
 }
 
-/* ═══════════════════════════════════════════════════════
-   BOTÕES PEQUENOS (mantidos para compatibilidade)
-   ═══════════════════════════════════════════════════════ */
 .db-btn-sm {
   padding: 7px 14px;
   border-radius: 8px;
@@ -244,9 +224,6 @@
 .db-btn-sm--report     { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
 .db-btn-sm--logout     { background: var(--mq-red-100);   color: var(--mq-red-500);   border-color: #fecaca; }
 
-/* ═══════════════════════════════════════════════════════
-   STATS GRID — 4 cards no topo com ícones de imagem
-   ═══════════════════════════════════════════════════════ */
 .db-stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -281,9 +258,6 @@
 .db-stat-value { font-size: 20px; font-weight: 800; color: var(--mq-slate-800); }
 .db-stat-label { font-size: 11px; font-weight: 600; color: var(--mq-slate-400); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.04em; }
 
-/* ═══════════════════════════════════════════════════════
-   RF28 — MÓDULO EXTRA
-   ═══════════════════════════════════════════════════════ */
 .db-extra-module-section {
   background: var(--mq-card-bg);
   border: 1.5px solid var(--mq-slate-200);
@@ -391,9 +365,6 @@
 }
 .db-extra-module-start-btn:hover { background: var(--mq-blue-600); color: #fff; }
 
-/* ═══════════════════════════════════════════════════════
-   BANNERS (revisão, diagnóstico, notificações)
-   ═══════════════════════════════════════════════════════ */
 .db-review-banner {
   background: linear-gradient(135deg, var(--mq-blue-50) 0%, #f0f9ff 100%);
   border: 1.5px solid var(--mq-blue-100);
@@ -463,9 +434,6 @@
   cursor: pointer; font-family: inherit; text-decoration: underline;
 }
 
-/* ═══════════════════════════════════════════════════════
-   UNIT CARDS
-   ═══════════════════════════════════════════════════════ */
 .db-unit-card {
   background: var(--mq-card-bg);
   border-radius: var(--mq-radius-lg);
@@ -504,7 +472,6 @@
 .db-progress-track { background: var(--mq-slate-100); border-radius: 99px; height: 5px; overflow: hidden; }
 .db-progress-fill  { height: 5px; border-radius: 99px; transition: width 0.4s ease; }
 
-/* ── Review shortcut (Unit 1) ───────────────────────────────────────────────── */
 .db-review-shortcut {
   display: flex;
   align-items: center;
@@ -526,7 +493,6 @@
 .db-review-shortcut-img         { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
 .db-review-shortcut-arrow       { margin-left: auto; font-size: 13px; }
 
-/* ── Module rows ───────────────────────────────────────────────────────────── */
 .db-module-list {
   display: flex;
   flex-direction: column;
@@ -564,7 +530,6 @@
   transition: opacity 0.15s;
 }
 
-/* PDF por módulo (RF22) */
 .db-btn-module-pdf {
   padding: 7px 10px;
   border-radius: 8px;
@@ -585,7 +550,6 @@
   margin: 8px 0 0;
 }
 
-/* ── RF02 — Demo required ───────────────────────────────────────────────────── */
 .db-demo-required-badge {
   display: inline-flex;
   align-items: center;
@@ -609,7 +573,6 @@
   50%       { box-shadow: 0 0 0 6px rgba(253, 230, 138, 0); }
 }
 
-/* ── Scratchpad note ────────────────────────────────────────────────────────── */
 .qe-result-scratchpad-note {
   font-size: 12px;
   color: var(--mq-slate-500);
@@ -620,9 +583,6 @@
   text-align: center;
 }
 
-/* ═══════════════════════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   .db-page    { flex-direction: column; }
 
@@ -653,4 +613,34 @@
 @media (max-width: 420px) {
   .db-stats-grid     { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .db-stat-card      { padding: 12px 8px; }
+}
+
+.db-extra-module-card--exhausted {
+  opacity: 0.7;
+  border-color: #fca5a5 !important;
+  background: #fff5f5;
+}
+
+.db-extra-attempts-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #15803d;
+  background: var(--mq-green-100);
+  border: 1px solid #86efac;
+  border-radius: 99px;
+  padding: 1px 7px;
+  white-space: nowrap;
+}
+
+.db-extra-attempts-badge--exhausted {
+  color: #dc2626;
+  background: var(--mq-red-100);
+  border-color: #fca5a5;
+}
+
+.db-extra-module-start-btn--blocked {
+  background: var(--mq-slate-100) !important;
+  border-color: var(--mq-slate-200) !important;
+  color: var(--mq-slate-400) !important;
+  cursor: not-allowed !important;
 }

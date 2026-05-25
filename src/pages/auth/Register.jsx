@@ -17,7 +17,7 @@ export default function Register() {
   const { dispatch } = useApp();
   const navigate     = useNavigate();
 
-  const [role, setRole]         = useState("aluno"); // "aluno" | "professor"
+  const [role, setRole]         = useState("aluno"); 
   const [form, setForm]         = useState({ name: "", email: "", password: "", grade: "", school: "" });
   const [errors, setErrors]     = useState({});
   const [loading, setLoading]   = useState(false);
@@ -83,7 +83,7 @@ export default function Register() {
           <h1 className="form-title">Crie sua conta</h1>
           <p className="form-subtitle">Gratuito, sem complicação. Comece em menos de 1 minuto.</p>
 
-          {/* ── RF23: Seletor de perfil ── */}
+          {}
           <div className="reg-role-selector">
             <button
               type="button"
@@ -131,7 +131,7 @@ export default function Register() {
                 {errors.password && <span className="reg-field-error">{errors.password}</span>}
               </div>
 
-              {/* Campo condicional por perfil */}
+              {}
               {role === "aluno" && (
                 <div className="field">
                   <label htmlFor="grade">Ano escolar</label>

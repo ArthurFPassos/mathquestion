@@ -34,7 +34,7 @@ export default function Home() {
   return (
     <div className="home-page">
 
-      {/* ── Navbar ── */}
+      {}
       <header className="home-navbar">
         <div className="home-nav-inner">
           <Link to="/" className="home-brand">
@@ -62,7 +62,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ── Hero ── */}
+      {}
       <section className="home-hero">
         <div className="home-hero-inner">
           <div className="home-hero-content">
@@ -89,7 +89,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Mock card */}
+          {}
           <div className="home-hero-visual">
             <div className="home-hero-card">
               <div className="home-hero-card-top">
@@ -129,7 +129,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Stats */}
+        {}
         <div className="home-stats-row">
           {STATS.map((st) => (
             <div key={st.label} className="home-stat-item">
@@ -140,7 +140,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Features ── */}
+      {}
       <section id="recursos" className="home-features">
         <div className="home-section-inner">
           <h2 className="home-section-title">Tudo que o aluno precisa para evoluir</h2>
@@ -159,7 +159,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── CTA band ── */}
+      {}
       <section className="home-cta-band">
         <div className="home-cta-inner">
           <h2 className="home-cta-title">Pronto para começar?</h2>
@@ -174,7 +174,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Footer ── */}
+      {}
       <footer className="home-footer">
         <div className="home-footer-inner">
           <span className="home-footer-brand"><img src={calculadora} alt="" className="home-footer-img" /> MathQuestion</span>

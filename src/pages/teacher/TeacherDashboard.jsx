@@ -12,8 +12,6 @@ import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../../services/firebaseConfig";
 import "./TeacherDashboard.css";
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 const EMPTY_QUESTION = () => ({
   type: "multiple",
   statement: "",
@@ -22,8 +20,6 @@ const EMPTY_QUESTION = () => ({
   answer: "",
   hint: "",
 });
-
-// ─── Icons ────────────────────────────────────────────────────────────────────
 
 function TrashIcon({ size = 16 }) {
   return (
@@ -96,8 +92,6 @@ function WifiIcon({ size = 16 }) {
   );
 }
 
-// ─── QuestionForm ─────────────────────────────────────────────────────────────
-
 function QuestionForm({ index, q, onChange, onRemove, total }) {
   const update = (field, value) => onChange(index, { ...q, [field]: value });
   const updateOption = (i, value) => {
@@ -151,8 +145,6 @@ function QuestionForm({ index, q, onChange, onRemove, total }) {
   );
 }
 
-// ─── ModuleForm ───────────────────────────────────────────────────────────────
-
 function ModuleForm({ editingModule, onSaved, onCancel, teacherUid }) {
   const isEdit = !!editingModule;
   const [moduleTitle, setTitle] = useState(editingModule?.title || "");
@@ -170,8 +162,24 @@ function ModuleForm({ editingModule, onSaved, onCancel, teacherUid }) {
     }
     return Array.from({ length: 5 }, EMPTY_QUESTION);
   });
-  const [saving, setSaving]       = useState(false);
-  const [formError, setFormError] = useState("");
+  const [saving, setSaving]           = useState(false);
+  const [formError, setFormError]     = useState("");
+  
+  const [maxAttemptsMode, setMaxAttemptsMode] = useState(
+    () => {
+      const v = editingModule?.maxAttempts;
+      if (!v || v === "unlimited") return "unlimited";
+      if (v === 1 || v === "1") return "1";
+      return "custom";
+    }
+  );
+  const [customAttempts, setCustomAttempts] = useState(
+    () => {
+      const v = editingModule?.maxAttempts;
+      if (!v || v === "unlimited" || v === 1 || v === "1") return 2;
+      return typeof v === "number" ? v : 2;
+    }
+  );
 
   const updateQuestion = (index, updated) => { setQuestions((qs) => qs.map((q, i) => (i === index ? updated : q))); setFormError(""); };
   const addQuestion    = () => setQuestions((qs) => [...qs, EMPTY_QUESTION()]);
@@ -203,10 +211,12 @@ function ModuleForm({ editingModule, onSaved, onCancel, teacherUid }) {
         xp: 10,
       }));
       if (isEdit) {
-        await updateTeacherModule({ teacherUid, moduleCode: editingModule.code, title: moduleTitle, questions: normalizedQuestions });
-        onSaved(editingModule.code, moduleTitle, normalizedQuestions);
+        const maxAttempts = maxAttemptsMode === "unlimited" ? "unlimited" : maxAttemptsMode === "1" ? 1 : Math.max(1, Number(customAttempts));
+        await updateTeacherModule({ teacherUid, moduleCode: editingModule.code, title: moduleTitle, questions: normalizedQuestions, maxAttempts });
+        onSaved(editingModule.code, moduleTitle, normalizedQuestions, maxAttempts);
       } else {
-        const code = await saveTeacherModule({ teacherUid, title: moduleTitle, questions: normalizedQuestions });
+        const maxAttempts = maxAttemptsMode === "unlimited" ? "unlimited" : maxAttemptsMode === "1" ? 1 : Math.max(1, Number(customAttempts));
+        const code = await saveTeacherModule({ teacherUid, title: moduleTitle, questions: normalizedQuestions, maxAttempts });
         onSaved(code);
       }
     } catch (e) {
@@ -227,7 +237,48 @@ function ModuleForm({ editingModule, onSaved, onCancel, teacherUid }) {
         <label>Título do módulo</label>
         <input type="text" placeholder="Ex: Frações para o 6.º ano" value={moduleTitle} onChange={(e) => { setTitle(e.target.value); setFormError(""); }} />
       </div>
-      <p className="td-create-hint">Cada questão deve ter uma <strong>dica</strong> que será exibida ao aluno na 2ª tentativa.</p>
+      {}
+      <div className="td-attempts-section">
+        <label className="td-attempts-label">
+          🔄 Limite de tentativas por aluno
+        </label>
+        <div className="td-attempts-options">
+          {[
+            { value: "unlimited", icon: "∞", title: "Ilimitadas",       sub: "O aluno pode refazer quantas vezes quiser" },
+            { value: "1",         icon: "1", title: "Apenas 1 tentativa", sub: "O aluno submete uma única vez" },
+            { value: "custom",    icon: "#", title: "Personalizado",     sub: "Defina o número exato" },
+          ].map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              className={`td-attempt-opt${maxAttemptsMode === opt.value ? " td-attempt-opt--active" : ""}`}
+              onClick={() => { setMaxAttemptsMode(opt.value); setFormError(""); }}
+            >
+              <span className="td-attempt-opt-icon">{opt.icon}</span>
+              <div className="td-attempt-opt-body">
+                <span className="td-attempt-opt-title">{opt.title}</span>
+                <span className="td-attempt-opt-sub">{opt.sub}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+        {maxAttemptsMode === "custom" && (
+          <div className="td-custom-attempts-row">
+            <label className="td-custom-attempts-label">Número de tentativas:</label>
+            <input
+              type="number"
+              min={2}
+              max={20}
+              className="td-custom-attempts-input"
+              value={customAttempts}
+              onChange={(e) => setCustomAttempts(Math.max(2, Math.min(20, Number(e.target.value))))}
+            />
+            <span className="td-custom-attempts-hint">entre 2 e 20</span>
+          </div>
+        )}
+      </div>
+
+      <p className="td-create-hint">Cada questão deve ter uma <strong>dica</strong> que será exibida ao aluno na 2ª tentativa (RF06).</p>
       {questions.map((q, i) => (
         <QuestionForm key={i} index={i} q={q} onChange={updateQuestion} onRemove={removeQuestion} total={questions.length} />
       ))}
@@ -239,8 +290,6 @@ function ModuleForm({ editingModule, onSaved, onCancel, teacherUid }) {
     </div>
   );
 }
-
-// ─── StudentAnalytics ─────────────────────────────────────────────────────────
 
 function StudentAnalytics({ attempt, onBack }) {
   const { studentName, moduleName, answers = [] } = attempt;
@@ -299,7 +348,7 @@ function StudentAnalytics({ attempt, onBack }) {
               {!a.correct && a.correctAnswer && <span className="td-q-correct-answer">Correta: <strong>{a.correctAnswer}</strong></span>}
             </div>
 
-            {/* FIX — Rascunho: valida que é realmente uma imagem Base64 antes de renderizar */}
+            {}
             {a.scratchpadImage &&
              typeof a.scratchpadImage === "string" &&
              a.scratchpadImage.startsWith("data:image") && (
@@ -319,13 +368,6 @@ function StudentAnalytics({ attempt, onBack }) {
   );
 }
 
-// ─── StudentMonitor ───────────────────────────────────────────────────────────
-
-/**
- * FIX — StudentMonitor recebe `attemptsMap` (de onSnapshot) diretamente
- * em vez de fazer fetch por módulo. Isso resolve o problema de dados
- * não aparecendo: o mapa é atualizado em tempo real pelo subscribeToTeacherAttempts.
- */
 function StudentMonitor({ myModules, attemptsMap }) {
   const [selectedModule,  setSelectedModule]  = useState(null);
   const [selectedAttempt, setSelectedAttempt] = useState(null);
@@ -343,7 +385,6 @@ function StudentMonitor({ myModules, attemptsMap }) {
     ? (attemptsMap[selectedModule.code] || [])
     : [];
 
-  // Badge de total de alunos por módulo
   const totalStudents = myModules.reduce((sum, mod) => {
     return sum + (attemptsMap[mod.code]?.length || 0);
   }, 0);
@@ -359,7 +400,7 @@ function StudentMonitor({ myModules, attemptsMap }) {
               : "Selecione um módulo para ver o progresso dos alunos."}
           </p>
         </div>
-        {/* Indicador de tempo real */}
+        {}
         <div className="td-realtime-badge">
           <WifiIcon size={13} /> Tempo real
         </div>
@@ -446,8 +487,6 @@ function StudentMonitor({ myModules, attemptsMap }) {
   );
 }
 
-// ─── Main: TeacherDashboard ───────────────────────────────────────────────────
-
 export default function TeacherDashboard() {
   const { state, dispatch } = useApp();
   const navigate = useNavigate();
@@ -463,17 +502,11 @@ export default function TeacherDashboard() {
   const [copyFeedback,  setCopyFeedback]  = useState(null);
   const [actionError,   setActionError]   = useState("");
 
-  /**
-   * FIX — attemptsMap é o estado central para todos os dados de alunos.
-   * Populado pelo onSnapshot em tempo real via subscribeToTeacherAttempts.
-   * Estrutura: { [moduleCode]: attempt[] }
-   */
   const [attemptsMap, setAttemptsMap] = useState({});
 
   const teacherUid  = state.user?.uid;
   const teacherName = state.user?.name || "Professor";
 
-  // ── Carrega módulos do professor ──────────────────────────────────────────
   const loadModules = useCallback(async () => {
     if (!teacherUid) return;
     setLoadingMods(true);
@@ -492,25 +525,14 @@ export default function TeacherDashboard() {
 
   useEffect(() => { loadModules(); }, [loadModules]);
 
-  /**
-   * FIX — Subscrição em tempo real às tentativas dos alunos.
-   *
-   * subscribeToTeacherAttempts usa onSnapshot internamente.
-   * Sempre que um aluno finaliza um módulo deste professor, o Firestore
-   * dispara um evento e attemptsMap é atualizado automaticamente —
-   * sem que o professor precise recarregar a página.
-   *
-   * O cleanup (unsub) cancela o listener ao desmontar o componente.
-   */
   useEffect(() => {
     if (!teacherUid) return;
     const unsub = subscribeToTeacherAttempts(teacherUid, (byModule) => {
       setAttemptsMap(byModule);
     });
-    return unsub; // cleanup: cancela o onSnapshot ao desmontar
+    return unsub; 
   }, [teacherUid]);
 
-  // ── Handlers ───────────────────────────────────────────────────────────────
   const handleLogout = async () => {
     try { await logoutStudent(); } catch (_) {}
     dispatch({ type: "LOGOUT" });
@@ -564,8 +586,6 @@ export default function TeacherDashboard() {
     setTimeout(() => setCopyFeedback(null), 1800);
   };
 
-  // ── Views ──────────────────────────────────────────────────────────────────
-
   if (view === "success") {
     return (
       <div className="td-wrapper">
@@ -601,7 +621,7 @@ export default function TeacherDashboard() {
     <div className="td-wrapper">
       <div className="td-dashboard">
 
-        {/* Sidebar */}
+        {}
         <aside className="td-sidebar">
           <div className="td-sidebar-brand">
             <div className="td-brand-icon">M</div>
@@ -625,10 +645,10 @@ export default function TeacherDashboard() {
           <button className="td-sidebar-logout" onClick={handleLogout}>Sair</button>
         </aside>
 
-        {/* Main */}
+        {}
         <main className="td-main">
 
-          {/* Aba: Módulos */}
+          {}
           {activeTab === "modules" && (
             <div>
               <div className="td-main-header">
@@ -690,7 +710,7 @@ export default function TeacherDashboard() {
             </div>
           )}
 
-          {/* Aba: Desempenho */}
+          {}
           {activeTab === "performance" && (
             <StudentMonitor
               myModules={myModules}
@@ -700,7 +720,7 @@ export default function TeacherDashboard() {
         </main>
       </div>
 
-      {/* Modal de exclusão */}
+      {}
       {deleteConfirm && (
         <div className="td-modal-overlay" onClick={() => setDeleteConfirm(false)}>
           <div className="td-modal" onClick={(e) => e.stopPropagation()}>

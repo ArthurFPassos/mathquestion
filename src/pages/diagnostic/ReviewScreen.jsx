@@ -2,8 +2,6 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./ReviewScreen.css";
 
-// ─── Topic data ───────────────────────────────────────────────────────────────
-
 const TOPICS = [
   {
     id: "soma", icon: "➕", color: "#2563EB", light: "#EFF6FF",
@@ -134,8 +132,6 @@ const TOPICS = [
   },
 ];
 
-// ─── TopicCard ────────────────────────────────────────────────────────────────
-
 function TopicCard({ topic, isOpen, onToggle }) {
   return (
     <div
@@ -175,7 +171,7 @@ function TopicCard({ topic, isOpen, onToggle }) {
           <p className="rv-concept-text">{topic.concept}</p>
 
           <div className="rv-two-col">
-            {/* Steps */}
+            {}
             <div>
               <p className="rv-section-label" style={{ color: topic.color }}>
                 📋 Passo a passo
@@ -200,10 +196,10 @@ function TopicCard({ topic, isOpen, onToggle }) {
               </ol>
             </div>
 
-            {/* Example */}
+            {}
             <div>
               <p className="rv-section-label" style={{ color: topic.color }}>
-                🔢 Exemplo resolvido
+                 Exemplo resolvido
               </p>
               <div
                 className="rv-example-box"
@@ -246,16 +242,11 @@ function TopicCard({ topic, isOpen, onToggle }) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
-
 export default function ReviewScreen() {
   const navigate            = useNavigate();
   const location            = useLocation();
   const [openId, setOpenId] = useState("soma");
 
-  // ── Origin detection ─────────────────────────────────────────────────────────
-  // fromDiagnostic: true  → came from DiagnosticScreen (score < 60%)
-  // fromDiagnostic: false → free access from Dashboard
   const fromDiagnostic = location.state?.fromDiagnostic === true;
   const diagScore      = location.state?.score;
 
@@ -264,11 +255,11 @@ export default function ReviewScreen() {
   return (
     <div className="rv-page">
 
-      {/* ── Page header ── */}
+      {}
       <div className="rv-page-header">
         <div className="rv-header-inner">
 
-          {/* Back button — free-access mode only */}
+          {}
           {!fromDiagnostic && (
             <button
               className="rv-back-btn"
@@ -292,7 +283,7 @@ export default function ReviewScreen() {
               </div>
             </div>
 
-            {/* Score badge — only post-diagnostic */}
+            {}
             {fromDiagnostic && (
               <div className="rv-score-badge">
                 <span className="rv-score-badge-icon">📊</span>
@@ -310,7 +301,7 @@ export default function ReviewScreen() {
         </div>
       </div>
 
-      {/* ── Hint banner ── */}
+      {}
       <div className="rv-hint-banner">
         <span className="rv-hint-icon">💡</span>
         <p className="rv-hint-text">
@@ -320,7 +311,7 @@ export default function ReviewScreen() {
         </p>
       </div>
 
-      {/* ── Accordion ── */}
+      {}
       <div className="rv-topics-container">
         {TOPICS.map((topic) => (
           <TopicCard
@@ -332,7 +323,7 @@ export default function ReviewScreen() {
         ))}
       </div>
 
-      {/* ── Conditional footer ── */}
+      {}
       {fromDiagnostic ? (
         <div className="rv-cta-section">
           <div className="rv-cta-card">

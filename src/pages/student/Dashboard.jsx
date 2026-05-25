@@ -7,6 +7,7 @@ import {
   findModuleByCode,
   addExtraModuleToStudent,
   loadExtraModules,
+  getStudentAttemptCount,
 } from "../../services/firebaseService";
 import {
   getUnitProgress,
@@ -25,8 +26,6 @@ import imgRelogio     from "../../assets/relogio.png";
 import imgRevisao     from "../../assets/revisao.png";
 import imgCalculadora from "../../assets/calculadora.png";
 import "./Dashboard.css";
-
-// ─── Asset map ────────────────────────────────────────────────────────────────
 
 const ASSET_MAP = {
   xp:          imgXP,
@@ -49,8 +48,6 @@ function AssetIcon({ name, size = 32, alt = "" }) {
   );
 }
 
-// ─── Stat card ────────────────────────────────────────────────────────────────
-
 function StatCard({ imgSrc, label, value, accentColor }) {
   return (
     <div className="db-stat-card">
@@ -64,8 +61,6 @@ function StatCard({ imgSrc, label, value, accentColor }) {
     </div>
   );
 }
-
-// ─── Inline SVG icons para sidebar ───────────────────────────────────────────
 
 function IconBook({ size = 16 }) {
   return (
@@ -98,13 +93,45 @@ function IconLogout({ size = 16 }) {
   );
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+function ExtraModuleCard({ mod, attemptsDone, onStart }) {
+  const maxAttempts = mod.maxAttempts ?? "unlimited";
+  const isUnlimited = maxAttempts === "unlimited";
+  const limit       = isUnlimited ? Infinity : Number(maxAttempts);
+  const exhausted   = !isUnlimited && attemptsDone >= limit;
+
+  const attemptsLabel = isUnlimited
+    ? "Ilimitadas"
+    : `${attemptsDone} / ${limit} tentativa${limit !== 1 ? "s" : ""}`;
+
+  return (
+    <div className={`db-extra-module-card${exhausted ? " db-extra-module-card--exhausted" : ""}`}>
+      <div className="db-extra-module-card-left">
+        <span className="db-extra-module-card-title">{mod.title}</span>
+        <span className="db-extra-module-card-meta">
+          Código: <strong>{mod.code}</strong>
+          {" · "}{mod.questions?.length || 0} questões
+          {" · "}
+          <span className={`db-extra-attempts-badge${exhausted ? " db-extra-attempts-badge--exhausted" : ""}`}>
+            {exhausted ? " Limite esgotado" : ` ${attemptsLabel}`}
+          </span>
+        </span>
+      </div>
+      <button
+        className={`db-extra-module-start-btn${exhausted ? " db-extra-module-start-btn--blocked" : ""}`}
+        disabled={exhausted}
+        onClick={!exhausted ? onStart : undefined}
+        title={exhausted ? `Limite de ${limit} tentativa${limit !== 1 ? "s" : ""} atingido` : "Iniciar módulo"}
+      >
+        {exhausted ? "Esgotado" : "Iniciar →"}
+      </button>
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const { state, dispatch } = useApp();
   const navigate            = useNavigate();
 
-  // ── Stats ──────────────────────────────────────────────────────────────────
   const avg           = getOverallAvg(state.moduleResults);
   const avgTime       = getAvgTimeMs(state.moduleResults);
   const totalAnswered = Object.values(state.moduleResults).reduce(
@@ -118,22 +145,30 @@ export default function Dashboard() {
   const diagScore = Math.min(state.firstDiagnosticScore ?? 0, 1);
   const diagDone  = state.firstDiagnosticDone ?? false;
 
-  // ── UI state ───────────────────────────────────────────────────────────────
   const [reviewBannerVisible, setReviewBannerVisible] = useState(
     () => state.wentToReview && !state.secondDiagnosticDone
   );
 
-  // ── RF28: Módulo extra ─────────────────────────────────────────────────────
   const [extraCode,    setExtraCode]    = useState("");
   const [extraLoading, setExtraLoading] = useState(false);
   const [extraError,   setExtraError]   = useState("");
   const [extraSuccess, setExtraSuccess] = useState("");
-  const [extraModules, setExtraModules] = useState([]);
+  const [extraModules,  setExtraModules]  = useState([]);
+  
+  const [attemptCounts, setAttemptCounts] = useState({});
 
   useEffect(() => {
     const uid = state.user?.uid;
     if (!uid) return;
-    loadExtraModules(uid).then(setExtraModules).catch(() => {});
+    loadExtraModules(uid).then(async (mods) => {
+      setExtraModules(mods);
+      
+      const counts = {};
+      await Promise.all(mods.map(async (mod) => {
+        counts[mod.code] = await getStudentAttemptCount(mod.code, uid);
+      }));
+      setAttemptCounts(counts);
+    }).catch(() => {});
   }, [state.user?.uid]);
 
   const handleAddExtraModule = async () => {
@@ -161,7 +196,6 @@ export default function Dashboard() {
     }
   };
 
-  // ── Handlers ───────────────────────────────────────────────────────────────
   const handleLogout = async () => {
     try { await logoutStudent(); } catch (_) {}
     dispatch({ type: "LOGOUT" });
@@ -172,20 +206,19 @@ export default function Dashboard() {
 
   const studentName = state.user?.name || "Aluno";
 
-  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="db-page">
       {state.scratchpadOpen && <Scratchpad />}
 
-      {/* ══════════════ SIDEBAR ══════════════ */}
+      {}
       <aside className="db-sidebar">
-        {/* Brand */}
+        {}
         <div className="db-sidebar-brand">
           <div className="db-brand-icon">M</div>
           <span className="db-brand-name">MathQ</span>
         </div>
 
-        {/* Perfil */}
+        {}
         <div className="db-sidebar-profile">
           <div className="db-profile-avatar">{studentName.charAt(0)}</div>
           <div>
@@ -194,7 +227,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Ações rápidas */}
+        {}
         <div className="db-sidebar-actions">
           <button
             className="db-sidebar-action-btn db-sidebar-action-btn--blue"
@@ -221,17 +254,17 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Logout */}
+        {}
         <button className="db-sidebar-logout" onClick={handleLogout}>
           <IconLogout size={15} />
           Sair
         </button>
       </aside>
 
-      {/* ══════════════ MAIN ══════════════ */}
+      {}
       <main className="db-main">
 
-        {/* Header */}
+        {}
         <div className="db-main-header">
           <div>
             <h1>Olá, {studentName}!</h1>
@@ -243,7 +276,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Stats */}
+        {}
         <div className="db-stats-grid">
           <StatCard imgSrc="xp"        label="Total XP"    value={`${state.totalXP} pts`} accentColor="#2563eb" />
           <StatCard imgSrc="progresso" label="Média Geral" value={`${(avg * 100).toFixed(0)}%`} />
@@ -251,10 +284,10 @@ export default function Dashboard() {
           <StatCard imgSrc="relogio"   label="Tempo Médio" value={formatTime(avgTime)} />
         </div>
 
-        {/* RF28 — Módulo Extra */}
+        {}
         <div className="db-extra-module-section">
           <div className="db-extra-module-header">
-            <span className="db-extra-module-title">🔑 Módulo Extra</span>
+            <span className="db-extra-module-title"> Módulo Extra</span>
             <span className="db-extra-module-sub">Insira o código fornecido pelo professor</span>
           </div>
           <div className="db-extra-module-input-row">
@@ -285,30 +318,22 @@ export default function Dashboard() {
           {extraModules.length > 0 && (
             <div className="db-extra-modules-list">
               {extraModules.map((mod) => (
-                <div key={mod.code} className="db-extra-module-card">
-                  <div className="db-extra-module-card-left">
-                    <span className="db-extra-module-card-title">{mod.title}</span>
-                    <span className="db-extra-module-card-meta">
-                      Código: <strong>{mod.code}</strong> · {mod.questions?.length || 0} questões
-                    </span>
-                  </div>
-                  <button
-                    className="db-extra-module-start-btn"
-                    onClick={() => {
-                      dispatch({ type: "SET_EXTRA_MODULE", payload: mod });
-                      dispatch({ type: "DEMO_WATCHED",    payload: `extra-${mod.code}` });
-                      navigate("/modulo-1");
-                    }}
-                  >
-                    Iniciar →
-                  </button>
-                </div>
+                <ExtraModuleCard
+                  key={mod.code}
+                  mod={mod}
+                  attemptsDone={attemptCounts[mod.code] ?? 0}
+                  onStart={() => {
+                    dispatch({ type: "SET_EXTRA_MODULE", payload: mod });
+                    dispatch({ type: "DEMO_WATCHED",    payload: `extra-${mod.code}` });
+                    navigate("/modulo-1");
+                  }}
+                />
               ))}
             </div>
           )}
         </div>
 
-        {/* Review banner */}
+        {}
         {reviewBannerVisible && (
           <div className="db-review-banner">
             <div className="db-review-banner-left">
@@ -332,7 +357,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Diagnostic banners */}
+        {}
         {diagDone && (
           <div className={`db-banner ${diagScore >= 0.6 ? "db-banner--pass" : "db-banner--fail"}`}>
             Diagnóstico inicial:{" "}
@@ -351,7 +376,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Units */}
+        {}
         {UNITS.map((unit) => {
           const unlocked    = isUnitUnlocked(unit.id, state.moduleResults);
           const unitPct     = getUnitProgress(unit.id, state.moduleResults);

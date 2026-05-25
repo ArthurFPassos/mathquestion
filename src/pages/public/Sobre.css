@@ -1,12 +1,9 @@
-/* ─── Sobre (About page) ─────────────────────────────────────────────────────── */
 
 .sobre-page {
   min-height: 100vh;
   background: #fff;
   font-family: 'Inter', system-ui, sans-serif;
 }
-
-/* ── Navbar ─────────────────────────────────────────────────────────────────── */
 
 .sobre-navbar {
   position: sticky;
@@ -59,8 +56,6 @@
 }
 
 .sobre-nav-actions { display: flex; gap: 10px; }
-
-/* ── Hero ────────────────────────────────────────────────────────────────────── */
 
 .sobre-hero {
   background: linear-gradient(180deg, #eff6ff 0%, #fff 100%);
@@ -123,8 +118,6 @@
 .sobre-stat-value { font-size: 32px; font-weight: 800; color: #2563eb; }
 .sobre-stat-label { font-size: 13px; color: #64748b; font-weight: 500; }
 
-/* ── Shared section styles ───────────────────────────────────────────────────── */
-
 .sobre-section-inner {
   max-width: 1100px;
   margin: 0 auto;
@@ -151,8 +144,6 @@
 }
 
 .sobre-section-sub--white { color: rgba(255,255,255,0.8); }
-
-/* ── Units section ───────────────────────────────────────────────────────────── */
 
 .sobre-units-section {
   padding: 80px 0;
@@ -260,8 +251,6 @@
   background: var(--dot-color, #2563eb);
 }
 
-/* ── How it works ────────────────────────────────────────────────────────────── */
-
 .sobre-how-section {
   padding: 80px 0;
   background: #fff;
@@ -292,8 +281,6 @@
 .sobre-how-title { font-size: 15px; font-weight: 700; color: #1e293b; margin: 0 0 8px; }
 .sobre-how-desc  { font-size: 14px; color: #475569; line-height: 1.65; margin: 0; }
 
-/* ── Principles ──────────────────────────────────────────────────────────────── */
-
 .sobre-principles-section {
   padding: 80px 0;
   background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
@@ -316,8 +303,6 @@
 .sobre-principle-icon  { font-size: 28px; display: block; margin-bottom: 12px; }
 .sobre-principle-title { font-size: 15px; font-weight: 700; color: #fff; margin: 0 0 8px; }
 .sobre-principle-desc  { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.65; margin: 0; }
-
-/* ── CTA ─────────────────────────────────────────────────────────────────────── */
 
 .sobre-cta {
   padding: 72px 24px;
@@ -343,8 +328,6 @@
   box-shadow: 0 8px 24px rgba(37,99,235,0.25);
 }
 .sobre-cta-btn:hover { background: #1d4ed8; }
-
-/* ── Footer ──────────────────────────────────────────────────────────────────── */
 
 .sobre-footer { background: #0f172a; padding: 24px; }
 
@@ -375,8 +358,6 @@
 }
 
 .sobre-footer-note { font-size: 13px; color: #64748b; }
-
-/* ── Responsive ──────────────────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
   .sobre-hero-title  { font-size: 28px; }

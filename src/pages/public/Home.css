@@ -1,8 +1,5 @@
-/* ─── Home ──────────────────────────────────────────────────────────────────── */
 
 .home-page { min-height: 100vh; background: #fff; }
-
-/* ── Navbar ─────────────────────────────────────────────────────────────────── */
 
 .home-navbar {
   position: sticky;
@@ -47,8 +44,6 @@
 .home-nav-link:hover { color: #2563eb; }
 
 .home-nav-actions { display: flex; gap: 10px; }
-
-/* ── Hero ────────────────────────────────────────────────────────────────────── */
 
 .home-hero {
   background: linear-gradient(180deg, #eff6ff 0%, #fff 100%);
@@ -96,7 +91,6 @@
 
 .home-hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
 
-/* Hero mockup card */
 .home-hero-visual { position: relative; padding-right: 24px; }
 
 .home-hero-card {
@@ -169,7 +163,6 @@
   white-space: nowrap;
 }
 
-/* Stats row */
 .home-stats-row {
   max-width: 1100px;
   margin: 0 auto;
@@ -182,8 +175,6 @@
 .home-stat-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .home-stat-value { font-size: 28px; font-weight: 800; color: #2563eb; }
 .home-stat-label { font-size: 13px; color: #64748b; font-weight: 500; }
-
-/* ── Features ────────────────────────────────────────────────────────────────── */
 
 .home-features { padding: 80px 24px; background: #fff; }
 
@@ -231,8 +222,6 @@
 }
 .home-feature-desc  { font-size: 14px; color: #475569; line-height: 1.65; margin: 0; }
 
-/* ── CTA band ────────────────────────────────────────────────────────────────── */
-
 .home-cta-band {
   background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
   padding: 72px 24px;
@@ -259,14 +248,10 @@
 }
 .home-cta-btn:hover { opacity: 0.92; }
 
-/* ── Footer ──────────────────────────────────────────────────────────────────── */
-
 .home-footer       { background: #0f172a; padding: 24px; }
 .home-footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
 .home-footer-brand { font-size: 15px; font-weight: 700; color: #fff; }
 .home-footer-note  { font-size: 13px; color: #64748b; }
-
-/* ── Responsive ──────────────────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
   .home-hero-inner        { grid-template-columns: 1fr; gap: 32px; }
@@ -274,8 +259,6 @@
   .home-hero-title        { font-size: 32px; }
   .home-nav-links         { display: none; }
 }
-
-/* ── Calculadora.png — brand logo image ─────────────────────────────────────── */
 
 .home-brand-img {
   width: 22px;

@@ -528,10 +528,10 @@ export const UNITS = [
             hint: "Divida numerador e denominador pelo mesmo número para simplificar.",
             xp: 25,
             pairs: [
-              { left: "2/4",  right: "1/2" },
-              { left: "3/6",  right: "1/2" },
-              { left: "4/8",  right: "1/2" },
-              { left: "6/12", right: "1/2" },
+              { left: "2/8",  right: "1/4" },
+              { left: "3/9",  right: "1/3" },
+              { left: "4/6",  right: "2/3" },
+              { left: "5/10", right: "1/2" },
             ],
           },
           {

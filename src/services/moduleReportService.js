@@ -1,9 +1,4 @@
-/**
- * RF22 — Geração de relatório PDF por módulo a partir do Dashboard.
- * Usado quando o aluno clica em 📄 ao lado de um módulo já concluído.
- * Como não temos o log detalhado (sessão já terminou), gera um resumo
- * com os dados salvos no Firestore (score, correct, total, timeMs, xp).
- */
+
 export async function downloadModuleReportFromDashboard({ moduleId, moduleName, unitName, studentName, result }) {
   const { default: jsPDF }     = await import("jspdf");
   const { default: autoTable } = await import("jspdf-autotable");
@@ -24,7 +19,6 @@ export async function downloadModuleReportFromDashboard({ moduleId, moduleName, 
     ? new Date(result.completedAt.seconds ? result.completedAt.seconds * 1000 : result.completedAt).toLocaleString("pt-BR")
     : new Date().toLocaleString("pt-BR");
 
-  // Header
   doc.setFillColor(...PRIMARY);
   doc.rect(0, 0, pageW, 36, "F");
   doc.setTextColor(255, 255, 255);
@@ -35,7 +29,6 @@ export async function downloadModuleReportFromDashboard({ moduleId, moduleName, 
   doc.setFontSize(8);
   doc.text(`Gerado em: ${new Date().toLocaleString("pt-BR")}`, 14, 29);
 
-  // Info
   let y = 44;
   doc.setTextColor(...DARK);
   doc.setFontSize(13); doc.setFont("helvetica", "bold");
@@ -43,7 +36,6 @@ export async function downloadModuleReportFromDashboard({ moduleId, moduleName, 
   doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(...GRAY);
   doc.text(`Unidade: ${unitName}  ·  Aluno: ${studentName}  ·  Data: ${dateStr}`, 14, y + 7);
 
-  // Cards
   y += 18;
   const cards = [
     { label: "Resultado",   value: `${pct}%` },
@@ -62,16 +54,7 @@ export async function downloadModuleReportFromDashboard({ moduleId, moduleName, 
     doc.text(c.label, cx + cw / 2, y + 16, { align: "center" });
   });
 
-  // Nota
   y += 28;
-  doc.setFillColor(255, 251, 235);
-  doc.roundedRect(14, y, pageW - 28, 18, 3, 3, "F");
-  doc.setTextColor(146, 64, 14); doc.setFontSize(8); doc.setFont("helvetica", "normal");
-  doc.text("ℹ️  O detalhamento completo por questão (com rascunhos) está disponível", 18, y + 6);
-  doc.text("    ao finalizar um módulo diretamente, antes de voltar ao Dashboard.", 18, y + 12);
-
-  // Resumo simples
-  y += 26;
   doc.setTextColor(...DARK); doc.setFontSize(10); doc.setFont("helvetica", "bold");
   doc.text("Resumo da tentativa", 14, y);
 

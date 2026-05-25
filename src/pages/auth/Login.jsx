@@ -24,14 +24,14 @@ export default function Login() {
     }
     setLoading(true);
     try {
-      // 1. Autentica no Firebase Auth + busca perfil no Firestore
+      
       const user = await loginStudent({ email: form.email, password: form.password });
       dispatch({ type: "LOGIN", payload: user });
 
       if (user.role === "professor") {
         navigate("/teacher-dashboard");
       } else {
-        // 2. Carrega progresso salvo no Firestore (só para alunos)
+        
         const progress = await loadProgress(user.uid);
         dispatch({ type: "LOAD_PROGRESS", payload: progress });
         navigate("/dashboard");

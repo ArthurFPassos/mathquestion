@@ -25,9 +25,9 @@ export default function WelcomeScreen() {
     <div className="ws-wrapper">
       <div className="ws-card">
 
-        {/* Logo com imagem calculadora.png */}
+        {}
         <div className="ws-logo-wrap">
-          {/* Substitua por <img src={calculadora} .../> após adicionar o PNG ao repositório */}
+          {}
           <span className="ws-logo-fallback">🧮</span>
         </div>
 
